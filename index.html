@@ -19,7 +19,7 @@
             touch-action: manipulation;
         }
 
-        /* تصميم شاشة التحميل (Splash Screen) */
+        /* شاشة التحميل */
         #splash-screen {
             position: fixed;
             top: 0;
@@ -37,29 +37,27 @@
         #splash-image {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* تجعل الصورة تملأ الشاشة بالكامل */
+            object-fit: cover;
         }
 
-        /* تصميم محتوى اللعبة */
+        /* محتوى اللعبة */
         #game-content {
-            opacity: 0; /* مخفي في البداية */
             display: none;
             text-align: center;
-            transition: opacity 0.8s ease-in;
         }
 
         #score-container {
-            font-size: 52px;
+            font-size: 60px;
             font-weight: 800;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
             color: #FFD700;
             text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
 
         #coin-container {
             position: relative;
-            width: 300px;
-            height: 300px;
+            width: 280px;
+            height: 280px;
             cursor: pointer;
             transition: transform 0.05s;
         }
@@ -72,7 +70,7 @@
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
             -webkit-user-drag: none;
         }
 
@@ -82,7 +80,6 @@
             font-weight: 900;
             color: #FFD700;
             pointer-events: none;
-            user-select: none;
             animation: moveUp 0.6s ease-out forwards;
         }
 
@@ -92,10 +89,10 @@
         }
 
         #footer-text {
-            margin-top: 40px;
-            font-size: 18px;
-            letter-spacing: 4px;
-            color: #555;
+            margin-top: 30px;
+            font-size: 20px;
+            letter-spacing: 5px;
+            color: #444;
             text-transform: uppercase;
         }
     </style>
@@ -103,37 +100,31 @@
 <body onload="initGame()">
 
     <div id="splash-screen">
-        <img src="https://i.ibb.co/V0jRzfVv/1000025206.png" id="splash-image" alt="Loading Jolt Coin">
+        <img src="https://i.ibb.co/68vM35v0/1000025206.png" id="splash-image">
     </div>
 
     <div id="game-content">
         <div id="score-container">0</div>
-
         <div id="coin-container" onclick="handleTap(event)" ontouchstart="handleTap(event)">
-            <img src="https://i.ibb.co/68vM35v0/1000025201.png" id="coin" alt="Jolt Coin">
+            <img src="https://i.ibb.co/LztYgV8R/1000025201.png" id="coin">
         </div>
-
         <div id="footer-text">Jolt Coin</div>
     </div>
 
     <script>
         function initGame() {
-            // عرض شاشة التحميل لمدة 3 ثوانٍ
             setTimeout(() => {
                 const splash = document.getElementById('splash-screen');
                 const game = document.getElementById('game-content');
-                
                 splash.style.opacity = '0';
                 setTimeout(() => {
                     splash.style.display = 'none';
                     game.style.display = 'block';
-                    setTimeout(() => { game.style.opacity = '1'; }, 50);
                 }, 800);
             }, 3000);
         }
 
-        // منطق اللعبة
-        let score = parseInt(localStorage.getItem('jolt_v1_score')) || 0;
+        let score = parseInt(localStorage.getItem('jolt_v2_score')) || 0;
         const scoreDisplay = document.getElementById('score-container');
         scoreDisplay.innerText = score.toLocaleString();
 
@@ -145,7 +136,7 @@
                 createTapText(touches[i].clientX, touches[i].clientY);
             }
             scoreDisplay.innerText = score.toLocaleString();
-            localStorage.setItem('jolt_v1_score', score);
+            localStorage.setItem('jolt_v2_score', score);
         }
 
         function createTapText(x, y) {
@@ -158,7 +149,7 @@
             setTimeout(() => { tapText.remove(); }, 600);
         }
 
-        document.addEventListener('contextmenu', event => event.preventDefault());
+        document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
