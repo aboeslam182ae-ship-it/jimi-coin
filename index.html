@@ -3,45 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jimi Coin</title>
+    <title>Jimi Coin - MultiTouch</title>
     <style>
-        body { background: #000; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; transition: 0.8s; }
+        body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; touch-action: none; }
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; transition: opacity 0.8s; }
         #splash img { width: 100%; height: 100%; object-fit: cover; }
-        #game { display: none; text-align: center; }
-        #score { font-size: 70px; color: #FFD700; margin-bottom: 20px; font-weight: bold; }
-        .coin-btn { width: 260px; height: 260px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FF3E3E; }
+        #game { display: none; text-align: center; opacity: 0; transition: opacity 0.8s; }
+        #score { font-size: 80px; color: #FFD700; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .coin-btn { width: 280px; height: 280px; cursor: pointer; transition: transform 0.05s; -webkit-tap-highlight-color: transparent; position: relative; }
+        .coin-btn:active { transform: scale(0.95); }
+        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FFD700; box-shadow: 0 0 30px rgba(255,215,0,0.3); }
+        .tap-text { position: absolute; color: #FFD700; font-size: 40px; font-weight: bold; pointer-events: none; animation: fly 0.6s ease-out forwards; z-index: 2000; }
+        @keyframes fly { to { transform: translateY(-150px); opacity: 0; } }
     </style>
 </head>
 <body onload="startApp()">
 
-    <div id="splash"><img src="splash.png"></div>
+    <div id="splash">
+        <img src="splash.png" alt="Loading...">
+    </div>
 
     <div id="game">
         <div id="score">0</div>
-        <div class="coin-btn" onclick="tap()"><img src="coin.png"></div>
-        <p style="color: #555; letter-spacing: 5px;">JOLT COIN</p>
+        <div class="coin-btn" id="coinArea">
+            <img src="coin.png" alt="Coin">
+        </div>
+        <div style="margin-top:30px; color:#555; letter-spacing:8px; font-weight:bold;">JOLT COIN</div>
     </div>
 
     <script>
         function startApp() {
             setTimeout(() => {
-                document.getElementById('splash').style.opacity = '0';
+                const s = document.getElementById('splash');
+                const g = document.getElementById('game');
+                s.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('splash').style.display = 'none';
-                    document.getElementById('game').style.display = 'block';
+                    s.style.display = 'none';
+                    g.style.display = 'block';
+                    setTimeout(() => g.style.opacity = '1', 50);
                 }, 800);
             }, 3000);
         }
 
-        let p = parseInt(localStorage.getItem('j_pts')) || 0;
-        document.getElementById('score').innerText = p;
-        function tap() {
-            p++;
-            document.getElementById('score').innerText = p;
-            localStorage.setItem('j_pts', p);
+        let pts = parseInt(localStorage.getItem('jimi_multitouch_v1')) || 0;
+        const display = document.getElementById('score');
+        const coinArea = document.getElementById('coinArea');
+        display.innerText = pts.toLocaleString();
+
+        // وظيفة معالجة اللمس المتعدد
+        coinArea.addEventListener('touchstart', function(e) {
+            e.preventDefault(); // منع التكبير أو السلوك الافتراضي
+            const touches = e.changedTouches;
+            for (let i = 0; i < touches.length; i++) {
+                pts++;
+                showEffect(touches[i].clientX, touches[i].clientY);
+            }
+            display.innerText = pts.toLocaleString();
+            localStorage.setItem('jimi_multitouch_v1', pts);
+        }, { passive: false });
+
+        function showEffect(x, y) {
+            const t = document.createElement('div');
+            t.innerText = '+1';
+            t.className = 'tap-text';
+            t.style.left = (x - 20) + 'px';
+            t.style.top = (y - 50) + 'px';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 600);
         }
+
+        document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
