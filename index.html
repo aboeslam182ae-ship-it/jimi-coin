@@ -3,29 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin</title>
+    <title>Sonic Jimi Coin</title>
     <style>
-        body { background-color: #0f0f0f; color: #ffd700; text-align: center; font-family: 'Arial', sans-serif; margin: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
-        .score-container { font-size: 50px; font-weight: bold; margin-bottom: 20px; text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); }
-        .coin-button { width: 250px; height: 250px; border-radius: 50%; background: linear-gradient(145deg, #ffcc00, #b8860b); border: 8px solid #8b6508; cursor: pointer; transition: transform 0.1s; box-shadow: 0 0 30px rgba(212, 175, 55, 0.5); -webkit-tap-highlight-color: transparent; display: flex; align-items: center; justify-content: center; font-size: 80px; font-weight: bold; }
-        .coin-button:active { transform: scale(0.92); }
+        body { background-color: #000; color: #fff; text-align: center; font-family: Arial, sans-serif; margin: 0; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; }
+        .score-container { font-size: 60px; font-weight: bold; color: #00bcff; text-shadow: 0 0 20px #00bcff; margin-bottom: 20px; }
+        .character-container { width: 250px; height: 250px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: transform 0.1s ease; -webkit-tap-highlight-color: transparent; }
+        .character-container:active { transform: translateY(-30px); }
+        img { width: 100%; height: auto; }
     </style>
 </head>
 <body>
     <div class="score-container" id="score">0</div>
-    <div class="coin-button" onclick="tapCoin()">JC</div>
-
+    <div class="character-container" onclick="tapSonic()">
+        <img src="https://assets.stickpng.com/images/580b57fbd9996e24bc43bd32.png" alt="Sonic">
+    </div>
     <script>
         let count = parseInt(localStorage.getItem('jimiScore')) || 0;
         document.getElementById('score').innerText = count;
-
-        function tapCoin() {
+        function tapSonic() {
             count++;
             document.getElementById('score').innerText = count;
             localStorage.setItem('jimiScore', count);
-            
-            // اهتزاز بسيط للموبايل عند الضغط (إذا كان المتصفح يدعم ذلك)
-            if (navigator.vibrate) { navigator.vibrate(10); }
+            if (navigator.vibrate) { navigator.vibrate(15); }
         }
     </script>
 </body>
