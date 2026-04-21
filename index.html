@@ -1,106 +1,121 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - Sonic Edition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jolt Coin - Powering the Future</title>
     <style>
-        /* إعدادات الخلفية ومنع التحديد */
-        body { 
-            background-color: #000; 
-            color: #fff; 
-            text-align: center; 
-            font-family: 'Arial', sans-serif; 
-            margin: 0; 
-            overflow: hidden; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            height: 100vh; 
-            user-select: none; 
-            -webkit-user-select: none; 
-            touch-action: none; 
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            touch-action: manipulation;
         }
 
-        /* تصميم العداد */
-        .score-container { 
-            font-size: 80px; 
-            font-weight: bold; 
-            color: #00bcff; 
-            text-shadow: 0 0 20px #00bcff, 0 0 40px #0056b3; 
-            margin-bottom: 30px; 
-            pointer-events: none; 
+        #score-container {
+            font-size: 52px;
+            font-weight: 800;
+            margin-bottom: 30px;
+            color: #FFD700;
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
         }
 
-        /* حاوية الشخصية والحركة */
-        .character-container {
+        #coin-container {
+            position: relative;
             width: 300px;
             height: 300px;
             cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: transform 0.05s ease; /* سرعة استجابة الحركة */
-            -webkit-tap-highlight-color: transparent;
+            transition: transform 0.05s;
         }
 
-        /* تأثير القفز عند اللمس */
-        .character-container:active {
-            transform: scale(0.9) translateY(-25px);
+        #coin-container:active {
+            transform: scale(0.92);
         }
 
-        img {
+        #coin {
             width: 100%;
-            height: auto;
-            pointer-events: none; /* لمنع سحب الصورة */
-            filter: drop-shadow(0 0 15px #00bcff);
+            height: 100%;
+            border-radius: 50%;
+            box-shadow: 0 0 50px rgba(255, 215, 0, 0.2);
+            -webkit-user-drag: none;
+        }
+
+        .tap-text {
+            position: absolute;
+            font-size: 35px;
+            font-weight: 900;
+            color: #FFD700;
+            pointer-events: none;
+            user-select: none;
+            animation: moveUp 0.6s ease-out forwards;
+        }
+
+        @keyframes moveUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-120px); }
+        }
+
+        #footer-text {
+            margin-top: 40px;
+            font-size: 18px;
+            letter-spacing: 4px;
+            color: #555;
+            text-transform: uppercase;
         }
     </style>
 </head>
 <body>
 
-    <div class="score-container" id="score">0</div>
-    
-    <div class="character-container" id="gameArea">
-        <img src="https://vignette.wikia.nocookie.net/sonic/images/2/2d/Sonic_the_Hedgehog_1_artwork.png" alt="Sonic">
+    <div id="score-container">0</div>
+
+    <div id="coin-container" onclick="handleTap(event)" ontouchstart="handleTap(event)">
+        <img src="https://i.ibb.co/68vM35v0/1000025201.png" id="coin" alt="Jolt Coin">
     </div>
 
+    <div id="footer-text">Jolt Coin</div>
+
     <script>
-        // استعادة النقاط من ذاكرة الهاتف
-        let count = parseInt(localStorage.getItem('jimiScore')) || 0;
-        const scoreElement = document.getElementById('score');
-        const gameArea = document.getElementById('gameArea');
-        scoreElement.innerText = count;
+        let score = parseInt(localStorage.getItem('jolt_v1_score')) || 0;
+        const scoreDisplay = document.getElementById('score-container');
 
-        // دالة التعامل مع النقر المتعدد
-        function handleTap(e) {
-            // منع المتصفح من القيام بحركاته الافتراضية (مثل الزووم)
-            if (e.cancelable) e.preventDefault();
+        scoreDisplay.innerText = score.toLocaleString();
 
-            // حساب عدد الأصابع التي لمست الشاشة حالياً
-            let tapCount = e.changedTouches ? e.changedTouches.length : 1;
+        function handleTap(event) {
+            event.preventDefault(); // منع الزوم واللمس المزدوج الافتراضي
             
-            // زيادة العداد بعدد الأصابع
-            count += tapCount;
-            scoreElement.innerText = count;
-
-            // حفظ النقاط الجديدة
-            localStorage.setItem('jimiScore', count);
-
-            // اهتزاز بسيط للهاتف (لو يدعم)
-            if (navigator.vibrate) {
-                navigator.vibrate(15);
+            const touches = event.changedTouches ? event.changedTouches : [event];
+            
+            for (let i = 0; i < touches.length; i++) {
+                score++;
+                createTapText(touches[i].clientX, touches[i].clientY);
             }
+
+            scoreDisplay.innerText = score.toLocaleString();
+            localStorage.setItem('jolt_v1_score', score);
         }
 
-        // تشغيل اللمس المتعدد
-        gameArea.addEventListener('touchstart', handleTap, { passive: false });
-        
-        // دعم النقر بالماوس (للتجربة من الكمبيوتر)
-        gameArea.addEventListener('mousedown', (e) => {
-            if (!('ontouchstart' in window)) handleTap(e);
-        });
+        function createTapText(x, y) {
+            const tapText = document.createElement('div');
+            tapText.innerText = '+1';
+            tapText.className = 'tap-text';
+            tapText.style.left = (x - 20) + 'px';
+            tapText.style.top = (y - 40) + 'px';
+            document.body.appendChild(tapText);
+
+            setTimeout(() => {
+                tapText.remove();
+            }, 600);
+        }
+
+        // تعطيل القائمة اليمينية تماماً لزيادة تجربة اللعب
+        document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 </body>
 </html>
