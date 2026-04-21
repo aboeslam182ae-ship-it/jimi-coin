@@ -19,6 +19,35 @@
             touch-action: manipulation;
         }
 
+        /* تصميم شاشة التحميل (Splash Screen) */
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease-out;
+        }
+
+        #splash-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* تجعل الصورة تملأ الشاشة بالكامل */
+        }
+
+        /* تصميم محتوى اللعبة */
+        #game-content {
+            opacity: 0; /* مخفي في البداية */
+            display: none;
+            text-align: center;
+            transition: opacity 0.8s ease-in;
+        }
+
         #score-container {
             font-size: 52px;
             font-weight: 800;
@@ -71,32 +100,50 @@
         }
     </style>
 </head>
-<body>
+<body onload="initGame()">
 
-    <div id="score-container">0</div>
-
-    <div id="coin-container" onclick="handleTap(event)" ontouchstart="handleTap(event)">
-        <img src="https://i.ibb.co/68vM35v0/1000025201.png" id="coin" alt="Jolt Coin">
+    <div id="splash-screen">
+        <img src="https://i.ibb.co/V0jRzfVv/1000025206.png" id="splash-image" alt="Loading Jolt Coin">
     </div>
 
-    <div id="footer-text">Jolt Coin</div>
+    <div id="game-content">
+        <div id="score-container">0</div>
+
+        <div id="coin-container" onclick="handleTap(event)" ontouchstart="handleTap(event)">
+            <img src="https://i.ibb.co/68vM35v0/1000025201.png" id="coin" alt="Jolt Coin">
+        </div>
+
+        <div id="footer-text">Jolt Coin</div>
+    </div>
 
     <script>
+        function initGame() {
+            // عرض شاشة التحميل لمدة 3 ثوانٍ
+            setTimeout(() => {
+                const splash = document.getElementById('splash-screen');
+                const game = document.getElementById('game-content');
+                
+                splash.style.opacity = '0';
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    game.style.display = 'block';
+                    setTimeout(() => { game.style.opacity = '1'; }, 50);
+                }, 800);
+            }, 3000);
+        }
+
+        // منطق اللعبة
         let score = parseInt(localStorage.getItem('jolt_v1_score')) || 0;
         const scoreDisplay = document.getElementById('score-container');
-
         scoreDisplay.innerText = score.toLocaleString();
 
         function handleTap(event) {
-            event.preventDefault(); // منع الزوم واللمس المزدوج الافتراضي
-            
+            event.preventDefault();
             const touches = event.changedTouches ? event.changedTouches : [event];
-            
             for (let i = 0; i < touches.length; i++) {
                 score++;
                 createTapText(touches[i].clientX, touches[i].clientY);
             }
-
             scoreDisplay.innerText = score.toLocaleString();
             localStorage.setItem('jolt_v1_score', score);
         }
@@ -108,13 +155,9 @@
             tapText.style.left = (x - 20) + 'px';
             tapText.style.top = (y - 40) + 'px';
             document.body.appendChild(tapText);
-
-            setTimeout(() => {
-                tapText.remove();
-            }, 600);
+            setTimeout(() => { tapText.remove(); }, 600);
         }
 
-        // تعطيل القائمة اليمينية تماماً لزيادة تجربة اللعب
         document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 </body>
