@@ -3,58 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jimi Coin Pro</title>
+    <title>Jimi Coin</title>
     <style>
         body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; touch-action: none; }
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         #splash img { width: 100%; height: 100%; object-fit: cover; }
         #game { display: none; text-align: center; width: 100%; }
-        #score { font-size: 80px; color: #FFD700; margin-bottom: 20px; font-weight: bold; }
-        .coin-btn { width: 280px; height: 280px; cursor: pointer; -webkit-tap-highlight-color: transparent; margin: 0 auto; position: relative; }
-        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 5px solid #FFD700; background: #222; }
+        #score { font-size: 70px; color: #FFD700; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .coin-btn { width: 280px; height: 280px; cursor: pointer; margin: 0 auto; -webkit-tap-highlight-color: transparent; }
+        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FFD700; box-shadow: 0 0 30px rgba(255,215,0,0.3); }
     </style>
 </head>
-<body onload="startApp()">
+<body onload="setTimeout(() => { document.getElementById('splash').style.display='none'; document.getElementById('game').style.display='block'; }, 3000)">
 
-    <div id="splash">
-        <img id="splashImg" src="splash.png" onerror="tryNextSplash(this)" alt="Loading...">
-    </div>
+    <div id="splash"><img src="splash.png"></div>
 
     <div id="game">
         <div id="score">0</div>
-        <div class="coin-btn" id="coinArea">
-            <img id="coinImg" src="coin.png" onerror="tryNextCoin(this)" alt="Coin">
-        </div>
-        <h2 style="color:#555; margin-top:30px; letter-spacing:5px;">JOLT COIN</h2>
+        <div class="coin-btn" id="coinArea"><img src="coin.png"></div>
+        <p style="color:#666; margin-top:25px; letter-spacing:3px; font-size:12px;">JOLT COIN - MULTI TOUCH</p>
     </div>
 
     <script>
-        // محاولة تحميل صورة الجاغوار بكل الصيغ الممكنة
-        let splashPaths = ["splash.png", "splash.jpg", "splash.jpeg", "1776797524661.png"];
-        let sIdx = 0;
-        function tryNextSplash(img) {
-            if (sIdx < splashPaths.length) {
-                img.src = splashPaths[sIdx++];
-            }
-        }
-
-        // محاولة تحميل صورة العملة بكل الصيغ الممكنة
-        let coinPaths = ["coin.png", "coin.jpg", "coin.jpeg", "IMG_٢٠٢٦٠٤٢١_٢١٤٢٤٦.png"];
-        let cIdx = 0;
-        function tryNextCoin(img) {
-            if (cIdx < coinPaths.length) {
-                img.src = coinPaths[cIdx++];
-            }
-        }
-
-        function startApp() {
-            setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                document.getElementById('game').style.display = 'block';
-            }, 3000);
-        }
-
-        let p = parseInt(localStorage.getItem('pts_final_v5')) || 0;
+        let p = parseInt(localStorage.getItem('jolt_vfinal')) || 0;
         const d = document.getElementById('score');
         d.innerText = p.toLocaleString();
 
@@ -64,7 +35,7 @@
                 p++; 
             }
             d.innerText = p.toLocaleString();
-            localStorage.setItem('pts_final_v5', p);
+            localStorage.setItem('jolt_vfinal', p);
         }, { passive: false });
     </script>
 </body>
