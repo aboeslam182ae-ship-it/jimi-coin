@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Powering the Future</title>
+    <title>Jolt Coin</title>
     <style>
         body {
             background-color: #000;
             color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -20,135 +20,116 @@
         }
 
         /* شاشة التحميل */
-        #splash-screen {
+        #splash {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: #000;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #000;
             display: flex;
-            align-items: center;
-            justify-content: center;
             z-index: 1000;
-            transition: opacity 0.8s ease-out;
+            transition: opacity 0.5s;
         }
 
-        #splash-image {
+        #splash img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
 
-        /* محتوى اللعبة */
-        #game-content {
+        /* واجهة اللعبة */
+        #game {
             display: none;
             text-align: center;
         }
 
-        #score-container {
+        #score {
             font-size: 60px;
-            font-weight: 800;
-            margin-bottom: 20px;
+            font-weight: bold;
             color: #FFD700;
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            margin-bottom: 20px;
+            text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
         }
 
-        #coin-container {
-            position: relative;
+        .coin-btn {
             width: 280px;
             height: 280px;
             cursor: pointer;
             transition: transform 0.05s;
+            user-select: none;
         }
 
-        #coin-container:active {
-            transform: scale(0.92);
-        }
+        .coin-btn:active { transform: scale(0.95); }
 
-        #coin {
+        .coin-btn img {
             width: 100%;
             height: 100%;
             border-radius: 50%;
-            box-shadow: 0 0 40px rgba(255, 215, 0, 0.3);
-            -webkit-user-drag: none;
         }
 
-        .tap-text {
+        .tap-effect {
             position: absolute;
-            font-size: 35px;
-            font-weight: 900;
             color: #FFD700;
+            font-size: 30px;
+            font-weight: bold;
             pointer-events: none;
-            animation: moveUp 0.6s ease-out forwards;
+            animation: fly 0.6s forwards;
         }
 
-        @keyframes moveUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-120px); }
+        @keyframes fly {
+            to { transform: translateY(-100px); opacity: 0; }
         }
 
-        #footer-text {
-            margin-top: 30px;
-            font-size: 20px;
-            letter-spacing: 5px;
-            color: #444;
-            text-transform: uppercase;
-        }
+        .footer { margin-top: 30px; color: #444; letter-spacing: 3px; }
     </style>
 </head>
-<body onload="initGame()">
+<body onload="startApp()">
 
-    <div id="splash-screen">
-        <img src="https://i.ibb.co/68vM35v0/1000025206.png" id="splash-image">
+    <div id="splash">
+        <img src="https://i.postimg.cc/mD709fN0/jolt-splash.png" alt="Loading...">
     </div>
 
-    <div id="game-content">
-        <div id="score-container">0</div>
-        <div id="coin-container" onclick="handleTap(event)" ontouchstart="handleTap(event)">
-            <img src="https://i.ibb.co/LztYgV8R/1000025201.png" id="coin">
+    <div id="game">
+        <div id="score">0</div>
+        <div class="coin-btn" onclick="tap(event)" ontouchstart="tap(event)">
+            <img src="https://i.postimg.cc/KjL8M0yP/jolt-coin.png" alt="Jolt Coin">
         </div>
-        <div id="footer-text">Jolt Coin</div>
+        <div class="footer">JOLT COIN</div>
     </div>
 
     <script>
-        function initGame() {
+        function startApp() {
             setTimeout(() => {
-                const splash = document.getElementById('splash-screen');
-                const game = document.getElementById('game-content');
-                splash.style.opacity = '0';
+                document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => {
-                    splash.style.display = 'none';
-                    game.style.display = 'block';
-                }, 800);
+                    document.getElementById('splash').style.display = 'none';
+                    document.getElementById('game').style.display = 'block';
+                }, 500);
             }, 3000);
         }
 
-        let score = parseInt(localStorage.getItem('jolt_v2_score')) || 0;
-        const scoreDisplay = document.getElementById('score-container');
-        scoreDisplay.innerText = score.toLocaleString();
+        let pts = parseInt(localStorage.getItem('jolt_pts')) || 0;
+        const scoreEl = document.getElementById('score');
+        scoreEl.innerText = pts.toLocaleString();
 
-        function handleTap(event) {
-            event.preventDefault();
-            const touches = event.changedTouches ? event.changedTouches : [event];
+        function tap(e) {
+            e.preventDefault();
+            const touches = e.changedTouches ? e.changedTouches : [e];
             for (let i = 0; i < touches.length; i++) {
-                score++;
-                createTapText(touches[i].clientX, touches[i].clientY);
+                pts++;
+                showEffect(touches[i].clientX, touches[i].clientY);
             }
-            scoreDisplay.innerText = score.toLocaleString();
-            localStorage.setItem('jolt_v2_score', score);
+            scoreEl.innerText = pts.toLocaleString();
+            localStorage.setItem('jolt_pts', pts);
         }
 
-        function createTapText(x, y) {
-            const tapText = document.createElement('div');
-            tapText.innerText = '+1';
-            tapText.className = 'tap-text';
-            tapText.style.left = (x - 20) + 'px';
-            tapText.style.top = (y - 40) + 'px';
-            document.body.appendChild(tapText);
-            setTimeout(() => { tapText.remove(); }, 600);
+        function showEffect(x, y) {
+            const txt = document.createElement('div');
+            txt.innerText = '+1';
+            txt.className = 'tap-effect';
+            txt.style.left = x + 'px';
+            txt.style.top = y + 'px';
+            document.body.appendChild(txt);
+            setTimeout(() => txt.remove(), 600);
         }
-
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
