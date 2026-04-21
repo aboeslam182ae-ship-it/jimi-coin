@@ -3,29 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin Final</title>
+    <title>Jimi Coin Final</title>
     <style>
         body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; touch-action: none; }
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; }
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
         #splash img { width: 100%; height: 100%; object-fit: cover; }
         #game { display: none; text-align: center; }
         #score { font-size: 80px; color: #FFD700; margin-bottom: 20px; font-weight: bold; }
-        .coin-btn { width: 280px; height: 280px; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FFD700; }
+        .coin-btn { width: 280px; height: 280px; cursor: pointer; -webkit-tap-highlight-color: transparent; margin: 0 auto; }
+        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FFD700; background: #111; }
     </style>
 </head>
 <body onload="startApp()">
 
     <div id="splash">
-        <img src="splash.png" onerror="this.src='https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png'">
+        <img src="splash.png" onerror="this.src='splash.jpg'; this.onerror='https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png'" alt="Splash">
     </div>
 
     <div id="game">
         <div id="score">0</div>
         <div class="coin-btn" id="coinArea">
-            <img src="coin.png" onerror="this.src='https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png'">
+            <img src="coin.png" onerror="this.src='coin.jpg'; this.onerror='https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png'" alt="Coin">
         </div>
-        <p style="color: #555; letter-spacing: 5px;">JOLT COIN</p>
+        <p style="color: #444; margin-top: 20px;">JOLT COIN</p>
     </div>
 
     <script>
@@ -36,17 +36,15 @@
             }, 3000);
         }
 
-        let pts = parseInt(localStorage.getItem('jolt_v12')) || 0;
-        const display = document.getElementById('score');
-        display.innerText = pts;
+        let p = parseInt(localStorage.getItem('pts_final')) || 0;
+        const d = document.getElementById('score');
+        d.innerText = p;
 
         document.getElementById('coinArea').addEventListener('touchstart', function(e) {
             e.preventDefault();
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                pts++;
-            }
-            display.innerText = pts;
-            localStorage.setItem('jolt_v12', pts);
+            for (let i = 0; i < e.changedTouches.length; i++) { p++; }
+            d.innerText = p;
+            localStorage.setItem('pts_final', p);
         }, { passive: false });
     </script>
 </body>
