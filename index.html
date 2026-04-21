@@ -3,154 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Powering the Future</title>
+    <title>Jolt Coin Official</title>
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            touch-action: manipulation;
-        }
-
-        /* شاشة التحميل (الجاغوار) */
-        #splash {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: #000;
-            display: flex;
-            z-index: 1000;
-            transition: opacity 0.8s ease-out;
-        }
-
-        #splash img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        /* واجهة اللعبة (العملة) */
-        #game {
-            display: none;
-            text-align: center;
-            opacity: 0;
-            transition: opacity 0.8s ease-in;
-        }
-
-        #score {
-            font-size: 60px;
-            font-weight: bold;
-            color: #FFD700;
-            margin-bottom: 20px;
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
-        }
-
-        .coin-btn {
-            width: 280px;
-            height: 280px;
-            cursor: pointer;
-            transition: transform 0.05s;
-            user-select: none;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .coin-btn:active { transform: scale(0.95); }
-
-        .coin-btn img {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-        }
-
-        .tap-effect {
-            position: absolute;
-            color: #FFD700;
-            font-size: 32px;
-            font-weight: bold;
-            pointer-events: none;
-            animation: fly 0.6s ease-out forwards;
-        }
-
-        @keyframes fly {
-            0% { transform: translateY(0); opacity: 1; }
-            100% { transform: translateY(-120px); opacity: 0; }
-        }
-
-        .footer {
-            margin-top: 30px;
-            color: #444;
-            letter-spacing: 5px;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
+        body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; transition: 0.8s; }
+        #splash img { width: 100%; height: 100%; object-fit: cover; }
+        #game { display: none; text-align: center; opacity: 0; transition: 0.8s; }
+        #score { font-size: 60px; color: #FFD700; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .coin-btn { width: 280px; height: 280px; cursor: pointer; transition: 0.05s; -webkit-tap-highlight-color: transparent; }
+        .coin-btn:active { transform: scale(0.92); }
+        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; }
     </style>
 </head>
 <body onload="startApp()">
 
     <div id="splash">
-        <img src="https://i.postimg.cc/mD709fN0/jolt-splash.png" alt="Loading">
+        <img src="1000025206.png"> 
     </div>
 
     <div id="game">
         <div id="score">0</div>
         <div class="coin-btn" onclick="tap(event)" ontouchstart="tap(event)">
-            <img src="https://i.postimg.cc/KjL8M0yP/jolt-coin.png" alt="Jolt Coin">
+            <img src="1000025201.png"> 
         </div>
-        <div class="footer">JOLT COIN</div>
+        <div style="margin-top:20px; color:#444; letter-spacing:5px;">JOLT COIN</div>
     </div>
 
     <script>
         function startApp() {
-            // انتظار 3 ثوانٍ ثم الانتقال للعبة
             setTimeout(() => {
-                const splash = document.getElementById('splash');
-                const game = document.getElementById('game');
-                
-                splash.style.opacity = '0';
+                document.getElementById('splash').style.opacity = '0';
                 setTimeout(() => {
-                    splash.style.display = 'none';
-                    game.style.display = 'block';
-                    setTimeout(() => { game.style.opacity = '1'; }, 50);
+                    document.getElementById('splash').style.display = 'none';
+                    document.getElementById('game').style.display = 'block';
+                    setTimeout(() => document.getElementById('game').style.opacity = '1', 50);
                 }, 800);
             }, 3000);
         }
 
-        // نظام النقاط المحدث v2 لضمان التحديث
-        let pts = parseInt(localStorage.getItem('jolt_pts_v2')) || 0;
+        let pts = parseInt(localStorage.getItem('jolt_v_final')) || 0;
         const scoreEl = document.getElementById('score');
         scoreEl.innerText = pts.toLocaleString();
 
         function tap(e) {
             e.preventDefault();
             const touches = e.changedTouches ? e.changedTouches : [e];
-            
             for (let i = 0; i < touches.length; i++) {
                 pts++;
-                showEffect(touches[i].clientX, touches[i].clientY);
             }
-            
             scoreEl.innerText = pts.toLocaleString();
-            localStorage.setItem('jolt_pts_v2', pts);
+            localStorage.setItem('jolt_v_final', pts);
         }
-
-        function showEffect(x, y) {
-            const txt = document.createElement('div');
-            txt.innerText = '+1';
-            txt.className = 'tap-effect';
-            txt.style.left = (x - 20) + 'px';
-            txt.style.top = (y - 40) + 'px';
-            document.body.appendChild(txt);
-            setTimeout(() => txt.remove(), 600);
-        }
-
-        // منع القائمة المنبثقة عند الضغط المطول
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
