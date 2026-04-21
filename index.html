@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Version Final</title>
+    <title>Jimi Coin</title>
     <style>
         body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
-        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; }
+        #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; transition: 0.8s; }
         #splash img { width: 100%; height: 100%; object-fit: cover; }
-        #game { display: none; text-align: center; }
+        #game { display: none; text-align: center; opacity: 0; transition: 0.8s; }
         #score { font-size: 70px; color: #FFD700; margin-bottom: 20px; font-weight: bold; }
         .coin-btn { width: 280px; height: 280px; cursor: pointer; transition: 0.1s; -webkit-tap-highlight-color: transparent; }
         .coin-btn:active { transform: scale(0.9); }
@@ -18,15 +18,15 @@
 <body onload="startApp()">
 
     <div id="splash">
-        <img src="1000025206.png?v=99" alt="Splash">
+        <img src="1776797524661.png" alt="Splash">
     </div>
 
     <div id="game">
         <div id="score">0</div>
         <div class="coin-btn" onclick="tap(event)" ontouchstart="tap(event)">
-            <img src="1000025201.png?v=99" alt="Coin">
+            <img src="IMG_٢٠٢٦٠٤٢١_٢١٤٢٤٦.png" alt="Coin">
         </div>
-        <div style="margin-top:20px; color:#444; letter-spacing:5px;">JOLT COIN</div>
+        <div style="margin-top:20px; color:#444;">JOLT COIN</div>
     </div>
 
     <script>
@@ -34,18 +34,18 @@
             setTimeout(() => {
                 document.getElementById('splash').style.display = 'none';
                 document.getElementById('game').style.display = 'block';
+                setTimeout(() => document.getElementById('game').style.opacity = '1', 50);
             }, 3000);
         }
 
-        // استخدام رقم تخزين جديد كلياً
-        let points = parseInt(localStorage.getItem('jolt_super_final')) || 0;
+        let points = parseInt(localStorage.getItem('jimi_pts')) || 0;
         document.getElementById('score').innerText = points.toLocaleString();
 
         function tap(e) {
             e.preventDefault();
             points++;
             document.getElementById('score').innerText = points.toLocaleString();
-            localStorage.setItem('jolt_super_final', points);
+            localStorage.setItem('jimi_pts', points);
         }
     </script>
 </body>
