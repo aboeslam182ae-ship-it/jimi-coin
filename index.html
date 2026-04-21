@@ -3,58 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin Official</title>
+    <title>Jolt Coin</title>
     <style>
-        body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; }
+        body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; touch-action: none; }
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; transition: 0.8s; }
         #splash img { width: 100%; height: 100%; object-fit: cover; }
         #game { display: none; text-align: center; opacity: 0; transition: 0.8s; }
-        #score { font-size: 60px; color: #FFD700; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
-        .coin-btn { width: 280px; height: 280px; cursor: pointer; transition: 0.05s; -webkit-tap-highlight-color: transparent; }
+        #score { font-size: 70px; color: #FFD700; margin-bottom: 20px; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.6); }
+        .coin-btn { width: 280px; height: 280px; cursor: pointer; transition: 0.05s; -webkit-tap-highlight-color: transparent; position: relative; }
         .coin-btn:active { transform: scale(0.92); }
-        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; }
+        .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #333; }
+        .tap-text { position: absolute; color: #FFD700; font-size: 40px; font-weight: bold; pointer-events: none; animation: fly 0.6s ease-out forwards; z-index: 2000; }
+        @keyframes fly { to { transform: translateY(-150px); opacity: 0; } }
     </style>
 </head>
 <body onload="startApp()">
 
     <div id="splash">
-        <img src="1000025206.png"> 
+        <img src="1000025206.png" onerror="this.src='https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/1000025206.png'">
     </div>
 
     <div id="game">
         <div id="score">0</div>
-        <div class="coin-btn" onclick="tap(event)" ontouchstart="tap(event)">
-            <img src="1000025201.png"> 
+        <div class="coin-btn" onclick="handleTap(event)" ontouchstart="handleTap(event)">
+            <img src="1000025201.png" onerror="this.src='https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/1000025201.png'">
         </div>
-        <div style="margin-top:20px; color:#444; letter-spacing:5px;">JOLT COIN</div>
+        <div style="margin-top:30px; color:#555; letter-spacing:8px; font-weight:bold;">JOLT COIN</div>
     </div>
 
     <script>
         function startApp() {
             setTimeout(() => {
-                document.getElementById('splash').style.opacity = '0';
+                const s = document.getElementById('splash');
+                const g = document.getElementById('game');
+                s.style.opacity = '0';
                 setTimeout(() => {
-                    document.getElementById('splash').style.display = 'none';
-                    document.getElementById('game').style.display = 'block';
-                    setTimeout(() => document.getElementById('game').style.opacity = '1', 50);
+                    s.style.display = 'none';
+                    g.style.display = 'block';
+                    setTimeout(() => g.style.opacity = '1', 50);
                 }, 800);
             }, 3000);
         }
 
-        let pts = parseInt(localStorage.getItem('jolt_v_final')) || 0;
-        const scoreEl = document.getElementById('score');
-        scoreEl.innerText = pts.toLocaleString();
+        let pts = parseInt(localStorage.getItem('jolt_final_v10')) || 0;
+        const display = document.getElementById('score');
+        display.innerText = pts.toLocaleString();
 
-        function tap(e) {
+        function handleTap(e) {
             e.preventDefault();
             const touches = e.changedTouches ? e.changedTouches : [e];
             for (let i = 0; i < touches.length; i++) {
                 pts++;
+                showEffect(touches[i].clientX, touches[i].clientY);
             }
-            scoreEl.innerText = pts.toLocaleString();
-            localStorage.setItem('jolt_v_final', pts);
+            display.innerText = pts.toLocaleString();
+            localStorage.setItem('jolt_final_v10', pts);
+        }
+
+        function showEffect(x, y) {
+            const t = document.createElement('div');
+            t.innerText = '+1';
+            t.className = 'tap-text';
+            t.style.left = (x - 20) + 'px';
+            t.style.top = (y - 50) + 'px';
+            document.body.appendChild(t);
+            setTimeout(() => t.remove(), 600);
         }
         document.addEventListener('contextmenu', e => e.preventDefault());
     </script>
 </body>
 </html>
+
