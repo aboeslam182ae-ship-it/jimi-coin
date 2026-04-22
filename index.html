@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" translate="no">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Blue Energy</title>
+    <meta name="google" content="notranslate">
+    <title>Jolt Coin - English Numbers</title>
     <style>
         body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; touch-action: none; }
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
@@ -12,18 +13,17 @@
         #game { display: none; text-align: center; width: 100%; position: relative; height: 100vh; }
         
         #score-container { margin-top: 50px; }
-        #score { font-size: 70px; color: #FFD700; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        /* استخدام خط يدعم الأرقام الإنجليزية فقط لضمان الشكل */
+        #score { font-size: 70px; color: #FFD700; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); font-family: Arial, sans-serif; }
         #level { color: #888; font-size: 14px; margin-top: 5px; letter-spacing: 2px; }
 
         .coin-btn { width: 280px; height: 280px; cursor: pointer; margin: 60px auto; -webkit-tap-highlight-color: transparent; position: relative; transition: transform 0.05s; }
         .coin-btn:active { transform: scale(0.92); }
         .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FFD700; box-shadow: 0 0 30px rgba(255,215,0,0.2); }
 
-        /* تعديلات شريط الطاقة باللون الأبيض والأزرق */
         .energy-wrapper { position: absolute; bottom: 40px; width: 100%; text-align: center; }
-        .energy-info { width: 85%; margin: 0 auto 8px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #fff; }
+        .energy-info { width: 85%; margin: 0 auto 8px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #fff; font-family: Arial, sans-serif; }
         
-        /* الإطار الخارجي أبيض */
         .energy-bar-container { 
             width: 85%; 
             height: 16px; 
@@ -31,15 +31,14 @@
             border-radius: 20px; 
             margin: 0 auto; 
             overflow: hidden; 
-            border: 2px solid #FFFFFF; /* إطار أبيض ناصع */
+            border: 2px solid #FFFFFF; 
             box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
         }
 
-        /* الجزء الداخلي أزرق */
         #energy-fill { 
             width: 100%; 
             height: 100%; 
-            background: linear-gradient(90deg, #00BFFF, #1E90FF); /* أزرق سماوي إلى أزرق ملكي */
+            background: linear-gradient(90deg, #00BFFF, #1E90FF); 
             transition: width 0.2s ease-out;
             box-shadow: 0 0 15px rgba(30, 144, 255, 0.6);
         }
@@ -73,6 +72,11 @@
     </div>
 
     <script>
+        // دالة لتحويل الأرقام إلى شكلها الإنجليزي الصرف لضمان عدم التعريب
+        function toEng(n) {
+            return n.toLocaleString('en-US');
+        }
+
         let score = parseInt(localStorage.getItem('jolt_pts')) || 0;
         let maxEnergy = 1000;
         let currentEnergy = parseInt(localStorage.getItem('jolt_en')) || maxEnergy;
@@ -83,8 +87,8 @@
         const levelDisplay = document.getElementById('level');
 
         function updateUI() {
-            scoreDisplay.innerText = score.toLocaleString();
-            energyDisplay.innerText = `${Math.floor(currentEnergy)} / ${maxEnergy}`;
+            scoreDisplay.innerText = toEng(score);
+            energyDisplay.innerText = toEng(Math.floor(currentEnergy)) + " / " + toEng(maxEnergy);
             energyBar.style.width = (currentEnergy / maxEnergy * 100) + "%";
             
             if (score > 10000) { levelDisplay.innerText = "SILVER LEVEL"; }
@@ -122,4 +126,3 @@
     </script>
 </body>
 </html>
-
