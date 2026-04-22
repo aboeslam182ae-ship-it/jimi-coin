@@ -2,60 +2,50 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - V1.0</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Jimi Coin - V2</title>
     <style>
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
         
-        /* شاشة التحميل */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        /* شاشة التحميل الثابتة */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-        .loader-bar { width: 80%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 60px; border: 1px solid #FFD700; overflow: hidden; }
-        #loader-fill { width: 0%; height: 100%; background: gold; transition: width 0.1s; }
+        .loader-bar { width: 80%; height: 6px; background: #1a1a1a; border-radius: 10px; margin-bottom: 60px; border: 1px solid gold; overflow: hidden; }
+        #loader-fill { width: 0%; height: 100%; background: gold; }
 
         #app { display: none; height: 100vh; flex-direction: column; }
-        .section { display: none; text-align: center; width: 100%; flex: 1; overflow-y: auto; padding-bottom: 100px; }
-        .active { display: block !important; }
+        .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 40px; }
+        .active { display: flex !important; }
 
         /* الواجهة الرئيسية */
-        #score { font-size: 70px; color: #FFD700; font-weight: bold; margin-top: 40px; }
-        #level-name { color: #00BFFF; font-size: 14px; letter-spacing: 2px; font-weight: bold; margin-bottom: 10px; }
+        #score { font-size: 70px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        .level-tag { color: #00d2ff; font-size: 14px; letter-spacing: 2px; margin-bottom: 30px; }
         
-        /* تأثير العملة 3D */
-        .coin-btn { 
-            width: 280px; height: 280px; margin: 30px auto; position: relative; 
-            display: flex; align-items: center; justify-content: center;
-            perspective: 1000px; /* للعمق الثلاثي الأبعاد */
-        }
-        .coin-img { 
-            width: 220px; height: 220px; border-radius: 50%; z-index: 10; 
-            transition: transform 0.1s ease-out; 
-            pointer-events: none;
-        }
-        .coin-glow { position: absolute; width: 280px; height: 160px; border: 2px solid #FFD700; border-radius: 50%; box-shadow: 0 0 30px rgba(255,215,0,0.4); z-index: 1; }
+        /* العملة مع تأثير الإمالة */
+        .coin-wrapper { position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .coin-glow { position: absolute; width: 280px; height: 160px; border: 2px solid gold; border-radius: 50%; box-shadow: 0 0 20px gold; z-index: 1; }
+        .coin-img { width: 210px; height: 210px; z-index: 10; border-radius: 50%; object-fit: contain; transition: transform 0.1s; pointer-events: none; }
 
         /* لوحة الصدارة */
-        .leaderboard-list { background: #0a0a0a; margin: 15px; border-radius: 15px; border: 1px solid #222; overflow: hidden; }
-        .user-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #111; align-items: center; }
-        .rank { color: #FFD700; font-weight: bold; width: 30px; }
-        .user-name { flex: 1; text-align: left; padding-left: 10px; }
-        .user-score { color: #00BFFF; font-weight: bold; }
+        .lead-list { width: 90%; background: #0a0a0a; border-radius: 15px; border: 1px solid #222; margin-top: 20px; overflow: hidden; }
+        .lead-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #111; }
+        .lead-row:last-child { background: #111; border: none; }
 
-        /* شريط التنقل */
-        .nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 15px 0; border-top: 1px solid #111; z-index: 1000; }
-        .nav-btn { flex: 1; color: #444; background: none; border: none; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
-        .active-nav { color: #FFD700; }
+        /* التنقل */
+        .nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; display: flex; border-top: 1px solid #222; z-index: 10000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 12px; font-weight: bold; }
+        .nav-item.active-nav { color: gold; }
 
         /* الطاقة */
-        .energy-box { width: 85%; margin: 0 auto; position: absolute; bottom: 110px; left: 7.5%; }
-        .bar-bg { height: 10px; background: #111; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
-        #bar-fill { width: 100%; height: 100%; background: #00BFFF; }
+        .energy-box { width: 85%; position: absolute; bottom: 100px; }
+        .bar-bg { height: 10px; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+        #bar-fill { width: 100%; height: 100%; background: #00d2ff; }
 
-        .float-text { position: absolute; color: #00BFFF; font-size: 35px; font-weight: bold; pointer-events: none; animation: floatUp 0.7s forwards; z-index: 1500; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
+        .pop { position: absolute; color: #00d2ff; font-size: 35px; font-weight: bold; pointer-events: none; animation: moveUp 0.6s forwards; z-index: 5000; }
+        @keyframes moveUp { to { transform: translateY(-120px); opacity: 0; } }
     </style>
 </head>
-<body onload="init()">
+<body onload="start()">
 
     <div id="splash">
         <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png">
@@ -63,121 +53,108 @@
     </div>
 
     <div id="app">
-        <div id="tap-page" class="section active">
-            <div id="score">0</div>
-            <div id="level-name">BRONZE LEVEL</div>
-            <div class="coin-btn" id="coinArea">
+        <div id="p-tap" class="page active">
+            <h1 id="score">0</h1>
+            <div class="level-tag">BRONZE LEVEL</div>
+            <div class="coin-wrapper" id="tapZone">
                 <div class="coin-glow"></div>
-                <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" class="coin-img" id="coinImg">
+                <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" class="coin-img" id="coinMain">
             </div>
             <div class="energy-box">
                 <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; color:#aaa">
-                    <span>⚡ ENERGY</span>
-                    <span id="en-stat">1000/1000</span>
+                    <span>⚡ ENERGY</span><span id="en-val">2000/2000</span>
                 </div>
                 <div class="bar-bg"><div id="bar-fill"></div></div>
             </div>
         </div>
 
-        <div id="leader-page" class="section">
-            <h2 style="color:gold; margin-top:30px;">LEADERBOARD</h2>
-            <div class="leaderboard-list">
-                <div class="user-row"><span class="rank">1</span><span class="user-name">Ahmed</span><span class="user-score">1.2M</span></div>
-                <div class="user-row"><span class="rank">2</span><span class="user-name">Muhammed</span><span class="user-score">850K</span></div>
-                <div class="user-row"><span class="rank">3</span><span class="user-name">Noor</span><span class="user-score">500K</span></div>
-                <div class="user-row" style="background:#1a1a1a"><span class="rank">?</span><span class="user-name">You</span><span id="my-rank-score" class="user-score">0</span></div>
+        <div id="p-lead" class="page">
+            <h2 style="color:gold">LEADERBOARD</h2>
+            <div class="lead-list">
+                <div class="lead-row"><span>1. Ahmed</span><span style="color:gold">1,250,000</span></div>
+                <div class="lead-row"><span>2. Noor</span><span style="color:gold">840,000</span></div>
+                <div class="lead-row"><span>3. You</span><span id="my-rank-val" style="color:gold">0</span></div>
             </div>
         </div>
 
-        <div id="boost-page" class="section">
-            <h2 style="color:gold; margin-top:30px;">BOOSTERS</h2>
-            <button onclick="upgrade()" style="background:gold; padding:20px; border-radius:15px; width:80%; font-weight:bold; border:none;">Upgrade Tap Power</button>
-        </div>
-
         <div class="nav">
-            <button class="nav-btn active-nav" onclick="tab('tap', event)">💰<br>TAP</button>
-            <button class="nav-btn" onclick="tab('leader', event)">🏆<br>LEADERS</button>
-            <button class="nav-btn" onclick="tab('boost', event)">🚀<br>BOOST</button>
+            <div class="nav-item active-nav" onclick="show('tap', this)">💰<br>TAP</div>
+            <div class="nav-item" onclick="show('lead', this)">🏆<br>LEADERS</div>
         </div>
     </div>
 
     <script>
-        let pts = parseInt(localStorage.getItem('j_pts')) || 0;
-        let pwr = parseInt(localStorage.getItem('j_pwr')) || 1;
-        let en = parseFloat(localStorage.getItem('j_en')) || 1000;
-        let max = 1000;
+        let pts = parseInt(localStorage.getItem('j_pts')) || 143;
+        let en = parseFloat(localStorage.getItem('j_en')) || 2000;
+        let pwr = 1;
 
-        function init() {
+        function start() {
             let p = 0;
             let t = setInterval(() => {
                 p += 5; document.getElementById('loader-fill').style.width = p + "%";
-                if(p >= 100) { clearInterval(t); document.getElementById('splash').style.display='none'; document.getElementById('app').style.display='flex'; render(); }
+                if(p >= 100) { 
+                    clearInterval(t); 
+                    document.getElementById('splash').style.display='none'; 
+                    document.getElementById('app').style.display='flex'; 
+                    update(); 
+                }
             }, 30);
         }
 
-        function tab(name, ev) {
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById(name + '-page').classList.add('active');
-            ev.currentTarget.classList.add('active-nav');
+        function show(id, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
+            document.getElementById('p-' + id).classList.add('active');
+            el.classList.add('active-nav');
         }
 
-        function render() {
+        function update() {
             document.getElementById('score').innerText = pts.toLocaleString();
-            document.getElementById('my-rank-score').innerText = pts.toLocaleString();
-            document.getElementById('en-stat').innerText = `${Math.floor(en)}/${max}`;
-            document.getElementById('bar-fill').style.width = (en/max*100) + "%";
+            document.getElementById('my-rank-val').innerText = pts.toLocaleString();
+            document.getElementById('en-val').innerText = Math.floor(en) + "/2000";
+            document.getElementById('bar-fill').style.width = (en/20) + "%";
         }
 
-        const coinArea = document.getElementById('coinArea');
-        const coinImg = document.getElementById('coinImg');
+        const zone = document.getElementById('tapZone');
+        const img = document.getElementById('coinMain');
 
-        coinArea.addEventListener('touchstart', (e) => {
+        zone.addEventListener('touchstart', (e) => {
             e.preventDefault();
             const touch = e.changedTouches[0];
             
-            // 1. تأثير الاهتزاز (يعمل على أجهزة أندرويد)
-            if (navigator.vibrate) { navigator.vibrate(10); }
-
-            // 2. تأثير الإمالة 3D
-            const rect = coinArea.getBoundingClientRect();
+            // 1. الاهتزاز (يعمل على أجهزة Android)
+            if(navigator.vibrate) navigator.vibrate(10);
+            
+            // 2. حساب زاوية الإمالة بناءً على موقع اللمس
+            const rect = zone.getBoundingClientRect();
             const x = touch.clientX - rect.left - rect.width/2;
             const y = touch.clientY - rect.top - rect.height/2;
-            coinImg.style.transform = `rotateX(${-y/3}deg) rotateY(${x/3}deg) scale(0.95)`;
+            img.style.transform = `rotateX(${-y/5}deg) rotateY(${x/5}deg) scale(0.95)`;
 
-            // 3. النقاط
+            // 3. إضافة النقاط
             if(en >= pwr) {
                 pts += pwr; en -= pwr;
-                pop(touch.pageX, touch.pageY);
-                render(); save();
+                let d = document.createElement('div');
+                d.className = 'pop'; d.innerText = '+' + pwr;
+                d.style.left = touch.pageX + 'px'; d.style.top = touch.pageY + 'px';
+                document.body.appendChild(d);
+                setTimeout(() => d.remove(), 600);
+                update(); save();
             }
         });
 
-        coinArea.addEventListener('touchend', () => {
-            coinImg.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        zone.addEventListener('touchend', () => {
+            // إعادة العملة لوضعها الطبيعي عند رفع الإصبع
+            img.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
         });
-
-        function pop(x, y) {
-            const d = document.createElement('div');
-            d.className = 'float-text'; d.innerText = '+' + pwr;
-            d.style.left = (x - 20) + 'px'; d.style.top = (y - 40) + 'px';
-            document.body.appendChild(d);
-            setTimeout(() => d.remove(), 700);
-        }
-
-        function upgrade() {
-            let cost = pwr * 1000;
-            if(pts >= cost) { pts -= cost; pwr++; render(); save(); alert('Success!'); }
-            else { alert('No Coins!'); }
-        }
 
         function save() {
             localStorage.setItem('j_pts', pts);
             localStorage.setItem('j_en', en);
-            localStorage.setItem('j_pwr', pwr);
         }
 
-        setInterval(() => { if(en < max) { en = Math.min(max, en + 1.5); render(); } }, 1000);
+        // استعادة الطاقة
+        setInterval(() => { if(en < 2000) { en = Math.min(2000, en + 1.2); update(); } }, 1000);
     </script>
 </body>
 </html>
