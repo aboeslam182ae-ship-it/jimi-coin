@@ -1,196 +1,183 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Level Up System</title>
+    <title>Jimi Coin - V1.0</title>
     <style>
-        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
         
         /* شاشة التحميل */
         #splash { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-        .loader-container { width: 80%; margin-bottom: 60px; text-align: center; }
-        .loader-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid gold; }
-        #loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); transition: width 0.1s; }
+        .loader-bar { width: 80%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; margin-bottom: 60px; border: 1px solid #FFD700; overflow: hidden; }
+        #loader-fill { width: 0%; height: 100%; background: gold; transition: width 0.1s; }
 
-        #game-container { display: none; height: 100vh; flex-direction: column; }
+        #app { display: none; height: 100vh; flex-direction: column; }
         .section { display: none; text-align: center; width: 100%; flex: 1; overflow-y: auto; padding-bottom: 100px; }
         .active { display: block !important; }
 
-        /* قسم اللعب */
-        #score { font-size: 60px; color: #FFD700; font-weight: bold; margin-top: 40px; }
-        #level-name { color: #00BFFF; font-size: 14px; letter-spacing: 2px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
-        .coin-btn { width: 260px; height: 260px; margin: 30px auto; cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; }
-        .coin-btn img { width: 100%; border-radius: 50%; border: 4px solid gold; box-shadow: 0 0 25px rgba(255,215,0,0.2); transition: transform 0.05s; }
-        .coin-btn:active img { transform: scale(0.95); }
+        /* الواجهة الرئيسية */
+        #score { font-size: 70px; color: #FFD700; font-weight: bold; margin-top: 40px; }
+        #level-name { color: #00BFFF; font-size: 14px; letter-spacing: 2px; font-weight: bold; margin-bottom: 10px; }
+        
+        /* تأثير العملة 3D */
+        .coin-btn { 
+            width: 280px; height: 280px; margin: 30px auto; position: relative; 
+            display: flex; align-items: center; justify-content: center;
+            perspective: 1000px; /* للعمق الثلاثي الأبعاد */
+        }
+        .coin-img { 
+            width: 220px; height: 220px; border-radius: 50%; z-index: 10; 
+            transition: transform 0.1s ease-out; 
+            pointer-events: none;
+        }
+        .coin-glow { position: absolute; width: 280px; height: 160px; border: 2px solid #FFD700; border-radius: 50%; box-shadow: 0 0 30px rgba(255,215,0,0.4); z-index: 1; }
 
-        /* شريط التنقل السفلي */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0a0a0a; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #222; z-index: 1000; }
-        .nav-btn { color: #555; font-size: 10px; display: flex; flex-direction: column; align-items: center; background: none; border: none; cursor: pointer; width: 33%; }
+        /* لوحة الصدارة */
+        .leaderboard-list { background: #0a0a0a; margin: 15px; border-radius: 15px; border: 1px solid #222; overflow: hidden; }
+        .user-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #111; align-items: center; }
+        .rank { color: #FFD700; font-weight: bold; width: 30px; }
+        .user-name { flex: 1; text-align: left; padding-left: 10px; }
+        .user-score { color: #00BFFF; font-weight: bold; }
+
+        /* شريط التنقل */
+        .nav { position: fixed; bottom: 0; width: 100%; background: #000; display: flex; padding: 15px 0; border-top: 1px solid #111; z-index: 1000; }
+        .nav-btn { flex: 1; color: #444; background: none; border: none; font-size: 11px; font-weight: bold; display: flex; flex-direction: column; align-items: center; }
         .active-nav { color: #FFD700; }
-        .nav-icon { font-size: 22px; margin-bottom: 3px; }
 
         /* الطاقة */
-        .energy-box { width: 85%; margin: 0 auto; }
-        .energy-bar-bg { height: 14px; background: #222; border-radius: 10px; border: 1.5px solid #fff; overflow: hidden; }
-        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00BFFF, #1E90FF); transition: width 0.2s; }
+        .energy-box { width: 85%; margin: 0 auto; position: absolute; bottom: 110px; left: 7.5%; }
+        .bar-bg { height: 10px; background: #111; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
+        #bar-fill { width: 100%; height: 100%; background: #00BFFF; }
 
-        /* البطاقات */
-        .card { background: #111; margin: 15px; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
-        .btn { background: #FFD700; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; }
-
-        .float-text { position: absolute; color: #00BFFF; font-size: 32px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s forwards; z-index: 1500; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
+        .float-text { position: absolute; color: #00BFFF; font-size: 35px; font-weight: bold; pointer-events: none; animation: floatUp 0.7s forwards; z-index: 1500; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
     </style>
 </head>
 <body onload="init()">
 
     <div id="splash">
-        <img src="splash.png">
-        <div class="loader-container">
-            <div id="load-pct" style="margin-bottom:10px">0%</div>
-            <div class="loader-bar"><div id="loader-fill"></div></div>
-        </div>
+        <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png">
+        <div class="loader-bar"><div id="loader-fill"></div></div>
     </div>
 
-    <div id="game-container">
+    <div id="app">
         <div id="tap-page" class="section active">
             <div id="score">0</div>
-            <div id="level-name">Bronze Level</div>
-            <div class="coin-btn" id="coinArea"><img src="coin.png"></div>
+            <div id="level-name">BRONZE LEVEL</div>
+            <div class="coin-btn" id="coinArea">
+                <div class="coin-glow"></div>
+                <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" class="coin-img" id="coinImg">
+            </div>
             <div class="energy-box">
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-weight:bold; font-size:14px;">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px; color:#aaa">
                     <span>⚡ ENERGY</span>
-                    <span id="energy-stat">1000 / 1000</span>
+                    <span id="en-stat">1000/1000</span>
                 </div>
-                <div class="energy-bar-bg"><div id="energy-fill"></div></div>
+                <div class="bar-bg"><div id="bar-fill"></div></div>
+            </div>
+        </div>
+
+        <div id="leader-page" class="section">
+            <h2 style="color:gold; margin-top:30px;">LEADERBOARD</h2>
+            <div class="leaderboard-list">
+                <div class="user-row"><span class="rank">1</span><span class="user-name">Ahmed</span><span class="user-score">1.2M</span></div>
+                <div class="user-row"><span class="rank">2</span><span class="user-name">Muhammed</span><span class="user-score">850K</span></div>
+                <div class="user-row"><span class="rank">3</span><span class="user-name">Noor</span><span class="user-score">500K</span></div>
+                <div class="user-row" style="background:#1a1a1a"><span class="rank">?</span><span class="user-name">You</span><span id="my-rank-score" class="user-score">0</span></div>
             </div>
         </div>
 
         <div id="boost-page" class="section">
-            <h2 style="margin-top:40px; color:#FFD700;">BOOSTERS</h2>
-            <div class="card">
-                <div style="text-align:left"><h3>Multitap</h3><p>Cost: 1,000</p></div>
-                <button class="btn" onclick="upgrade('tap')">Upgrade</button>
-            </div>
-            <div style="padding: 20px; color: #888; font-size: 13px;">
-                * Your max energy increases automatically as you level up!
-            </div>
+            <h2 style="color:gold; margin-top:30px;">BOOSTERS</h2>
+            <button onclick="upgrade()" style="background:gold; padding:20px; border-radius:15px; width:80%; font-weight:bold; border:none;">Upgrade Tap Power</button>
         </div>
 
-        <div id="friends-page" class="section">
-            <h2 style="margin-top:40px; color:#FFD700;">FRIENDS</h2>
-            <div style="background:#111; padding:30px; margin:15px; border-radius:15px;">
-                <p>Invite friends to earn massive bonuses!</p>
-                <button class="btn" style="width:100%; padding:15px;" onclick="alert('Link Copied!')">Invite a Friend</button>
-            </div>
-        </div>
-
-        <div class="nav-bar">
-            <button class="nav-btn active-nav" onclick="tab('tap')"><span class="nav-icon">🟡</span>TAP</button>
-            <button class="nav-btn" onclick="tab('boost')"><span class="nav-icon">🚀</span>BOOST</button>
-            <button class="nav-btn" onclick="tab('friends')"><span class="nav-icon">👥</span>FRIENDS</button>
+        <div class="nav">
+            <button class="nav-btn active-nav" onclick="tab('tap', event)">💰<br>TAP</button>
+            <button class="nav-btn" onclick="tab('leader', event)">🏆<br>LEADERS</button>
+            <button class="nav-btn" onclick="tab('boost', event)">🚀<br>BOOST</button>
         </div>
     </div>
 
     <script>
-        let pts = parseInt(localStorage.getItem('jolt_pts')) || 0;
-        let perTap = parseInt(localStorage.getItem('jolt_pertap')) || 1;
-        
-        // إعدادات المستويات والطاقة
-        let levels = [
-            { name: "Bronze", min: 0, energy: 1000 },
-            { name: "Silver", min: 5000, energy: 2000 },
-            { name: "Gold", min: 25000, energy: 4000 },
-            { name: "Platinum", min: 100000, energy: 8000 },
-            { name: "Diamond", min: 500000, energy: 15000 }
-        ];
-
-        let currentLevelIndex = 0;
-        let maxEn = 1000;
-        let en = parseInt(localStorage.getItem('jolt_en')) || 1000;
+        let pts = parseInt(localStorage.getItem('j_pts')) || 0;
+        let pwr = parseInt(localStorage.getItem('j_pwr')) || 1;
+        let en = parseFloat(localStorage.getItem('j_en')) || 1000;
+        let max = 1000;
 
         function init() {
             let p = 0;
-            const loader = setInterval(() => {
-                p += 2;
-                document.getElementById('loader-fill').style.width = p + "%";
-                document.getElementById('load-pct').innerText = p + "%";
-                if(p >= 100) { 
-                    clearInterval(loader); 
-                    document.getElementById('splash').style.display = 'none'; 
-                    document.getElementById('game-container').style.display = 'flex'; 
-                    checkLevel(); 
-                    render(); 
-                }
+            let t = setInterval(() => {
+                p += 5; document.getElementById('loader-fill').style.width = p + "%";
+                if(p >= 100) { clearInterval(t); document.getElementById('splash').style.display='none'; document.getElementById('app').style.display='flex'; render(); }
             }, 30);
         }
 
-        function checkLevel() {
-            // فحص المستوى الحالي بناءً على النقاط
-            for (let i = levels.length - 1; i >= 0; i--) {
-                if (pts >= levels[i].min) {
-                    if (currentLevelIndex !== i) {
-                        currentLevelIndex = i;
-                        // رفع الطاقة القصوى تلقائياً عند الترقية
-                        maxEn = levels[i].energy;
-                        document.getElementById('level-name').innerText = levels[i].name + " Level";
-                    }
-                    break;
-                }
-            }
-        }
-
-        function tab(name) {
+        function tab(name, ev) {
             document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
             document.getElementById(name + '-page').classList.add('active');
-            event.currentTarget.classList.add('active-nav');
+            ev.currentTarget.classList.add('active-nav');
         }
 
         function render() {
             document.getElementById('score').innerText = pts.toLocaleString();
-            document.getElementById('energy-stat').innerText = `${Math.floor(en)} / ${maxEn}`;
-            document.getElementById('energy-fill').style.width = (en / maxEn * 100) + "%";
+            document.getElementById('my-rank-score').innerText = pts.toLocaleString();
+            document.getElementById('en-stat').innerText = `${Math.floor(en)}/${max}`;
+            document.getElementById('bar-fill').style.width = (en/max*100) + "%";
         }
 
-        document.getElementById('coinArea').addEventListener('touchstart', (e) => {
+        const coinArea = document.getElementById('coinArea');
+        const coinImg = document.getElementById('coinImg');
+
+        coinArea.addEventListener('touchstart', (e) => {
             e.preventDefault();
-            // تحديد حد أقصى 3 لمسات في وقت واحد لمنع الغش المبالغ فيه
-            let touches = Math.min(e.changedTouches.length, 3); 
-            for(let i=0; i<touches; i++) {
-                if(en >= perTap) {
-                    pts += perTap; en -= perTap;
-                    pop(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
-                }
+            const touch = e.changedTouches[0];
+            
+            // 1. تأثير الاهتزاز (يعمل على أجهزة أندرويد)
+            if (navigator.vibrate) { navigator.vibrate(10); }
+
+            // 2. تأثير الإمالة 3D
+            const rect = coinArea.getBoundingClientRect();
+            const x = touch.clientX - rect.left - rect.width/2;
+            const y = touch.clientY - rect.top - rect.height/2;
+            coinImg.style.transform = `rotateX(${-y/3}deg) rotateY(${x/3}deg) scale(0.95)`;
+
+            // 3. النقاط
+            if(en >= pwr) {
+                pts += pwr; en -= pwr;
+                pop(touch.pageX, touch.pageY);
+                render(); save();
             }
-            checkLevel(); render(); save();
-        }, {passive: false});
+        });
+
+        coinArea.addEventListener('touchend', () => {
+            coinImg.style.transform = `rotateX(0deg) rotateY(0deg) scale(1)`;
+        });
 
         function pop(x, y) {
             const d = document.createElement('div');
-            d.className = 'float-text'; d.innerText = '+' + perTap;
-            d.style.left = x + 'px'; d.style.top = y + 'px';
+            d.className = 'float-text'; d.innerText = '+' + pwr;
+            d.style.left = (x - 20) + 'px'; d.style.top = (y - 40) + 'px';
             document.body.appendChild(d);
-            setTimeout(() => d.remove(), 800);
+            setTimeout(() => d.remove(), 700);
         }
 
-        function upgrade(type) {
-            if(pts >= 1000) {
-                pts -= 1000; perTap++; alert('Upgrade Success! New Tap Power: ' + perTap);
-            } else alert('Need 1,000 coins!');
-            render(); save();
+        function upgrade() {
+            let cost = pwr * 1000;
+            if(pts >= cost) { pts -= cost; pwr++; render(); save(); alert('Success!'); }
+            else { alert('No Coins!'); }
         }
 
         function save() {
-            localStorage.setItem('jolt_pts', pts);
-            localStorage.setItem('jolt_en', en);
-            localStorage.setItem('jolt_pertap', perTap);
+            localStorage.setItem('j_pts', pts);
+            localStorage.setItem('j_en', en);
+            localStorage.setItem('j_pwr', pwr);
         }
 
-        // شحن الطاقة (1 نقطة كل ثانية لزيادة الصعوبة قليلاً)
-        setInterval(() => { if(en < maxEn) { en = Math.min(maxEn, en + 1); render(); } }, 1000);
+        setInterval(() => { if(en < max) { en = Math.min(max, en + 1.5); render(); } }, 1000);
     </script>
 </body>
 </html>
