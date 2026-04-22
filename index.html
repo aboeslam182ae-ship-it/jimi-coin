@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Jimi Coin - Ultimate Stability</title>
+    <title>Jimi Coin - Fixed Raw Links</title>
     <style>
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
         
-        /* شاشة التحميل - الجاكوار */
+        /* شاشة التحميل - تم تصحيح الرابط ليكون Raw */
         #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
         .loader-bar { width: 80%; height: 6px; background: #1a1a1a; border-radius: 10px; margin-bottom: 60px; border: 1px solid #FFD700; overflow: hidden; }
@@ -17,24 +17,145 @@
         .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 40px; }
         .active-page { display: flex !important; }
 
-        /* الواجهة الرئيسية */
         #score { font-size: 80px; color: #FFD700; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.4); }
         .level-tag { color: #888; letter-spacing: 2px; font-size: 14px; margin-bottom: 30px; }
         
-        /* منطقة العملة المحدثة برابط GitHub الجديد */
+        /* منطقة العملة - تم تصحيح الرابط ليكون Raw */
         .coin-wrapper { position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; }
         .coin-circle { position: absolute; width: 280px; height: 160px; border: 2px solid #FFD700; border-radius: 50%; box-shadow: 0 0 25px #FFD700; z-index: 1; }
         .coin-img { width: 180px; height: 180px; z-index: 10; border-radius: 50%; object-fit: contain; transition: transform 0.05s; }
         .coin-wrapper:active .coin-img { transform: scale(0.92); }
 
-        /* شريط الطاقة الأزرق */
         .energy-section { width: 90%; position: absolute; bottom: 100px; }
         .energy-info { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; color: #aaa; }
         .bar-bg { height: 12px; background: #050505; border-radius: 10px; border: 1px solid #222; overflow: hidden; }
         #bar-fill { width: 100%; height: 100%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; }
 
-        /* القائمة السفلية */
         .nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #000; display: flex; border-top: 1px solid #111; z-index: 10000; }
         .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 11px; font-weight: bold; }
-        .nav-btn.active { color: #FF
-                         
+        .nav-btn.active { color: #FFD700; }
+        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+
+        .tap-anim { position: absolute; color: #00d2ff; font-size: 32px; font-weight: bold; pointer-events: none; animation: upMove 0.6s ease-out forwards; z-index: 5000; }
+        @keyframes upMove { to { transform: translateY(-100px); opacity: 0; } }
+    </style>
+</head>
+<body onload="launch()">
+
+    <div id="splash">
+        <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png">
+        <div class="loader-bar"><div id="loader-fill"></div></div>
+    </div>
+
+    <div id="app">
+        <div id="page-tap" class="page active-page">
+            <h1 id="score">143</h1>
+            <div class="level-tag">BRONZE LEVEL</div>
+            
+            <div class="coin-wrapper" id="tapZone">
+                <div class="coin-circle"></div>
+                <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" class="coin-img">
+            </div>
+
+            <div class="energy-section">
+                <div class="energy-info">
+                    <span>⚡ ENERGY</span>
+                    <span id="en-txt">2000 / 2000</span>
+                </div>
+                <div class="bar-bg"><div id="bar-fill"></div></div>
+            </div>
+        </div>
+
+        <div id="page-boost" class="page">
+            <h2 style="color:#FFD700">BOOSTERS</h2>
+            <div style="background:#0a0a0a; border:1px solid #222; padding:30px; border-radius:20px; width:80%; text-align:center;">
+                <span style="font-size:50px">🚀</span>
+                <h3>Multitap</h3>
+                <button id="buyBtn" style="background:#FFD700; border:none; padding:18px; width:100%; border-radius:12px; font-weight:bold; font-size:16px; margin-top:10px">Upgrade</button>
+            </div>
+        </div>
+
+        <div class="nav">
+            <div class="nav-btn active" id="go-tap"><span class="nav-icon">💰</span>TAP</div>
+            <div class="nav-btn" id="go-boost"><span class="nav-icon">🚀</span>BOOST</div>
+        </div>
+    </div>
+
+    <script>
+        let score = parseInt(localStorage.getItem('j_pts')) || 143;
+        let pwr = parseInt(localStorage.getItem('j_pwr')) || 1;
+        let en = parseFloat(localStorage.getItem('j_en')) || 2000;
+        let maxEn = 2000;
+
+        function launch() {
+            let f = document.getElementById('loader-fill');
+            let p = 0;
+            let t = setInterval(() => {
+                p += 5; f.style.width = p + "%";
+                if(p >= 100) {
+                    clearInterval(t);
+                    document.getElementById('splash').style.display = 'none';
+                    document.getElementById('app').style.display = 'flex';
+                    sync();
+                }
+            }, 30);
+        }
+
+        document.getElementById('go-tap').addEventListener('touchstart', (e) => { e.preventDefault(); switchPage('tap'); });
+        document.getElementById('go-boost').addEventListener('touchstart', (e) => { e.preventDefault(); switchPage('boost'); });
+
+        function switchPage(p) {
+            document.querySelectorAll('.page').forEach(pg => pg.classList.remove('active-page'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            if(p === 'tap') {
+                document.getElementById('page-tap').classList.add('active-page');
+                document.getElementById('go-tap').classList.add('active');
+            } else {
+                document.getElementById('page-boost').classList.add('active-page');
+                document.getElementById('go-boost').classList.add('active');
+                updateBoost();
+            }
+        }
+
+        function sync() {
+            document.getElementById('score').innerText = score.toLocaleString();
+            document.getElementById('en-txt').innerText = `${Math.floor(en)} / ${maxEn}`;
+            document.getElementById('bar-fill').style.width = (en/maxEn*100) + "%";
+        }
+
+        document.getElementById('tapZone').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            for(let i=0; i < e.changedTouches.length; i++) {
+                if(en >= pwr) {
+                    score += pwr; en -= pwr;
+                    showEffect(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
+                }
+            }
+            sync(); save();
+        });
+
+        function showEffect(x, y) {
+            let el = document.createElement('div');
+            el.className = 'tap-anim'; el.innerText = '+' + pwr;
+            el.style.left = (x - 20) + 'px'; el.style.top = (y - 50) + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 600);
+        }
+
+        function updateBoost() {
+            let cost = pwr * 1000;
+            let b = document.getElementById('buyBtn');
+            b.innerText = `Upgrade (${cost.toLocaleString()})`;
+            b.onclick = () => { if(score >= cost) { score -= cost; pwr++; updateBoost(); sync(); save(); } };
+        }
+
+        function save() {
+            localStorage.setItem('j_pts', score);
+            localStorage.setItem('j_pwr', pwr);
+            localStorage.setItem('j_en', en);
+        }
+
+        setInterval(() => { if(en < maxEn) { en = Math.min(maxEn, en + 1.5); sync(); } }, 1000);
+    </script>
+</body>
+</html>
