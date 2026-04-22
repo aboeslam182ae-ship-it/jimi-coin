@@ -3,127 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - Official</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Jolt Coin - Hamster Style</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --gold: #ffcc00; --soft-white: #f0f0f0; }
-        body { background: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; overflow-x: hidden; text-align: center; }
-        
-        /* القسم العلوي */
-        .header-text { margin-top: 15px; font-weight: bold; }
-        .hit-text { color: var(--gold); font-size: 22px; display: block; letter-spacing: 1px; }
-        .info-text { font-size: 13px; color: #bbb; margin-top: 8px; display: block; }
+        :root { --gold: #f3ba2f; --blue-bg: #0b2447; --card-bg: #19376d; }
+        body { background: var(--blue-bg); color: #fff; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; text-align: center; user-select: none; }
 
-        /* مواقع التواصل */
-        .social-icons { margin: 15px 0; display: flex; justify-content: center; gap: 25px; font-size: 26px; }
-        .social-icons i { color: #fff; cursor: pointer; transition: 0.3s; }
-        .social-icons i:hover { color: var(--gold); }
+        /* الهيدر العلوي */
+        .top-info { background: rgba(0,0,0,0.3); padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--gold); }
+        .user-profile { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
+        .user-avatar { width: 55px; height: 55px; border-radius: 15px; border: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
+        .lvl-badge { background: var(--gold); color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-top: -10px; z-index: 2; }
 
-        /* شريط المستوى المتطور */
-        .level-container { width: 90%; margin: 20px auto; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; }
-        .mini-jaguar { width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--gold); }
-        .progress-wrapper { flex-grow: 1; text-align: right; }
-        .progress-bar { width: 100%; height: 14px; background: #222; border-radius: 10px; border: 1px solid var(--soft-white); overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(to right, #ffcc00, #ff9900); width: 30%; transition: width 0.5s; }
-        .level-stats { font-size: 11px; color: #ccc; margin-top: 6px; display: flex; justify-content: space-between; padding: 0 2px; }
+        .stats-area { flex-grow: 1; margin-right: 15px; text-align: right; }
+        .level-bar-container { width: 100%; height: 12px; background: #000; border-radius: 10px; border: 1px solid #fff; overflow: hidden; margin-top: 5px; position: relative; }
+        .level-bar-fill { height: 100%; background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 45%; transition: 0.5s; }
+        .next-lvl-txt { font-size: 10px; color: #00ff00; margin-top: 3px; display: block; font-weight: bold; }
 
-        /* الملف الشخصي */
-        .profile-section { margin: 25px 0; }
-        .user-avatar { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--gold); cursor: pointer; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); }
-        .level-name { display: block; color: var(--gold); font-size: 15px; margin-top: 8px; font-weight: bold; }
+        /* العملة الكبيرة للتنقر */
+        .coin-section { margin: 40px 0; position: relative; }
+        .main-jaguar { width: 240px; filter: drop-shadow(0 0 20px rgba(243, 186, 47, 0.4)); cursor: pointer; transition: 0.1s; }
+        .main-jaguar:active { transform: scale(0.92); }
 
-        /* العملة الكبيرة */
-        .main-coin { width: 210px; margin: 10px auto; cursor: pointer; transition: 0.1s; -webkit-tap-highlight-color: transparent; }
-        .main-coin:active { transform: scale(0.92); }
+        /* شبكة المربعات (مثل الصورة 3) */
+        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
+        .feature-card { background: var(--card-bg); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .feature-card img { width: 100%; border-radius: 10px; height: 80px; object-fit: cover; }
+        .feature-card h4 { margin: 8px 0 0; font-size: 14px; color: var(--gold); }
 
-        /* المودال (المربعات المنبثقة) */
-        .modal { display: none; position: fixed; top: 15%; left: 5%; right: 5%; background: #111; border: 2px solid var(--gold); border-radius: 25px; padding: 25px; z-index: 100; }
-        .modal-img { width: 100%; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
-        .btn-invite { background: var(--gold); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; width: 100%; cursor: pointer; margin-top: 10px; }
-        
-        .friends-list { margin-top: 20px; text-align: right; max-height: 120px; overflow-y: auto; background: #000; padding: 10px; border-radius: 10px; }
-        .friend-item { padding: 8px 0; border-bottom: 1px solid #222; font-size: 13px; color: #eee; }
-        .close-btn { position: absolute; top: 12px; left: 15px; background: none; border: none; color: #777; font-size: 22px; cursor: pointer; }
+        /* المربعات المنبثقة */
+        .modal { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--blue-bg); border-top: 3px solid var(--gold); border-radius: 30px 30px 0 0; padding: 30px 20px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); animation: slideUp 0.3s; }
+        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .modal-img { width: 150px; height: 150px; margin-bottom: 20px; }
+        .close-btn { position: absolute; top: 15px; left: 20px; font-size: 25px; color: #fff; cursor: pointer; }
+
+        /* الفوتر (أيقونات التواصل) */
+        .footer-socials { margin-top: 20px; padding-bottom: 30px; }
+        .social-btn { display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #19376d; border-radius: 50%; margin: 0 10px; color: #fff; font-size: 20px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
-    <div class="header-text">
-        <span class="hit-text">GREAT NEW HIT</span>
-        <span class="info-text">More info on our official channels</span>
-    </div>
+    <div class="top-info">
+        <div class="user-profile" onclick="openModal('friendsModal')">
+            <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="user-avatar">
+            <div class="lvl-badge">32 LVL</div>
+        </div>
 
-    <div class="social-icons">
-        <i class="fab fa-telegram" onclick="window.open('https://t.me/yourchannel')"></i>
-        <i class="fab fa-youtube" onclick="window.open('https://youtube.com')"></i>
-        <i class="fab fa-x-twitter" onclick="window.open('https://x.com')"></i>
-    </div>
-
-    <div class="level-container">
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="mini-jaguar">
-        <div class="progress-wrapper">
-            <div class="progress-bar">
-                <div class="progress-fill" id="p-fill"></div>
+        <div class="stats-area">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <span style="font-size: 14px; font-weight: bold;">[A&A] Syria</span>
+                <span style="color: var(--gold); font-weight: bold;"><i class="fas fa-coins"></i> 19.45B</span>
             </div>
-            <div class="level-stats">
-                <span id="next-level-info">باقي 3500 للمستوى التالي</span>
-                <span id="current-pts">1500 / 5000</span>
+            <div class="level-bar-container">
+                <div class="level-bar-fill" id="pFill"></div>
             </div>
+            <span class="next-lvl-txt" id="nextTxt">3.48B to next level</span>
         </div>
     </div>
 
-    <div class="profile-section">
-        <img src="https://via.placeholder.com/85" class="user-avatar" id="profileBtn" alt="User">
-        <span class="level-name">LEVEL: BRONZE</span>
+    <div style="margin-top: 20px;">
+        <h2 style="margin:0; color:var(--gold);">JOLT COIN</h2>
+        <p style="margin:5px 0; font-size:12px; color:#aaa;">More info on our official channels</p>
     </div>
 
-    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="main-coin" id="mainCoin">
+    <div class="coin-section">
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="main-jaguar" onclick="tap(event)">
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card" onclick="openModal('friendsModal')">
+            <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp">
+            <h4>Friends 👥</h4>
+        </div>
+        <div class="feature-card">
+            <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp">
+            <h4>Skins 👕</h4>
+        </div>
+    </div>
+
+    <div class="footer-socials">
+        <a href="#" class="social-btn"><i class="fab fa-telegram"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
+        <a href="#" class="social-btn"><i class="fab fa-x-twitter"></i></a>
+    </div>
 
     <div id="friendsModal" class="modal">
-        <button class="close-btn" onclick="closeM('friendsModal')">✕</button>
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="modal-img">
-        <h2 style="color:var(--gold); margin:0;">FRIENDS</h2>
-        <button class="btn-invite" onclick="openInvite()">انقر لعرض الدعوة</button>
-    </div>
-
-    <div id="inviteModal" class="modal">
-        <button class="close-btn" onclick="closeM('inviteModal')">✕</button>
+        <span class="close-btn" onclick="closeModal('friendsModal')">×</span>
         <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp" class="modal-img">
-        <h2 style="color:var(--gold); margin:0;">INVITE</h2>
-        <button class="btn-invite">
-            <i class="fas fa-link"></i> نسخ رابط الدعوة
-        </button>
-        <div class="friends-list">
-            <div style="color:var(--gold); font-size:12px; margin-bottom:5px;">الأصدقاء المدعوين:</div>
-            <div class="friend-item">1. محمد كوجا</div>
-            <div class="friend-item">2. أحمد علي</div>
-        </div>
+        <h2 style="color:var(--gold)">INVITE FRIENDS</h2>
+        <p>قم بدعوة أصدقائك واحصل على 50,000 عملة!</p>
+        <button style="width:100%; padding:15px; background:var(--gold); border:none; border-radius:15px; font-weight:bold; font-size:18px;">نسخ رابط الدعوة 🔗</button>
     </div>
 
     <script>
-        let balance = 1500;
-        let maxLevel = 5000;
-
-        // وظائف المودال
-        document.getElementById('profileBtn').onclick = () => document.getElementById('friendsModal').style.display = 'block';
-        function openInvite() { closeM('friendsModal'); document.getElementById('inviteModal').style.display = 'block'; }
-        function closeM(id) { document.getElementById(id).style.display = 'none'; }
-
-        // وظيفة النقر
-        document.getElementById('mainCoin').onclick = () => {
-            balance += 3;
-            updateUI();
-        };
-
-        function updateUI() {
-            document.getElementById('current-pts').innerText = `${balance.toLocaleString()} / ${maxLevel.toLocaleString()}`;
-            let needed = maxLevel - balance;
-            document.getElementById('next-level-info').innerText = needed > 0 ? `باقي ${needed.toLocaleString()} للمستوى التالي` : "وصلت للحد الأقصى!";
-            let percent = Math.min((balance / maxLevel) * 100, 100);
-            document.getElementById('p-fill').style.width = percent + "%";
+        let balance = 19.45; 
+        function tap(e) {
+            balance += 0.01;
+            // تأثيرات بصرية هنا
         }
 
-        updateUI();
+        function openModal(id) { document.getElementById(id).style.display = 'block'; }
+        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     </script>
 </body>
 </html>
