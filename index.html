@@ -3,108 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Hamster Style</title>
+    <title>Jolt Coin - Official</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --gold: #f3ba2f; --blue-bg: #0b2447; --card-bg: #19376d; }
-        body { background: var(--blue-bg); color: #fff; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; text-align: center; user-select: none; }
+        :root { --gold: #f3ba2f; --dark-blue: #051937; --card-bg: #102a51; }
+        body { background: var(--dark-blue); color: #fff; font-family: sans-serif; margin: 0; padding: 0; overflow-x: hidden; text-align: center; }
 
-        /* الهيدر العلوي */
-        .top-info { background: rgba(0,0,0,0.3); padding: 15px; display: flex; align-items: center; justify-content: space-between; border-bottom: 2px solid var(--gold); }
-        .user-profile { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
-        .user-avatar { width: 55px; height: 55px; border-radius: 15px; border: 2px solid var(--gold); box-shadow: 0 0 10px var(--gold); }
-        .lvl-badge { background: var(--gold); color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-top: -10px; z-index: 2; }
+        /* 1. قسم المعلومات العلوي (Profile & Stats) */
+        .header-container { background: rgba(0,0,0,0.4); padding: 10px 15px; border-bottom: 2px solid var(--gold); display: flex; align-items: center; justify-content: space-between; gap: 15px; }
+        
+        .profile-box { position: relative; width: 65px; }
+        .avatar { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--gold); background: #222; cursor: pointer; }
+        .lvl-tag { position: absolute; bottom: -5px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; white-space: nowrap; }
 
-        .stats-area { flex-grow: 1; margin-right: 15px; text-align: right; }
-        .level-bar-container { width: 100%; height: 12px; background: #000; border-radius: 10px; border: 1px solid #fff; overflow: hidden; margin-top: 5px; position: relative; }
-        .level-bar-fill { height: 100%; background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 45%; transition: 0.5s; }
-        .next-lvl-txt { font-size: 10px; color: #00ff00; margin-top: 3px; display: block; font-weight: bold; }
+        .stats-box { flex-grow: 1; text-align: right; }
+        .stats-top { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 5px; }
+        .progress-wrapper { width: 100%; height: 12px; background: #000; border: 1px solid #fff; border-radius: 10px; overflow: hidden; position: relative; }
+        .progress-fill { height: 100%; background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 45%; }
+        .next-lvl { font-size: 11px; color: #00ff00; margin-top: 4px; display: block; }
 
-        /* العملة الكبيرة للتنقر */
-        .coin-section { margin: 40px 0; position: relative; }
-        .main-jaguar { width: 240px; filter: drop-shadow(0 0 20px rgba(243, 186, 47, 0.4)); cursor: pointer; transition: 0.1s; }
-        .main-jaguar:active { transform: scale(0.92); }
+        /* 2. النصوص الأساسية */
+        .titles { margin: 20px 0; }
+        .main-title { color: var(--gold); font-size: 28px; font-weight: bold; margin: 0; }
+        .sub-title { font-size: 13px; color: #ccc; margin-top: 5px; }
 
-        /* شبكة المربعات (مثل الصورة 3) */
-        .features-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; }
-        .feature-card { background: var(--card-bg); border-radius: 15px; padding: 10px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .feature-card img { width: 100%; border-radius: 10px; height: 80px; object-fit: cover; }
-        .feature-card h4 { margin: 8px 0 0; font-size: 14px; color: var(--gold); }
+        /* 3. الجاكوار الكبير (العملة) */
+        .coin-area { margin: 20px auto; width: 220px; height: 220px; position: relative; }
+        .jaguar-img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 0 15px rgba(243, 186, 47, 0.3)); cursor: pointer; }
 
-        /* المربعات المنبثقة */
-        .modal { display: none; position: fixed; bottom: 0; left: 0; right: 0; background: var(--blue-bg); border-top: 3px solid var(--gold); border-radius: 30px 30px 0 0; padding: 30px 20px; z-index: 1000; box-shadow: 0 -10px 30px rgba(0,0,0,0.5); animation: slideUp 0.3s; }
-        @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
-        .modal-img { width: 150px; height: 150px; margin-bottom: 20px; }
-        .close-btn { position: absolute; top: 15px; left: 20px; font-size: 25px; color: #fff; cursor: pointer; }
+        /* 4. شبكة البطاقات (Skins & Friends) */
+        .grid-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; margin-bottom: 20px; }
+        .card { background: var(--card-bg); border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); padding: 10px; cursor: pointer; }
+        .card img { width: 100%; border-radius: 10px; height: 80px; object-fit: cover; background: #222; }
+        .card span { display: block; margin-top: 8px; color: var(--gold); font-weight: bold; font-size: 14px; }
 
-        /* الفوتر (أيقونات التواصل) */
-        .footer-socials { margin-top: 20px; padding-bottom: 30px; }
-        .social-btn { display: inline-flex; align-items: center; justify-content: center; width: 45px; height: 45px; background: #19376d; border-radius: 50%; margin: 0 10px; color: #fff; font-size: 20px; text-decoration: none; border: 1px solid rgba(255,255,255,0.2); }
+        /* 5. الفوتر (التواصل) */
+        .social-footer { display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; }
+        .social-link { width: 45px; height: 45px; background: var(--card-bg); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
-    <div class="top-info">
-        <div class="user-profile" onclick="openModal('friendsModal')">
-            <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="user-avatar">
-            <div class="lvl-badge">32 LVL</div>
-        </div>
-
-        <div class="stats-area">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-size: 14px; font-weight: bold;">[A&A] Syria</span>
-                <span style="color: var(--gold); font-weight: bold;"><i class="fas fa-coins"></i> 19.45B</span>
+    <div class="header-container">
+        <div class="stats-box">
+            <div class="stats-top">
+                <span style="color:var(--gold)">19.45B <i class="fas fa-coins"></i></span>
+                <span>Syria [A&A]</span>
             </div>
-            <div class="level-bar-container">
-                <div class="level-bar-fill" id="pFill"></div>
+            <div class="progress-wrapper">
+                <div class="progress-fill"></div>
             </div>
-            <span class="next-lvl-txt" id="nextTxt">3.48B to next level</span>
+            <span class="next-lvl">3.48B to next level</span>
+        </div>
+        
+        <div class="profile-box">
+            <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="avatar">
+            <div class="lvl-tag">LVL 32</div>
         </div>
     </div>
 
-    <div style="margin-top: 20px;">
-        <h2 style="margin:0; color:var(--gold);">JOLT COIN</h2>
-        <p style="margin:5px 0; font-size:12px; color:#aaa;">More info on our official channels</p>
+    <div class="titles">
+        <h1 class="main-title">JOLT COIN</h1>
+        <p class="sub-title">More info on our official channels</p>
     </div>
 
-    <div class="coin-section">
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="main-jaguar" onclick="tap(event)">
+    <div class="coin-area">
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="jaguar-img" onclick="tap()">
     </div>
 
-    <div class="features-grid">
-        <div class="feature-card" onclick="openModal('friendsModal')">
-            <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp">
-            <h4>Friends 👥</h4>
-        </div>
-        <div class="feature-card">
+    <div class="grid-cards">
+        <div class="card">
             <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp">
-            <h4>Skins 👕</h4>
+            <span>👕 Skins</span>
+        </div>
+        <div class="card">
+            <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp">
+            <span>👥 Friends</span>
         </div>
     </div>
 
-    <div class="footer-socials">
-        <a href="#" class="social-btn"><i class="fab fa-telegram"></i></a>
-        <a href="#" class="social-btn"><i class="fab fa-youtube"></i></a>
-        <a href="#" class="social-btn"><i class="fab fa-x-twitter"></i></a>
-    </div>
-
-    <div id="friendsModal" class="modal">
-        <span class="close-btn" onclick="closeModal('friendsModal')">×</span>
-        <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp" class="modal-img">
-        <h2 style="color:var(--gold)">INVITE FRIENDS</h2>
-        <p>قم بدعوة أصدقائك واحصل على 50,000 عملة!</p>
-        <button style="width:100%; padding:15px; background:var(--gold); border:none; border-radius:15px; font-weight:bold; font-size:18px;">نسخ رابط الدعوة 🔗</button>
+    <div class="social-footer">
+        <div class="social-link"><i class="fab fa-x-twitter"></i></div>
+        <div class="social-link"><i class="fab fa-youtube"></i></div>
+        <div class="social-link"><i class="fab fa-telegram"></i></div>
     </div>
 
     <script>
-        let balance = 19.45; 
-        function tap(e) {
-            balance += 0.01;
-            // تأثيرات بصرية هنا
+        function tap() {
+            // هنا نضع كود زيادة النقاط
+            console.log("Tapped!");
         }
-
-        function openModal(id) { document.getElementById(id).style.display = 'block'; }
-        function closeModal(id) { document.getElementById(id).style.display = 'none'; }
     </script>
 </body>
 </html>
