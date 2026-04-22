@@ -3,88 +3,81 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - Fixed</title>
+    <title>Jimi Coin - Final Attempt</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #051937; color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
+        :root { --gold: #f3ba2f; --bg: #051937; --card: #102a51; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow-x: hidden; }
+
+        /* 1. الهيدر الاحترافي (البروفايل يسار والشريط يمين) */
+        .nav-container { display: flex; align-items: center; justify-content: space-between; padding: 12px 15px; background: rgba(0,0,0,0.5); border-bottom: 2px solid var(--gold); }
         
-        /* 1. الهيدر العلوي (نصوص وأيقونات) */
-        .top-section { padding: 20px 10px; background: #000; }
-        .hit-title { color: #f3ba2f; font-size: 24px; font-weight: bold; margin-bottom: 5px; }
-        .sub-title { font-size: 13px; color: #ccc; margin-bottom: 15px; }
-        .social-icons { display: flex; justify-content: center; gap: 20px; }
-        .social-icons i { font-size: 26px; color: #fff; }
+        .p-side { position: relative; width: 65px; display: flex; flex-direction: column; align-items: center; }
+        .p-img { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--gold); background: #111; object-fit: cover; }
+        .p-lvl { position: absolute; bottom: -8px; background: var(--gold); color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; box-shadow: 0 2px 4px #000; }
 
-        /* 2. شريط المستوى والبروفايل (مثل هامستر بالملي) */
-        .status-container { display: flex; align-items: center; justify-content: space-between; padding: 10px 15px; background: rgba(255,255,255,0.05); margin: 10px; border-radius: 15px; border-bottom: 2px solid #f3ba2f; }
-        
-        /* البروفايل يسار */
-        .user-side { display: flex; flex-direction: column; align-items: center; min-width: 70px; }
-        .user-pic { width: 55px; height: 55px; border-radius: 12px; border: 2px solid #f3ba2f; cursor: pointer; background: #111; }
-        .lvl-box { background: #f3ba2f; color: #000; font-size: 10px; font-weight: bold; padding: 2px 8px; border-radius: 5px; margin-top: -10px; z-index: 5; }
+        .s-side { flex-grow: 1; margin-left: 15px; text-align: right; }
+        .s-labels { display: flex; justify-content: space-between; font-weight: bold; font-size: 13px; margin-bottom: 4px; }
+        .bar-bg { width: 100%; height: 12px; background: #000; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); overflow: hidden; }
+        .bar-fill { height: 100%; background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 45%; }
+        .next-lvl-info { font-size: 10px; color: #00ff00; margin-top: 4px; display: block; font-weight: bold; }
 
-        /* الشريط يمين */
-        .info-side { flex-grow: 1; text-align: right; margin-right: 15px; }
-        .numbers { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-        .bar-outline { width: 100%; height: 14px; background: #000; border: 1px solid #fff; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 35%; }
-        .remaining { font-size: 11px; color: #00ff00; margin-top: 5px; display: block; }
+        /* 2. منطقة العملة والجاكوار */
+        .main-hero { padding: 25px 0; }
+        .coin-title { color: var(--gold); font-size: 28px; font-weight: bold; margin: 0; }
+        .coin-tap { width: 220px; height: 220px; margin: 30px auto; display: block; filter: drop-shadow(0 0 15px rgba(243, 186, 47, 0.4)); cursor: pointer; transition: 0.1s; }
+        .coin-tap:active { transform: scale(0.92); }
 
-        /* 3. العملة الكبيرة (الجاكوار) */
-        .coin-box { margin: 30px auto; width: 240px; height: 240px; }
-        .main-img { width: 100%; height: 100%; cursor: pointer; transition: 0.1s; }
-        .main-img:active { transform: scale(0.95); }
+        /* 3. شبكة المربعات (مثل الصورة 3 بالضبط) */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; margin-bottom: 20px; }
+        .menu-item { background: var(--card); border-radius: 18px; padding: 12px; border: 1px solid rgba(255,255,255,0.1); }
+        .menu-item img { width: 100%; height: 85px; border-radius: 10px; object-fit: cover; background: #000; }
+        .menu-item span { display: block; margin-top: 8px; color: var(--gold); font-weight: bold; font-size: 14px; }
 
-        /* 4. المربعات السفلية (Grid) */
-        .grid-boxes { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 15px; }
-        .card-item { background: #102a51; border-radius: 20px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
-        .card-img { width: 100%; border-radius: 12px; height: 90px; object-fit: cover; background: #000; margin-bottom: 10px; }
-        .card-label { color: #f3ba2f; font-weight: bold; font-size: 15px; }
+        /* 4. الفوتر */
+        .footer-links { display: flex; justify-content: center; gap: 20px; padding-bottom: 30px; }
+        .f-icon { font-size: 24px; color: #fff; background: var(--card); width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); }
     </style>
 </head>
 <body>
 
-    <div class="top-section">
-        <div class="hit-title">GREAT NEW HIT</div>
-        <div class="sub-title">More info on our official channels</div>
-        <div class="social-icons">
-            <i class="fab fa-telegram"></i>
-            <i class="fab fa-youtube"></i>
-            <i class="fab fa-x-twitter"></i>
-        </div>
-    </div>
-
-    <div class="status-container">
-        <div class="user-side" onclick="alert('قسم الأصدقاء')">
-            <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Jimi" class="user-pic">
-            <div class="lvl-box">LVL 32</div>
+    <div class="nav-container">
+        <div class="p-side">
+            <img src="https://api.dicebear.com/7.x/bottts-neutral/svg?seed=Jimi" class="p-img">
+            <div class="p-lvl">LVL 32</div>
         </div>
 
-        <div class="info-side">
-            <div class="numbers">
-                <span style="color:#f3ba2f">19.45B <i class="fas fa-coins"></i></span>
+        <div class="s-side">
+            <div class="s-labels">
+                <span style="color:var(--gold)">19.45B <i class="fas fa-coins"></i></span>
                 <span>Syria [A&A]</span>
             </div>
-            <div class="bar-outline">
-                <div class="bar-fill"></div>
-            </div>
-            <span class="remaining">باقي 3.48B للمستوى التالي</span>
+            <div class="bar-bg"><div class="bar-fill"></div></div>
+            <span class="next-lvl-info">3.48B to next level</span>
         </div>
     </div>
 
-    <div class="coin-box">
-        <img src="https://i.postimg.cc/mD3f8m3B/jaguar-coin.png" class="main-img" onerror="this.src='https://via.placeholder.com/240?text=Jaguar+Coin'">
+    <div class="main-hero">
+        <h1 class="coin-title">JOLT COIN</h1>
+        <p style="font-size: 12px; color: #aaa; margin: 5px 0;">Official Game Interface</p>
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="coin-tap">
     </div>
 
-    <div class="grid-boxes">
-        <div class="card-item">
-            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=Skins" class="card-img">
-            <div class="card-label">👕 Skins</div>
+    <div class="menu-grid">
+        <div class="menu-item">
+            <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp">
+            <span>👕 Skins</span>
         </div>
-        <div class="card-item">
-            <img src="https://api.dicebear.com/7.x/identicon/svg?seed=Friends" class="card-img">
-            <div class="card-label">👥 Friends</div>
+        <div class="menu-item">
+            <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp">
+            <span>👥 Friends</span>
         </div>
+    </div>
+
+    <div class="footer-links">
+        <div class="f-icon"><i class="fab fa-telegram"></i></div>
+        <div class="f-icon"><i class="fab fa-youtube"></i></div>
+        <div class="f-icon"><i class="fab fa-x-twitter"></i></div>
     </div>
 
 </body>
