@@ -1,100 +1,196 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Energy Fix</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jolt Coin - Level Up System</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding-top: 30px; overflow: hidden; user-select: none; }
-        .coin-img { width: 220px; border-radius: 50%; border: 4px solid #ffcc00; cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
-        .coin-img:active { transform: scale(0.95); }
-        #balance { font-size: 35px; color: #ffcc00; font-weight: bold; margin-bottom: 10px; }
-        .energy-container { width: 80%; height: 20px; background: #333; border-radius: 10px; margin: 20px auto; position: relative; border: 1px solid #444; }
-        #energy-bar { height: 100%; background: linear-gradient(to right, #ffcc00, #ff6600); border-radius: 10px; width: 100%; transition: width 0.3s; }
-        .menu-footer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 10px; }
-        .btn-menu { background: #1a1a1a; color: #fff; border: 1px solid #ffcc00; padding: 10px 15px; border-radius: 12px; font-size: 14px; }
-        .modal { display: none; position: fixed; top: 20%; left: 10%; right: 10%; background: #1a1a1a; padding: 20px; border: 2px solid #ffcc00; border-radius: 15px; z-index: 10; }
+        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; }
+        
+        /* شاشة التحميل */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+        .loader-container { width: 80%; margin-bottom: 60px; text-align: center; }
+        .loader-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid gold; }
+        #loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); transition: width 0.1s; }
+
+        #game-container { display: none; height: 100vh; flex-direction: column; }
+        .section { display: none; text-align: center; width: 100%; flex: 1; overflow-y: auto; padding-bottom: 100px; }
+        .active { display: block !important; }
+
+        /* قسم اللعب */
+        #score { font-size: 60px; color: #FFD700; font-weight: bold; margin-top: 40px; }
+        #level-name { color: #00BFFF; font-size: 14px; letter-spacing: 2px; font-weight: bold; margin-bottom: 10px; text-transform: uppercase; }
+        .coin-btn { width: 260px; height: 260px; margin: 30px auto; cursor: pointer; -webkit-tap-highlight-color: transparent; position: relative; }
+        .coin-btn img { width: 100%; border-radius: 50%; border: 4px solid gold; box-shadow: 0 0 25px rgba(255,215,0,0.2); transition: transform 0.05s; }
+        .coin-btn:active img { transform: scale(0.95); }
+
+        /* شريط التنقل السفلي */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0a0a0a; display: flex; justify-content: space-around; padding: 12px 0; border-top: 1px solid #222; z-index: 1000; }
+        .nav-btn { color: #555; font-size: 10px; display: flex; flex-direction: column; align-items: center; background: none; border: none; cursor: pointer; width: 33%; }
+        .active-nav { color: #FFD700; }
+        .nav-icon { font-size: 22px; margin-bottom: 3px; }
+
+        /* الطاقة */
+        .energy-box { width: 85%; margin: 0 auto; }
+        .energy-bar-bg { height: 14px; background: #222; border-radius: 10px; border: 1.5px solid #fff; overflow: hidden; }
+        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00BFFF, #1E90FF); transition: width 0.2s; }
+
+        /* البطاقات */
+        .card { background: #111; margin: 15px; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        .btn { background: #FFD700; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; }
+
+        .float-text { position: absolute; color: #00BFFF; font-size: 32px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s forwards; z-index: 1500; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
     </style>
 </head>
-<body>
+<body onload="init()">
 
-    <div id="balance">0 🪙</div>
-    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="coin-img" onclick="tap(event)">
-
-    <div class="energy-container">
-        <div id="energy-bar"></div>
-        <small id="energy-text" style="position: absolute; width:100%; left:0; top:2px;">1000/1000</small>
+    <div id="splash">
+        <img src="splash.png">
+        <div class="loader-container">
+            <div id="load-pct" style="margin-bottom:10px">0%</div>
+            <div class="loader-bar"><div id="loader-fill"></div></div>
+        </div>
     </div>
 
-    <div class="menu-footer">
-        <button class="btn-menu" onclick="toggleModal('taskModal')">📋 المهام</button>
-        <button class="btn-menu">🚀 تعزيز</button>
-    </div>
+    <div id="game-container">
+        <div id="tap-page" class="section active">
+            <div id="score">0</div>
+            <div id="level-name">Bronze Level</div>
+            <div class="coin-btn" id="coinArea"><img src="coin.png"></div>
+            <div class="energy-box">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-weight:bold; font-size:14px;">
+                    <span>⚡ ENERGY</span>
+                    <span id="energy-stat">1000 / 1000</span>
+                </div>
+                <div class="energy-bar-bg"><div id="energy-fill"></div></div>
+            </div>
+        </div>
 
-    <div id="taskModal" class="modal">
-        <h3>المهام 📝</h3>
-        <p>اشترك في القناة (+50k)</p>
-        <button class="btn-menu" onclick="claimTask(50000)">إتمام</button>
-        <button class="btn-menu" onclick="toggleModal('taskModal')">إغلاق</button>
+        <div id="boost-page" class="section">
+            <h2 style="margin-top:40px; color:#FFD700;">BOOSTERS</h2>
+            <div class="card">
+                <div style="text-align:left"><h3>Multitap</h3><p>Cost: 1,000</p></div>
+                <button class="btn" onclick="upgrade('tap')">Upgrade</button>
+            </div>
+            <div style="padding: 20px; color: #888; font-size: 13px;">
+                * Your max energy increases automatically as you level up!
+            </div>
+        </div>
+
+        <div id="friends-page" class="section">
+            <h2 style="margin-top:40px; color:#FFD700;">FRIENDS</h2>
+            <div style="background:#111; padding:30px; margin:15px; border-radius:15px;">
+                <p>Invite friends to earn massive bonuses!</p>
+                <button class="btn" style="width:100%; padding:15px;" onclick="alert('Link Copied!')">Invite a Friend</button>
+            </div>
+        </div>
+
+        <div class="nav-bar">
+            <button class="nav-btn active-nav" onclick="tab('tap')"><span class="nav-icon">🟡</span>TAP</button>
+            <button class="nav-btn" onclick="tab('boost')"><span class="nav-icon">🚀</span>BOOST</button>
+            <button class="nav-btn" onclick="tab('friends')"><span class="nav-icon">👥</span>FRIENDS</button>
+        </div>
     </div>
 
     <script>
-        let maxEnergy = 1000;
-        let balance = parseInt(localStorage.getItem('jolt_balance')) || 0;
+        let pts = parseInt(localStorage.getItem('jolt_pts')) || 0;
+        let perTap = parseInt(localStorage.getItem('jolt_pertap')) || 1;
         
-        // حساب الطاقة عند العودة
-        let lastEnergy = parseInt(localStorage.getItem('last_energy'));
-        let lastTime = parseInt(localStorage.getItem('last_time'));
-        let energy = isNaN(lastEnergy) ? maxEnergy : lastEnergy;
+        // إعدادات المستويات والطاقة
+        let levels = [
+            { name: "Bronze", min: 0, energy: 1000 },
+            { name: "Silver", min: 5000, energy: 2000 },
+            { name: "Gold", min: 25000, energy: 4000 },
+            { name: "Platinum", min: 100000, energy: 8000 },
+            { name: "Diamond", min: 500000, energy: 15000 }
+        ];
 
-        if (lastTime) {
-            let now = Date.now();
-            let secondsPassed = Math.floor((now - lastTime) / 1000);
-            energy = Math.min(maxEnergy, energy + secondsPassed); // شحن 1 طاقة لكل ثانية غياب
+        let currentLevelIndex = 0;
+        let maxEn = 1000;
+        let en = parseInt(localStorage.getItem('jolt_en')) || 1000;
+
+        function init() {
+            let p = 0;
+            const loader = setInterval(() => {
+                p += 2;
+                document.getElementById('loader-fill').style.width = p + "%";
+                document.getElementById('load-pct').innerText = p + "%";
+                if(p >= 100) { 
+                    clearInterval(loader); 
+                    document.getElementById('splash').style.display = 'none'; 
+                    document.getElementById('game-container').style.display = 'flex'; 
+                    checkLevel(); 
+                    render(); 
+                }
+            }, 30);
         }
 
-        function updateUI() {
-            document.getElementById('balance').innerText = balance.toLocaleString() + " 🪙";
-            document.getElementById('energy-bar').style.width = (energy / maxEnergy) * 100 + "%";
-            document.getElementById('energy-text').innerText = `${energy}/${maxEnergy}`;
-            
-            // حفظ البيانات فورياً
-            localStorage.setItem('jolt_balance', balance);
-            localStorage.setItem('last_energy', energy);
-            localStorage.setItem('last_time', Date.now());
-        }
-
-        function tap(e) {
-            if (energy >= 3) {
-                balance += 3;
-                energy -= 3;
-                updateUI();
+        function checkLevel() {
+            // فحص المستوى الحالي بناءً على النقاط
+            for (let i = levels.length - 1; i >= 0; i--) {
+                if (pts >= levels[i].min) {
+                    if (currentLevelIndex !== i) {
+                        currentLevelIndex = i;
+                        // رفع الطاقة القصوى تلقائياً عند الترقية
+                        maxEn = levels[i].energy;
+                        document.getElementById('level-name').innerText = levels[i].name + " Level";
+                    }
+                    break;
+                }
             }
         }
 
-        function toggleModal(id) {
-            let m = document.getElementById(id);
-            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        function tab(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            document.getElementById(name + '-page').classList.add('active');
+            event.currentTarget.classList.add('active-nav');
         }
 
-        function claimTask(r) {
-            balance += r;
-            alert("تمت إضافة المكافأة! 🎁");
-            updateUI();
-            toggleModal('taskModal');
+        function render() {
+            document.getElementById('score').innerText = pts.toLocaleString();
+            document.getElementById('energy-stat').innerText = `${Math.floor(en)} / ${maxEn}`;
+            document.getElementById('energy-fill').style.width = (en / maxEn * 100) + "%";
         }
 
-        // شحن الطاقة المستمر أثناء فتح البوت
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy++;
-                updateUI();
-            } else {
-                localStorage.setItem('last_time', Date.now()); // تحديث الوقت حتى لو الطاقة ممتلئة
+        document.getElementById('coinArea').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            // تحديد حد أقصى 3 لمسات في وقت واحد لمنع الغش المبالغ فيه
+            let touches = Math.min(e.changedTouches.length, 3); 
+            for(let i=0; i<touches; i++) {
+                if(en >= perTap) {
+                    pts += perTap; en -= perTap;
+                    pop(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
+                }
             }
-        }, 1000);
+            checkLevel(); render(); save();
+        }, {passive: false});
 
-        updateUI();
+        function pop(x, y) {
+            const d = document.createElement('div');
+            d.className = 'float-text'; d.innerText = '+' + perTap;
+            d.style.left = x + 'px'; d.style.top = y + 'px';
+            document.body.appendChild(d);
+            setTimeout(() => d.remove(), 800);
+        }
+
+        function upgrade(type) {
+            if(pts >= 1000) {
+                pts -= 1000; perTap++; alert('Upgrade Success! New Tap Power: ' + perTap);
+            } else alert('Need 1,000 coins!');
+            render(); save();
+        }
+
+        function save() {
+            localStorage.setItem('jolt_pts', pts);
+            localStorage.setItem('jolt_en', en);
+            localStorage.setItem('jolt_pertap', perTap);
+        }
+
+        // شحن الطاقة (1 نقطة كل ثانية لزيادة الصعوبة قليلاً)
+        setInterval(() => { if(en < maxEn) { en = Math.min(maxEn, en + 1); render(); } }, 1000);
     </script>
 </body>
 </html>
