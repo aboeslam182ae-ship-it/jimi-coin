@@ -3,52 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Original 4:46</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Jolt Coin - Loading & Game</title>
     <style>
-        :root { --gold: #f3ba2f; --bg: #051937; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow: hidden; }
 
-        /* شريط الطاقة الأزرق بإطار أبيض - طلب الساعة 4:46 */
-        .energy-section { padding: 20px; border-bottom: 2px solid var(--gold); }
-        .energy-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
-        .bar-border { width: 100%; height: 18px; background: #000; border: 2px solid #fff; border-radius: 10px; overflow: hidden; }
-        .bar-fill { height: 100%; background: #007bff; width: 70%; }
+        /* 1. شاشة التحميل (تختفي بعد 3 ثواني) */
+        #loading-screen {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; z-index: 9999; display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+        }
+        .loader-img { width: 220px; height: 220px; border-radius: 50%; margin-bottom: 20px; border: 3px solid #f3ba2f; }
+        .loading-text { font-size: 24px; color: #f3ba2f; font-weight: bold; margin-bottom: 15px; }
+        .load-bar-bg { width: 70%; height: 10px; background: #222; border-radius: 10px; overflow: hidden; border: 1px solid #fff; }
+        .load-bar-fill { width: 0%; height: 100%; background: #f3ba2f; animation: loading 3s forwards; }
 
-        /* منطقة العملة المركزية */
-        .coin-wrap { margin: 40px 0; }
-        .main-bolt { width: 200px; height: 200px; background: radial-gradient(circle, var(--gold), #8a6d3b); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(243, 186, 47, 0.4); cursor: pointer; }
+        @keyframes loading { 0% { width: 0%; } 100% { width: 100%; } }
 
-        /* المربعات السفلية */
-        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
-        .card-box { background: #102a51; border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .card-box i { font-size: 28px; color: var(--gold); display: block; margin-bottom: 10px; }
+        /* 2. واجهة اللعبة الأصلية (الساعة 4-5) */
+        #game-interface { display: none; padding-top: 20px; }
+        .energy-container { width: 85%; height: 25px; background: #111; border: 2px solid #fff; border-radius: 15px; margin: 15px auto; overflow: hidden; }
+        .energy-fill { height: 100%; background: #007bff; width: 100%; transition: width 0.3s; }
+        .coin-btn { width: 200px; height: 200px; background: #f3ba2f; border-radius: 50%; margin: 40px auto; display: flex; align-items: center; justify-content: center; font-size: 80px; cursor: pointer; box-shadow: 0 0 20px #f3ba2f; }
     </style>
 </head>
 <body>
 
-    <div class="energy-section">
-        <div class="energy-info">
-            <span style="color:var(--gold)">19.45B <i class="fas fa-coins"></i></span>
-            <span>Level: Gold</span>
-        </div>
-        <div class="bar-border">
-            <div class="bar-fill"></div>
-        </div>
-        <small style="display:block; margin-top:5px; color:#ccc;">Energy: 700 / 1000</small>
-    </div>
-
-    <div class="coin-wrap">
-        <h1 style="color:var(--gold); margin-bottom: 25px;">JOLT COIN</h1>
-        <div class="main-bolt">
-            <i class="fas fa-bolt" style="font-size: 75px; color: #fff;"></i>
+    <div id="loading-screen">
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="loader-img">
+        <div class="loading-text">Loading Jolt Coin...</div>
+        <div class="load-bar-bg">
+            <div class="load-bar-fill"></div>
         </div>
     </div>
 
-    <div class="nav-grid">
-        <div class="card-box"><i class="fas fa-tshirt"></i><span>Skins</span></div>
-        <div class="card-box"><i class="fas fa-users"></i><span>Friends</span></div>
+    <div id="game-interface">
+        <div id="levelDisplay" style="font-size: 20px; color: #f3ba2f;">Level: Bronze</div>
+        <div class="energy-container">
+            <div class="energy-fill" id="energyBar"></div>
+        </div>
+        <div id="energyText">1000 / 1000</div>
+
+        <div class="coin-btn" onclick="tap()">⚡</div>
+        <h2 style="font-size: 30px;"><span id="score">0</span> 💰</h2>
     </div>
 
+    <script>
+        // اخفاء شاشة التحميل واظهار اللعبة
+        setTimeout(() => {
+            document.getElementById('loading-screen').style.display = 'none';
+            document.getElementById('game-interface').style.display = 'block';
+        }, 3000);
+
+        let score = 0;
+        let energy = 1000;
+
+        function tap() {
+            if (energy > 0) {
+                score += 1;
+                energy -= 2;
+                document.getElementById('score').innerText = score;
+                document.getElementById('energyBar').style.width = (energy / 1000 * 100) + "%";
+                document.getElementById('energyText').innerText = energy + " / 1000";
+                
+                if(score > 50) document.getElementById('levelDisplay').innerText = "Level: Silver";
+                if(score > 100) document.getElementById('levelDisplay').innerText = "Level: Gold";
+            }
+        }
+    </script>
 </body>
 </html>
