@@ -3,67 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - Classic</title>
+    <title>Jolt Coin - Stable</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --gold: #f3ba2f; --dark-blue: #051937; --card-bg: #102a51; }
-        body { background: var(--dark-blue); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow-x: hidden; }
+        :root { --gold: #f3ba2f; --bg: #051937; --energy-blue: #007bff; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
 
-        /* الهيدر المتوازن */
-        .top-bar { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.3); border-bottom: 2px solid var(--gold); }
+        /* شريط المستوى والطاقة - إطار أبيض ولون أزرق */
+        .status-section { padding: 20px; background: rgba(0,0,0,0.3); border-bottom: 2px solid var(--gold); }
+        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
         
-        .profile-container { position: relative; width: 60px; height: 60px; }
-        .avatar-box { width: 100%; height: 100%; border-radius: 12px; border: 2px solid var(--gold); background: #111; overflow: hidden; }
-        .avatar-box img { width: 100%; height: 100%; object-fit: cover; }
-        .level-tag { position: absolute; bottom: -8px; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; font-size: 10px; font-weight: bold; padding: 2px 6px; border-radius: 4px; }
+        .energy-bar-border { width: 100%; height: 20px; background: #000; border: 2px solid #fff; border-radius: 10px; overflow: hidden; }
+        .energy-bar-fill { height: 100%; background: var(--energy-blue); width: 70%; transition: width 0.3s; }
 
-        .stats-container { flex-grow: 1; text-align: right; margin-right: 15px; }
-        .labels-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: bold; margin-bottom: 5px; }
-        .progress-outline { width: 100%; height: 12px; background: #000; border: 1px solid #fff; border-radius: 10px; overflow: hidden; }
-        .progress-fill { height: 100%; background: linear-gradient(90deg, #f3ba2f, #ffea00); width: 45%; }
+        /* منطقة العملة */
+        .coin-area { margin: 50px 0; }
+        .main-coin { width: 220px; height: 220px; background: radial-gradient(circle, var(--gold), #b8860b); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(243, 186, 47, 0.4); cursor: pointer; transition: transform 0.1s; }
+        .main-coin:active { transform: scale(0.95); }
 
-        /* القسم الأوسط */
-        .hero-section { padding: 30px 0; }
-        .hero-title { color: var(--gold); font-size: 26px; font-weight: bold; margin-bottom: 20px; }
-        .main-coin-btn { width: 220px; height: 220px; background: radial-gradient(circle, var(--gold), #8a6d3b); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(243, 186, 47, 0.3); cursor: pointer; }
-
-        /* الشبكة السفلية */
-        .bottom-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
-        .menu-item { background: var(--card-bg); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .menu-item i { font-size: 24px; color: var(--gold); margin-bottom: 10px; display: block; }
+        /* القائمة السفلية */
+        .bottom-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
+        .nav-card { background: #102a51; padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .nav-card i { font-size: 24px; color: var(--gold); display: block; margin-bottom: 8px; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <div class="stats-container">
-            <div class="labels-row">
-                <span style="color:var(--gold)">19.45B <i class="fas fa-coins"></i></span>
-                <span>Syria [A&A]</span>
-            </div>
-            <div class="progress-outline"><div class="progress-fill"></div></div>
-            <small style="color:#00ff00; font-size:11px; margin-top:5px; display:block;">3.48B to next level</small>
+    <div class="status-section">
+        <div class="info-row">
+            <span>Level: Gold</span>
+            <span style="color:var(--gold)">19.45B <i class="fas fa-coins"></i></span>
         </div>
-
-        <div class="profile-container">
-            <div class="avatar-box">
-                <i class="fas fa-user" style="font-size: 30px; margin-top: 12px; color: #555;"></i>
-            </div>
-            <div class="level-tag">LVL 32</div>
+        <div class="energy-bar-border">
+            <div class="energy-bar-fill"></div>
         </div>
+        <small style="margin-top: 5px; display: block; color: #aaa;">Energy: 700 / 1000</small>
     </div>
 
-    <div class="hero-section">
-        <h1 class="hero-title">JOLT COIN</h1>
-        <div class="main-coin-btn">
+    <div class="coin-area">
+        <h1 style="color:var(--gold); margin-bottom: 30px;">JOLT COIN</h1>
+        <div class="main-coin" onclick="handleTap()">
             <i class="fas fa-bolt" style="font-size: 80px; color: #fff;"></i>
         </div>
     </div>
 
-    <div class="bottom-grid">
-        <div class="menu-item"><i class="fas fa-tshirt"></i><span>Skins</span></div>
-        <div class="menu-item"><i class="fas fa-users"></i><span>Friends</span></div>
+    <div class="bottom-nav">
+        <div class="nav-card"><i class="fas fa-users"></i><span>Friends</span></div>
+        <div class="nav-card"><i class="fas fa-tshirt"></i><span>Skins</span></div>
     </div>
 
+    <script>
+        function handleTap() {
+            // كود النقرات البسيط
+        }
+    </script>
 </body>
 </html>
