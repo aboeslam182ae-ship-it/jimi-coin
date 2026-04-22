@@ -3,75 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Pure Version</title>
+    <title>Jolt Coin - Original Stable</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow: hidden; }
+        :root { --gold: #f3ba2f; --bg: #051937; --card: #102a51; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow: hidden; }
 
-        /* 1. شاشة التحميل - تظهر أولاً */
+        /* 1. شاشة التحميل (تظهر أولاً) */
         #loading-screen {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #051937; z-index: 9999; display: flex; flex-direction: column;
+            background: #000; z-index: 9999; display: flex; flex-direction: column;
             align-items: center; justify-content: center;
         }
-        .jaguar-img { width: 200px; height: 200px; border-radius: 50%; border: 3px solid #f3ba2f; margin-bottom: 20px; }
-        .loading-bar-bg { width: 250px; height: 12px; background: #111; border: 1px solid #fff; border-radius: 10px; overflow: hidden; }
-        .loading-bar-fill { width: 0%; height: 100%; background: #f3ba2f; animation: startLoad 3s forwards; }
+        .loader-img { width: 200px; height: 200px; border-radius: 50%; border: 3px solid var(--gold); margin-bottom: 20px; }
+        .load-bar-bg { width: 70%; height: 10px; background: #222; border: 1px solid #fff; border-radius: 10px; overflow: hidden; }
+        .load-bar-fill { width: 0%; height: 100%; background: var(--gold); animation: loadAnim 3s forwards; }
+        @keyframes loadAnim { to { width: 100%; } }
 
-        @keyframes startLoad { to { width: 100%; } }
+        /* 2. الهيدر (بروفايل وشريط الطاقة) */
+        .header { display: flex; align-items: center; justify-content: space-between; padding: 15px; background: rgba(0,0,0,0.5); border-bottom: 2px solid var(--gold); }
+        .p-img { width: 60px; height: 60px; border-radius: 12px; border: 2px solid var(--gold); background: #111; }
+        .energy-box { flex-grow: 1; margin-right: 15px; text-align: right; }
+        .energy-bar-border { width: 100%; height: 14px; background: #000; border: 1px solid #fff; border-radius: 10px; overflow: hidden; margin-top: 5px; }
+        .energy-bar-fill { height: 100%; background: #007bff; width: 100%; }
 
-        /* 2. واجهة اللعبة - تظهر بعد التحميل */
-        #game-ui { display: none; padding-top: 20px; }
-        .header-box { padding: 10px; }
-        .energy-border { width: 85%; height: 22px; background: #000; border: 2px solid #fff; border-radius: 15px; margin: 15px auto; overflow: hidden; }
-        .energy-blue { height: 100%; background: #007bff; width: 100%; }
+        /* 3. العملة */
+        .coin-area { margin: 40px auto; width: 220px; height: 220px; background: radial-gradient(circle, var(--gold), #8a6d3b); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 20px rgba(243, 186, 47, 0.4); cursor: pointer; }
 
-        .coin-btn { width: 200px; height: 200px; background: #f3ba2f; border-radius: 50%; margin: 40px auto; display: flex; align-items: center; justify-content: center; font-size: 80px; cursor: pointer; box-shadow: 0 0 20px #f3ba2f; }
-        .score-txt { font-size: 32px; font-weight: bold; }
+        /* 4. الشبكة السفلية */
+        .menu-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 15px; }
+        .menu-card { background: var(--card); border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
     </style>
 </head>
 <body>
 
     <div id="loading-screen">
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="jaguar-img">
-        <div style="color:#f3ba2f; margin-bottom:10px;">Loading Jolt Coin...</div>
-        <div class="loading-bar-bg">
-            <div class="loading-bar-fill"></div>
-        </div>
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="loader-img">
+        <div style="color:var(--gold); margin-bottom: 10px;">Loading Jolt Coin...</div>
+        <div class="load-bar-bg"><div class="load-bar-fill"></div></div>
     </div>
 
-    <div id="game-ui">
-        <div class="header-box">
-            <div style="font-size: 20px;">Level: <span style="color:#f3ba2f">Bronze</span></div>
-            <div class="energy-border">
-                <div class="energy-blue" id="energyBar"></div>
+    <div id="main-ui" style="display:none;">
+        <div class="header">
+            <div class="energy-box">
+                <div style="display:flex; justify-content:space-between; font-size:13px;">
+                    <span style="color:var(--gold)">19.45B 💰</span>
+                    <span>Level: Gold</span>
+                </div>
+                <div class="energy-bar-border"><div class="energy-bar-fill"></div></div>
             </div>
-            <div id="energyVal">1000 / 1000</div>
+            <div style="position:relative;">
+                <img src="https://api.dicebear.com/7.x/bottts/svg?seed=Jimi" class="p-img">
+                <div style="position:absolute; bottom:-5px; left:50%; transform:translateX(-50%); background:var(--gold); color:#000; font-size:10px; padding:2px 5px; border-radius:4px; font-weight:bold;">LVL 32</div>
+            </div>
         </div>
 
-        <div class="coin-btn" onclick="tap()">⚡</div>
-        <div class="score-txt"><span id="score">0</span> 💰</div>
+        <div class="coin-area">
+            <i class="fas fa-bolt" style="font-size: 80px; color: #fff;"></i>
+        </div>
+
+        <div class="menu-grid">
+            <div class="menu-card"><i class="fas fa-tshirt" style="color:var(--gold)"></i><br>Skins</div>
+            <div class="menu-card"><i class="fas fa-users" style="color:var(--gold)"></i><br>Friends</div>
+        </div>
     </div>
 
     <script>
-        // كود الانتقال من التحميل للعبة
         setTimeout(() => {
             document.getElementById('loading-screen').style.display = 'none';
-            document.getElementById('game-ui').style.display = 'block';
+            document.getElementById('main-ui').style.display = 'block';
         }, 3000);
-
-        let score = 0;
-        let energy = 1000;
-
-        function tap() {
-            if (energy > 0) {
-                score++;
-                energy -= 2;
-                document.getElementById('score').innerText = score;
-                document.getElementById('energyBar').style.width = (energy/10) + "%";
-                document.getElementById('energyVal').innerText = energy + " / 1000";
-            }
-        }
     </script>
 </body>
 </html>
-
