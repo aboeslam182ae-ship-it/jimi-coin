@@ -1,208 +1,115 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Tasks</title>
+    <title>Jimi Coin - Fixed</title>
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            user-select: none;
-        }
+        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow: hidden; user-select: none; }
 
-        #game-container {
-            text-align: center;
-            width: 100%;
-        }
+        /* شاشة التحميل */
+        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .jag-img { width: 180px; height: 180px; border-radius: 50%; border: 2px solid #f3ba2f; margin-bottom: 20px; }
+        .load-bar { width: 200px; height: 6px; background: #222; border-radius: 5px; overflow: hidden; border: 1px solid #fff; }
+        .load-fill { width: 0%; height: 100%; background: #f3ba2f; animation: load 2s forwards; }
+        @keyframes load { to { width: 100%; } }
 
-        .stats {
-            font-size: 24px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #ffcc00;
-        }
+        /* الواجهة الأساسية */
+        #app { display: none; padding-top: 50px; height: 100vh; position: relative; }
+        .score-num { font-size: 90px; font-weight: bold; color: #f3ba2f; margin: 0; text-shadow: 0 0 10px rgba(243, 186, 47, 0.5); }
+        .lvl-txt { font-size: 16px; color: #888; letter-spacing: 3px; margin-bottom: 40px; }
 
-        .level-badge {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: #000;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
+        /* منطقة النقر المصلحة */
+        .click-area { position: relative; width: 300px; height: 250px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
+        .glow-ring { position: absolute; width: 260px; height: 150px; border: 3px solid #f3ba2f; border-radius: 50%; box-shadow: 0 0 25px #f3ba2f; z-index: 1; }
+        .coin-img { width: 150px; z-index: 10; cursor: pointer; transition: transform 0.05s; -webkit-tap-highlight-color: transparent; }
+        .coin-img:active { transform: scale(0.92); }
 
-        #coin {
-            width: 220px;
-            height: 220px;
-            cursor: pointer;
-            transition: transform 0.1s;
-            -webkit-tap-highlight-color: transparent;
-        }
+        /* تأثير +3 الطائر */
+        .plus-three { position: absolute; color: #00d2ff; font-size: 28px; font-weight: bold; pointer-events: none; animation: flyUp 0.6s ease-out forwards; z-index: 20; }
+        @keyframes flyUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
 
-        #coin:active {
-            transform: scale(0.95);
-        }
+        /* شريط الطاقة السفلي */
+        .footer { position: absolute; bottom: 80px; width: 100%; }
+        .e-info { display: flex; justify-content: space-between; width: 85%; margin: 0 auto 8px auto; font-size: 14px; font-weight: bold; }
+        .e-bar { width: 85%; height: 12px; background: #111; border-radius: 10px; margin: 0 auto; overflow: hidden; }
+        .e-fill { height: 100%; background: #00d2ff; width: 100%; transition: width 0.1s; }
 
-        .energy-container {
-            width: 80%;
-            height: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            margin: 20px auto;
-            position: relative;
-        }
-
-        #energy-bar {
-            height: 100%;
-            background: linear-gradient(to right, #ffcc00, #ff6600);
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-
-        /* القائمة السفلية */
-        .bottom-menu {
-            position: fixed;
-            bottom: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .menu-btn {
-            background: #222;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* نافذة المهام */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(50%, -50%); /* ستتعدل بالجافاسكريبت */
-            background: #1a1a1a;
-            width: 85%;
-            padding: 20px;
-            border-radius: 20px;
-            border: 2px solid #ffcc00;
-            z-index: 100;
-        }
-
-        .task-item {
-            background: #333;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .claim-btn {
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+        .menu { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; background: #000; border-top: 1px solid #222; }
+        .m-item { color: #f3ba2f; font-size: 12px; font-weight: bold; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div class="level-badge" id="level-name">Bronze Level</div>
-        <div class="stats" id="balance">0 🪙</div>
-        
-        <img id="coin" src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" alt="Jolt Coin">
-        
-        <div class="energy-container">
-            <div id="energy-bar" style="width: 100%;"></div>
-            <div id="energy-text" style="position: absolute; width: 100%; top:0; font-size: 12px;">1000/1000</div>
-        </div>
+    <div id="loader">
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="jag-img">
+        <div class="load-bar"><div class="load-fill"></div></div>
     </div>
 
-    <div class="bottom-menu">
-        <button class="menu-btn" onclick="toggleModal('tasks-modal')">📋 المهام</button>
-        <button class="menu-btn">🚀 تعزيز</button>
-        <button class="menu-btn">👥 الأصدقاء</button>
-    </div>
+    <div id="app">
+        <h1 class="score-num" id="mainScore">15</h1>
+        <div class="lvl-txt">BRONZE LEVEL</div>
 
-    <div id="tasks-modal" class="modal" style="left: 7.5%; transform: none; top: 20%;">
-        <h3>قائمة المهام 📝</h3>
-        <div class="task-item">
-            <span>اشترك في القناة (+50k)</span>
-            <button class="claim-btn" onclick="completeTask(50000)">إتمام</button>
+        <div class="click-area" id="tapZone">
+            <div class="glow-ring"></div>
+            <img src="https://i.ibb.co/Kzs676k/DALL-E-2025-10-27-21-38-16-A-close-up-design-of-a-round-golden-coin-for-a-digital-game-called-Jolt-Coi.webp" class="coin-img" id="coin">
         </div>
-        <button class="menu-btn" style="width: 100%; margin-top: 10px;" onclick="toggleModal('tasks-modal')">إغلاق</button>
+
+        <div class="footer">
+            <div class="e-info">
+                <span>⚡ ENERGY</span>
+                <span id="eText">2000 / 2000</span>
+            </div>
+            <div class="e-bar">
+                <div class="e-fill" id="eBar"></div>
+            </div>
+        </div>
+
+        <div class="menu">
+            <div class="m-item">TAP 💰</div>
+            <div class="m-item" style="color:#888">BOOST 🚀</div>
+        </div>
     </div>
 
     <script>
-        let balance = parseInt(localStorage.getItem('jolt_balance')) || 0;
-        let energy = 1000;
-        let maxEnergy = 1000;
+        // الانتقال من التحميل للعبة
+        setTimeout(() => {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        }, 2000);
 
-        const balanceEl = document.getElementById('balance');
-        const coinEl = document.getElementById('coin');
-        const energyBar = document.getElementById('energy-bar');
-        const energyText = document.getElementById('energy-text');
+        let score = 15;
+        let energy = 2000;
+        const mainScore = document.getElementById('mainScore');
+        const eText = document.getElementById('eText');
+        const eBar = document.getElementById('eBar');
+        const coin = document.getElementById('coin');
+        const tapZone = document.getElementById('tapZone');
 
-        function updateUI() {
-            balanceEl.innerText = `${balance.toLocaleString()} 🪙`;
-            let level = "Bronze";
-            if(balance >= 5000) { level = "Silver"; maxEnergy = 2000; }
-            document.getElementById('level-name').innerText = `${level} Level`;
-            
-            energyBar.style.width = (energy / maxEnergy) * 100 + "%";
-            energyText.innerText = `${energy}/${maxEnergy}`;
-        }
-
-        coinEl.addEventListener('touchstart', (e) => {
-            e.preventDefault();
+        coin.addEventListener('touchstart', (e) => {
+            e.preventDefault(); // يمنع التداخل
             if (energy >= 3) {
-                balance += 3;
+                // تحديث البيانات
+                score += 3;
                 energy -= 3;
-                updateUI();
-                localStorage.setItem('jolt_balance', balance);
+                
+                // تحديث الشاشة
+                mainScore.innerText = score;
+                eText.innerText = `${energy} / 2000`;
+                eBar.style.width = (energy / 2000 * 100) + "%";
+
+                // ظهور رقم +3 الطائر
+                const touch = e.touches[0];
+                const plus = document.createElement('div');
+                plus.className = 'plus-three';
+                plus.innerText = '+3';
+                plus.style.left = (touch.clientX - 20) + 'px';
+                plus.style.top = (touch.clientY - 40) + 'px';
+                document.body.appendChild(plus);
+                
+                setTimeout(() => plus.remove(), 600);
             }
         });
-
-        function toggleModal(id) {
-            const modal = document.getElementById(id);
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function completeTask(reward) {
-            balance += reward;
-            alert("مبروك! حصلت على المكافأة 🎁");
-            updateUI();
-            localStorage.setItem('jolt_balance', balance);
-            toggleModal('tasks-modal');
-        }
-
-        // شحن الطاقة تلقائياً
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + 1);
-                updateUI();
-            }
-        }, 1000);
-
-        updateUI();
     </script>
 </body>
 </html>
