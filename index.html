@@ -3,59 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Stable</title>
+    <title>Jolt Coin - Original 4:46</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --gold: #f3ba2f; --bg: #051937; --energy-blue: #007bff; }
+        :root { --gold: #f3ba2f; --bg: #051937; }
         body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; }
 
-        /* شريط المستوى والطاقة - إطار أبيض ولون أزرق */
-        .status-section { padding: 20px; background: rgba(0,0,0,0.3); border-bottom: 2px solid var(--gold); }
-        .info-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-weight: bold; }
-        
-        .energy-bar-border { width: 100%; height: 20px; background: #000; border: 2px solid #fff; border-radius: 10px; overflow: hidden; }
-        .energy-bar-fill { height: 100%; background: var(--energy-blue); width: 70%; transition: width 0.3s; }
+        /* شريط الطاقة الأزرق بإطار أبيض - طلب الساعة 4:46 */
+        .energy-section { padding: 20px; border-bottom: 2px solid var(--gold); }
+        .energy-info { display: flex; justify-content: space-between; margin-bottom: 8px; font-weight: bold; }
+        .bar-border { width: 100%; height: 18px; background: #000; border: 2px solid #fff; border-radius: 10px; overflow: hidden; }
+        .bar-fill { height: 100%; background: #007bff; width: 70%; }
 
-        /* منطقة العملة */
-        .coin-area { margin: 50px 0; }
-        .main-coin { width: 220px; height: 220px; background: radial-gradient(circle, var(--gold), #b8860b); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(243, 186, 47, 0.4); cursor: pointer; transition: transform 0.1s; }
-        .main-coin:active { transform: scale(0.95); }
+        /* منطقة العملة المركزية */
+        .coin-wrap { margin: 40px 0; }
+        .main-bolt { width: 200px; height: 200px; background: radial-gradient(circle, var(--gold), #8a6d3b); border-radius: 50%; margin: 0 auto; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 25px rgba(243, 186, 47, 0.4); cursor: pointer; }
 
-        /* القائمة السفلية */
-        .bottom-nav { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding: 20px; }
-        .nav-card { background: #102a51; padding: 15px; border-radius: 15px; border: 1px solid rgba(255,255,255,0.1); }
-        .nav-card i { font-size: 24px; color: var(--gold); display: block; margin-bottom: 8px; }
+        /* المربعات السفلية */
+        .nav-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; padding: 20px; }
+        .card-box { background: #102a51; border-radius: 15px; padding: 15px; border: 1px solid rgba(255,255,255,0.1); }
+        .card-box i { font-size: 28px; color: var(--gold); display: block; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
-    <div class="status-section">
-        <div class="info-row">
-            <span>Level: Gold</span>
+    <div class="energy-section">
+        <div class="energy-info">
             <span style="color:var(--gold)">19.45B <i class="fas fa-coins"></i></span>
+            <span>Level: Gold</span>
         </div>
-        <div class="energy-bar-border">
-            <div class="energy-bar-fill"></div>
+        <div class="bar-border">
+            <div class="bar-fill"></div>
         </div>
-        <small style="margin-top: 5px; display: block; color: #aaa;">Energy: 700 / 1000</small>
+        <small style="display:block; margin-top:5px; color:#ccc;">Energy: 700 / 1000</small>
     </div>
 
-    <div class="coin-area">
-        <h1 style="color:var(--gold); margin-bottom: 30px;">JOLT COIN</h1>
-        <div class="main-coin" onclick="handleTap()">
-            <i class="fas fa-bolt" style="font-size: 80px; color: #fff;"></i>
+    <div class="coin-wrap">
+        <h1 style="color:var(--gold); margin-bottom: 25px;">JOLT COIN</h1>
+        <div class="main-bolt">
+            <i class="fas fa-bolt" style="font-size: 75px; color: #fff;"></i>
         </div>
     </div>
 
-    <div class="bottom-nav">
-        <div class="nav-card"><i class="fas fa-users"></i><span>Friends</span></div>
-        <div class="nav-card"><i class="fas fa-tshirt"></i><span>Skins</span></div>
+    <div class="nav-grid">
+        <div class="card-box"><i class="fas fa-tshirt"></i><span>Skins</span></div>
+        <div class="card-box"><i class="fas fa-users"></i><span>Friends</span></div>
     </div>
 
-    <script>
-        function handleTap() {
-            // كود النقرات البسيط
-        }
-    </script>
 </body>
 </html>
