@@ -1,115 +1,181 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - Fixed</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
+    <title>Jimi Coin - Fixed Nav</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow: hidden; user-select: none; }
-
+        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+        
         /* شاشة التحميل */
-        #loader { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        .jag-img { width: 180px; height: 180px; border-radius: 50%; border: 2px solid #f3ba2f; margin-bottom: 20px; }
-        .load-bar { width: 200px; height: 6px; background: #222; border-radius: 5px; overflow: hidden; border: 1px solid #fff; }
-        .load-fill { width: 0%; height: 100%; background: #f3ba2f; animation: load 2s forwards; }
-        @keyframes load { to { width: 100%; } }
+        #splash { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
+        .loader-container { width: 80%; margin-bottom: 60px; text-align: center; }
+        .loader-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid gold; }
+        #loader-fill { width: 0%; height: 100%; background: gold; transition: width 0.1s; }
 
-        /* الواجهة الأساسية */
-        #app { display: none; padding-top: 50px; height: 100vh; position: relative; }
-        .score-num { font-size: 90px; font-weight: bold; color: #f3ba2f; margin: 0; text-shadow: 0 0 10px rgba(243, 186, 47, 0.5); }
-        .lvl-txt { font-size: 16px; color: #888; letter-spacing: 3px; margin-bottom: 40px; }
+        #game-container { display: none; height: 100vh; flex-direction: column; }
+        .section { display: none; text-align: center; width: 100%; flex: 1; padding-top: 20px; }
+        .active { display: flex !important; flex-direction: column; align-items: center; }
 
-        /* منطقة النقر المصلحة */
-        .click-area { position: relative; width: 300px; height: 250px; margin: 0 auto; display: flex; align-items: center; justify-content: center; }
-        .glow-ring { position: absolute; width: 260px; height: 150px; border: 3px solid #f3ba2f; border-radius: 50%; box-shadow: 0 0 25px #f3ba2f; z-index: 1; }
-        .coin-img { width: 150px; z-index: 10; cursor: pointer; transition: transform 0.05s; -webkit-tap-highlight-color: transparent; }
-        .coin-img:active { transform: scale(0.92); }
+        /* اللعب */
+        #score { font-size: 70px; color: #FFD700; font-weight: bold; margin: 20px 0 5px 0; }
+        #level-name { color: #888; font-size: 14px; letter-spacing: 2px; margin-bottom: 40px; }
+        .coin-btn { width: 250px; height: 250px; position: relative; z-index: 100; cursor: pointer; }
+        .coin-btn img { width: 100%; border-radius: 50%; }
+        .coin-glow { position: absolute; width: 280px; height: 160px; top: 50%; left: 50%; transform: translate(-50%, -50%); border: 2px solid gold; border-radius: 50%; box-shadow: 0 0 20px gold; z-index: 10; pointer-events: none; }
 
-        /* تأثير +3 الطائر */
-        .plus-three { position: absolute; color: #00d2ff; font-size: 28px; font-weight: bold; pointer-events: none; animation: flyUp 0.6s ease-out forwards; z-index: 20; }
-        @keyframes flyUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
+        /* شريط التنقل - تم إصلاح الاستجابة */
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #080808; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
+        .nav-item { color: #666; font-size: 12px; text-align: center; cursor: pointer; flex: 1; font-weight: bold; -webkit-tap-highlight-color: transparent; }
+        .nav-item.active-nav { color: #FFD700; }
+        .nav-icon { font-size: 22px; display: block; margin-bottom: 5px; }
 
-        /* شريط الطاقة السفلي */
-        .footer { position: absolute; bottom: 80px; width: 100%; }
-        .e-info { display: flex; justify-content: space-between; width: 85%; margin: 0 auto 8px auto; font-size: 14px; font-weight: bold; }
-        .e-bar { width: 85%; height: 12px; background: #111; border-radius: 10px; margin: 0 auto; overflow: hidden; }
-        .e-fill { height: 100%; background: #00d2ff; width: 100%; transition: width 0.1s; }
+        /* الطاقة */
+        .energy-box { width: 90%; position: absolute; bottom: 100px; }
+        .energy-bar-bg { height: 10px; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
+        #energy-fill { width: 100%; height: 100%; background: #00d2ff; }
 
-        .menu { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; background: #000; border-top: 1px solid #222; }
-        .m-item { color: #f3ba2f; font-size: 12px; font-weight: bold; text-decoration: none; }
+        .float-text { position: absolute; color: #00d2ff; font-size: 30px; font-weight: bold; pointer-events: none; animation: floatUp 0.6s forwards; z-index: 500; }
+        @keyframes floatUp { to { opacity: 0; transform: translateY(-100px); } }
+
+        /* صفحة البوست */
+        .card { background: #111; border: 1px solid #333; padding: 20px; border-radius: 15px; width: 85%; margin-top: 20px; }
+        .btn { background: gold; color: #000; border: none; padding: 15px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 10px; font-size: 16px; }
     </style>
 </head>
-<body>
+<body onload="init()">
 
-    <div id="loader">
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="jag-img">
-        <div class="load-bar"><div class="load-fill"></div></div>
+    <div id="splash">
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp">
+        <div class="loader-container">
+            <div id="load-pct" style="color:gold; margin-bottom:5px">0%</div>
+            <div class="loader-bar"><div id="loader-fill"></div></div>
+        </div>
     </div>
 
-    <div id="app">
-        <h1 class="score-num" id="mainScore">15</h1>
-        <div class="lvl-txt">BRONZE LEVEL</div>
-
-        <div class="click-area" id="tapZone">
-            <div class="glow-ring"></div>
-            <img src="https://i.ibb.co/Kzs676k/DALL-E-2025-10-27-21-38-16-A-close-up-design-of-a-round-golden-coin-for-a-digital-game-called-Jolt-Coi.webp" class="coin-img" id="coin">
+    <div id="game-container">
+        <div id="tap-page" class="section active">
+            <div id="score">15</div>
+            <div id="level-name">BRONZE LEVEL</div>
+            <div style="position:relative">
+                <div class="coin-glow"></div>
+                <div class="coin-btn" id="coinArea">
+                    <img src="https://i.ibb.co/Kzs676k/DALL-E-2025-10-27-21-38-16-A-close-up-design-of-a-round-golden-coin-for-a-digital-game-called-Jolt-Coi.webp">
+                </div>
+            </div>
+            <div class="energy-box">
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px">
+                    <span>⚡ ENERGY</span>
+                    <span id="energy-stat">2000 / 2000</span>
+                </div>
+                <div class="energy-bar-bg"><div id="energy-fill"></div></div>
+            </div>
         </div>
 
-        <div class="footer">
-            <div class="e-info">
-                <span>⚡ ENERGY</span>
-                <span id="eText">2000 / 2000</span>
-            </div>
-            <div class="e-bar">
-                <div class="e-fill" id="eBar"></div>
+        <div id="boost-page" class="section">
+            <h2 style="color:gold">BOOSTERS</h2>
+            <div class="card">
+                <h3>Multitap 🚀</h3>
+                <p id="boost-info">Upgrade to get more per tap</p>
+                <button class="btn" id="buyBoost">Upgrade (1,000 💰)</button>
             </div>
         </div>
 
-        <div class="menu">
-            <div class="m-item">TAP 💰</div>
-            <div class="m-item" style="color:#888">BOOST 🚀</div>
+        <div class="nav-bar">
+            <div class="nav-item active-nav" id="btn-tap">
+                <span class="nav-icon">💰</span>TAP
+            </div>
+            <div class="nav-item" id="btn-boost">
+                <span class="nav-icon">🚀</span>BOOST
+            </div>
         </div>
     </div>
 
     <script>
-        // الانتقال من التحميل للعبة
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        }, 2000);
+        let pts = parseInt(localStorage.getItem('jimi_pts')) || 15;
+        let perTap = parseInt(localStorage.getItem('jimi_pertap')) || 1;
+        let en = parseFloat(localStorage.getItem('jimi_en')) || 2000;
+        let maxEn = 2000;
 
-        let score = 15;
-        let energy = 2000;
-        const mainScore = document.getElementById('mainScore');
-        const eText = document.getElementById('eText');
-        const eBar = document.getElementById('eBar');
-        const coin = document.getElementById('coin');
-        const tapZone = document.getElementById('tapZone');
+        function init() {
+            let p = 0;
+            let interval = setInterval(() => {
+                p += 10;
+                document.getElementById('loader-fill').style.width = p + "%";
+                document.getElementById('load-pct').innerText = p + "%";
+                if(p >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('splash').style.display = 'none';
+                    document.getElementById('game-container').style.display = 'flex';
+                    render();
+                }
+            }, 50);
+        }
 
-        coin.addEventListener('touchstart', (e) => {
-            e.preventDefault(); // يمنع التداخل
-            if (energy >= 3) {
-                // تحديث البيانات
-                score += 3;
-                energy -= 3;
-                
-                // تحديث الشاشة
-                mainScore.innerText = score;
-                eText.innerText = `${energy} / 2000`;
-                eBar.style.width = (energy / 2000 * 100) + "%";
+        // إصلاح أزرار التنقل باستخدام الحوادث المباشرة
+        document.getElementById('btn-tap').addEventListener('touchstart', () => switchTab('tap'));
+        document.getElementById('btn-boost').addEventListener('touchstart', () => switchTab('boost'));
 
-                // ظهور رقم +3 الطائر
-                const touch = e.touches[0];
-                const plus = document.createElement('div');
-                plus.className = 'plus-three';
-                plus.innerText = '+3';
-                plus.style.left = (touch.clientX - 20) + 'px';
-                plus.style.top = (touch.clientY - 40) + 'px';
-                document.body.appendChild(plus);
-                
-                setTimeout(() => plus.remove(), 600);
+        function switchTab(target) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active-nav'));
+            
+            if(target === 'tap') {
+                document.getElementById('tap-page').classList.add('active');
+                document.getElementById('btn-tap').classList.add('active-nav');
+            } else {
+                document.getElementById('boost-page').classList.add('active');
+                document.getElementById('btn-boost').classList.add('active-nav');
+                renderBoost();
+            }
+        }
+
+        function render() {
+            document.getElementById('score').innerText = pts.toLocaleString();
+            document.getElementById('energy-stat').innerText = `${Math.floor(en)} / ${maxEn}`;
+            document.getElementById('energy-fill').style.width = (en/maxEn*100) + "%";
+        }
+
+        // برمجة النقر
+        document.getElementById('coinArea').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            let t = e.changedTouches[0];
+            if(en >= perTap) {
+                pts += perTap; en -= perTap;
+                showPop(t.pageX, t.pageY);
+                render(); save();
             }
         });
+
+        function showPop(x, y) {
+            let d = document.createElement('div');
+            d.className = 'float-text'; d.innerText = '+' + perTap;
+            d.style.left = x + 'px'; d.style.top = y + 'px';
+            document.body.appendChild(d);
+            setTimeout(() => d.remove(), 600);
+        }
+
+        // برمجة التطوير
+        function renderBoost() {
+            let cost = perTap * 1000;
+            document.getElementById('buyBoost').innerText = `Upgrade (${cost.toLocaleString()} 💰)`;
+            document.getElementById('buyBoost').onclick = () => {
+                if(pts >= cost) {
+                    pts -= cost; perTap++;
+                    alert('Success! New Power: ' + perTap);
+                    renderBoost(); render(); save();
+                } else { alert('Need more coins!'); }
+            };
+        }
+
+        function save() {
+            localStorage.setItem('jimi_pts', pts);
+            localStorage.setItem('jimi_en', en);
+            localStorage.setItem('jimi_pertap', perTap);
+        }
+
+        setInterval(() => { if(en < maxEn) { en = Math.min(maxEn, en + 2); render(); } }, 1000);
     </script>
 </body>
 </html>
