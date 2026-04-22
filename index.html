@@ -3,169 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Jimi Coin - Ultimate Fix</title>
+    <title>Jimi Coin - Fixed Images</title>
     <style>
-        body { background: #000; color: #fff; margin: 0; font-family: Arial, sans-serif; overflow: hidden; -webkit-user-select: none; user-select: none; }
+        body { background: #000; color: #fff; margin: 0; font-family: 'Arial', sans-serif; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
         
-        /* شاشة التحميل */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
-        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-        .loader-bar { width: 80%; height: 8px; background: #222; border-radius: 10px; margin-bottom: 60px; border: 1px solid gold; overflow: hidden; }
-        #loader-fill { width: 0%; height: 100%; background: gold; transition: width 0.1s; }
+        /* شاشة التحميل - تم تثبيت صورة الجاكوار (رابط سريع ومضمون) */
+        #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
+        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; opacity: 0.9; }
+        .loader-bar { width: 80%; height: 8px; background: #1a1a1a; border-radius: 10px; margin-bottom: 60px; border: 1px solid #FFD700; overflow: hidden; }
+        #loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); transition: width 0.1s; }
 
-        #app { display: none; height: 100vh; flex-direction: column; }
-        .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 30px; }
+        #app { display: none; height: 100vh; flex-direction: column; position: relative; }
+        .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 40px; }
         .active-page { display: flex !important; }
 
-        /* الصفحة الرئيسية */
-        #score { font-size: 70px; color: gold; font-weight: bold; margin-bottom: 5px; }
-        .level { color: #888; letter-spacing: 2px; margin-bottom: 40px; font-size: 14px; }
+        /* الصفحة الرئيسية - التصميم الفخم */
+        #score { font-size: 85px; color: #FFD700; font-weight: bold; margin: 0; text-shadow: 0 0 20px rgba(255, 215, 0, 0.3); }
+        .level-tag { color: #888; letter-spacing: 4px; font-size: 14px; margin-bottom: 50px; font-weight: bold; }
         
-        .coin-box { position: relative; width: 250px; height: 250px; display: flex; align-items: center; justify-content: center; }
-        .coin-box img { width: 160px; z-index: 10; border-radius: 50%; }
-        .glow { position: absolute; width: 260px; height: 150px; border: 2px solid gold; border-radius: 50%; box-shadow: 0 0 20px gold; }
+        /* منطقة العملة رقم 3 - تم تثبيت رابط العملة السريع والمضمون */
+        .coin-container { position: relative; width: 280px; height: 280px; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+        .coin-img { width: 100%; z-index: 10; border-radius: 50%; filter: drop-shadow(0 0 15px gold); transition: transform 0.05s; }
+        .coin-container:active .coin-img { transform: scale(0.92); }
+        .glow-ring { position: absolute; width: 320px; height: 180px; border: 2px solid rgba(255, 215, 0, 0.6); border-radius: 50%; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); z-index: 1; }
 
-        /* الطاقة */
-        .energy-wrap { width: 90%; position: absolute; bottom: 100px; }
-        .bar-bg { height: 10px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
-        #bar-fill { width: 100%; height: 100%; background: #00d2ff; }
+        /* شريط الطاقة الأزرق المستقر */
+        .energy-section { width: 90%; position: absolute; bottom: 110px; }
+        .energy-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 8px; font-weight: bold; color: #aaa; }
+        .bar-container { height: 14px; background: #0a0a0a; border-radius: 20px; border: 1px solid #333; overflow: hidden; }
+        #bar-fill { width: 100%; height: 100%; background: #00d2ff; box-shadow: 0 0 10px #00d2ff; }
 
-        /* القائمة السفلية - تم تعديلها لضمان النقر */
-        .navbar { position: fixed; bottom: 0; width: 100%; height: 70px; background: #0a0a0a; display: flex; border-top: 1px solid #222; z-index: 5000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; cursor: pointer; font-weight: bold; font-size: 12px; border: none; background: none; outline: none; }
-        .nav-item.active { color: gold; }
+        /* شريط التنقل السفلي */
+        .bottom-nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: #000; display: flex; border-top: 1px solid #1a1a1a; z-index: 10000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-weight: bold; font-size: 11px; -webkit-tap-highlight-color: transparent; }
+        .nav-item.active { color: #FFD700; }
+        .nav-icon { font-size: 26px; margin-bottom: 4px; display: block; }
 
-        /* صفحة البوست */
-        .card { background: #111; border: 1px solid #333; border-radius: 15px; width: 85%; padding: 20px; margin-top: 20px; text-align: center; }
-        .up-btn { background: gold; color: #000; border: none; padding: 15px; width: 100%; border-radius: 10px; font-weight: bold; margin-top: 10px; font-size: 16px; }
-
-        .float { position: absolute; color: #00d2ff; font-size: 30px; font-weight: bold; pointer-events: none; animation: up 0.5s forwards; }
-        @keyframes up { to { transform: translateY(-80px); opacity: 0; } }
+        /* تأثير النقاط الطائرة */
+        .tap-effect { position: absolute; color: #00d2ff; font-size: 32px; font-weight: bold; pointer-events: none; animation: rise 0.6s ease-out forwards; z-index: 5000; }
+        @keyframes rise { to { transform: translateY(-120px); opacity: 0; } }
+        
+        /* صفحة Boost */
+        .boost-card { background: #0a0a0a; border: 1px solid #222; border-radius: 20px; width: 85%; padding: 25px; margin-top: 30px; text-align: center; }
+        .buy-button { background: #FFD700; color: #000; border: none; padding: 18px; width: 100%; border-radius: 12px; font-weight: bold; font-size: 18px; margin-top: 15px; box-shadow: 0 4px 15px rgba(255, 215, 0, 0.2); }
     </style>
 </head>
-<body onload="start()">
+<body onload="initGame()">
 
     <div id="splash">
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp">
+        <img src="https://telegra.ph/file/5a53e9702b8006e87a6d8.jpg">
         <div class="loader-bar"><div id="loader-fill"></div></div>
     </div>
 
     <div id="app">
         <div id="page-tap" class="page active-page">
-            <div id="score">15</div>
-            <div class="level">BRONZE LEVEL</div>
-            <div class="coin-box" id="clickArea">
-                <div class="glow"></div>
-                <img src="https://i.ibb.co/Kzs676k/DALL-E-2025-10-27-21-38-16-A-close-up-design-of-a-round-golden-coin-for-a-digital-game-called-Jolt-Coi.webp">
+            <h1 id="score">15</h1>
+            <div class="level-tag">BRONZE LEVEL</div>
+            
+            <div class="coin-container" id="tapArea">
+                <div class="glow-ring"></div>
+                <img src="https://telegra.ph/file/f0a4025d5d836471900a6.jpg" class="coin-img">
             </div>
-            <div class="energy-wrap">
-                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:5px">
+
+            <div class="energy-section">
+                <div class="energy-header">
                     <span>⚡ ENERGY</span>
-                    <span id="e-text">2000 / 2000</span>
+                    <span id="energy-text">2000 / 2000</span>
                 </div>
-                <div class="bar-bg"><div id="bar-fill"></div></div>
+                <div class="bar-container"><div id="bar-fill"></div></div>
             </div>
         </div>
 
         <div id="page-boost" class="page">
-            <h2 style="color:gold">BOOSTERS</h2>
-            <div class="card">
-                <h3>Multitap 🚀</h3>
-                <p>Increase points per tap</p>
-                <button class="up-btn" id="upgradeBtn">Upgrade (1,000 💰)</button>
+            <h2 style="color:#FFD700; font-size: 32px;">BOOSTERS</h2>
+            <div class="boost-card">
+                <span style="font-size: 50px;">🚀</span>
+                <h3 style="margin: 10px 0;">Multitap</h3>
+                <p style="color: #666;">Increase points per each tap</p>
+                <button class="buy-button" id="upgradeButton">Upgrade (1,000 💰)</button>
             </div>
         </div>
 
-        <div class="navbar">
-            <div class="nav-item active" id="nav-tap" onclick="show('tap')">
-                <span style="font-size:24px">💰</span>
+        <div class="bottom-nav">
+            <div class="nav-item active" id="nav-tap-btn">
+                <span class="nav-icon">💰</span>
                 <span>TAP</span>
             </div>
-            <div class="nav-item" id="nav-boost" onclick="show('boost')">
-                <span style="font-size:24px">🚀</span>
+            <div class="nav-item" id="nav-boost-btn">
+                <span class="nav-icon">🚀</span>
                 <span>BOOST</span>
             </div>
         </div>
     </div>
 
     <script>
-        let pts = parseInt(localStorage.getItem('j_pts')) || 15;
-        let pwr = parseInt(localStorage.getItem('j_pwr')) || 1;
-        let en = parseFloat(localStorage.getItem('j_en')) || 2000;
-        let max = 2000;
+        // إعدادات البداية - تم تثبيت النقاط على 15 والطاقة على 2000
+        let points = parseInt(localStorage.getItem('jimi_pts')) || 15; 
+        let power = parseInt(localStorage.getItem('jimi_pwr')) || 1; 
+        let energy = parseFloat(localStorage.getItem('jimi_en')) || 2000;
+        let maxEnergy = 2000;
 
-        function start() {
-            let f = document.getElementById('loader-fill');
+        function initGame() {
+            let fill = document.getElementById('loader-fill');
             let p = 0;
-            let i = setInterval(() => {
-                p += 5; f.style.width = p + "%";
+            // شاشة تحميل أسرع لإظهار الجاكوار فوراً
+            let timer = setInterval(() => {
+                p += 5; 
+                fill.style.width = p + "%";
                 if(p >= 100) {
-                    clearInterval(i);
+                    clearInterval(timer);
                     document.getElementById('splash').style.display = 'none';
                     document.getElementById('app').style.display = 'flex';
-                    update();
+                    refreshUI();
                 }
-            }, 40);
+            }, 30);
         }
 
-        // دالة التنقل - تم إصلاحها لتعمل 100%
-        function show(target) {
-            document.getElementById('page-tap').classList.remove('active-page');
-            document.getElementById('page-boost').classList.remove('active-page');
-            document.getElementById('nav-tap').classList.remove('active');
-            document.getElementById('nav-boost').classList.remove('active');
-
-            if(target === 'tap') {
-                document.getElementById('page-tap').classList.add('active-page');
-                document.getElementById('nav-tap').classList.add('active');
-            } else {
-                document.getElementById('page-boost').classList.add('active-page');
-                document.getElementById('nav-boost').classList.add('active');
-                renderBoost();
-            }
-        }
-
-        function update() {
-            document.getElementById('score').innerText = pts.toLocaleString();
-            document.getElementById('e-text').innerText = `${Math.floor(en)} / ${max}`;
-            document.getElementById('bar-fill').style.width = (en/max*100) + "%";
-        }
-
-        // النقر على العملة
-        document.getElementById('clickArea').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if(en >= pwr) {
-                pts += pwr; en -= pwr;
-                let t = e.touches[0];
-                let d = document.createElement('div');
-                d.className = 'float'; d.innerText = '+' + pwr;
-                d.style.left = t.pageX + 'px'; d.style.top = t.pageY + 'px';
-                document.body.appendChild(d);
-                setTimeout(() => d.remove(), 500);
-                update(); save();
-            }
+        // تفعيل أزرار التنقل (TOUCHSTART لضمان الاستجابة السريعة)
+        document.getElementById('nav-tap-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault(); navigate('tap');
+        });
+        document.getElementById('nav-boost-btn').addEventListener('touchstart', (e) => {
+            e.preventDefault(); navigate('boost');
         });
 
-        function renderBoost() {
-            let cost = pwr * 1000;
-            let b = document.getElementById('upgradeBtn');
-            b.innerText = `Upgrade (${cost.toLocaleString()} 💰)`;
-            b.onclick = () => {
-                if(pts >= cost) {
-                    pts -= cost; pwr++;
-                    alert('Done! Power is now: ' + pwr);
-                    renderBoost(); update(); save();
-                } else { alert('Need more coins!'); }
+        function navigate(to) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active-page'));
+            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+            
+            if(to === 'tap') {
+                document.getElementById('page-tap').classList.add('active-page');
+                document.getElementById('nav-tap-btn').classList.add('active');
+            } else {
+                document.getElementById('page-boost').classList.add('active-page');
+                document.getElementById('nav-boost-btn').classList.add('active');
+                setupBoostPage();
+            }
+        }
+
+        function refreshUI() {
+            document.getElementById('score').innerText = points.toLocaleString();
+            document.getElementById('energy-text').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
+            document.getElementById('bar-fill').style.width = (energy/maxEnergy*100) + "%";
+        }
+
+        // برمجة النقر المتعدد (Multitap)
+        document.getElementById('tapArea').addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            // تحديد حد أقصى 3 لمسات في وقت واحد لمنع الغش المبالغ فيه
+            let touches = Math.min(e.changedTouches.length, 3); 
+            for(let i=0; i < touches; i++) {
+                if(energy >= power) {
+                    points += power; 
+                    energy -= power;
+                    createEffect(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
+                }
+            }
+            refreshUI(); save();
+        });
+
+        function createEffect(x, y) {
+            let el = document.createElement('div');
+            el.className = 'tap-effect'; el.innerText = '+' + power;
+            // تنسيق مكان ظهور الرقم الطائر بناءً على مكان اللمسة
+            let tapZone = document.getElementById('tapArea').getBoundingClientRect();
+            el.style.left = (x - 20) + 'px'; // تعديل الموقع
+            el.style.top = (y - 50) + 'px';
+            document.body.appendChild(el);
+            setTimeout(() => el.remove(), 600);
+        }
+
+        // برمجة صفحة Boost (Upgrade Power)
+        function setupBoostPage() {
+            let cost = power * 1000;
+            let btn = document.getElementById('upgradeButton');
+            btn.innerText = `Upgrade (Cost: ${cost.toLocaleString()} 💰)`;
+            btn.onclick = () => {
+                if(points >= cost) {
+                    points -= cost; 
+                    power++;
+                    alert('Success! New Tap power: ' + power);
+                    setupBoostPage(); refreshUI(); save();
+                } else { 
+                    alert('Not enough Jolt Coins! Need ' + cost.toLocaleString()); 
+                }
             };
         }
 
         function save() {
-            localStorage.setItem('j_pts', pts);
-            localStorage.setItem('j_pwr', pwr);
-            localStorage.setItem('j_en', en);
+            localStorage.setItem('jimi_pts', points);
+            localStorage.setItem('jimi_pwr', power);
+            localStorage.setItem('jimi_en', energy);
         }
 
-        setInterval(() => { if(en < max) { en = Math.min(max, en + 2); update(); } }, 1000);
+        // شحن الطاقة التلقائي (نقطة ونصف كل ثانية)
+        setInterval(() => { if(energy < maxEnergy) { energy = Math.min(maxEnergy, energy + 1.5); refreshUI(); } }, 1000);
     </script>
 </body>
 </html>
