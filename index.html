@@ -1,98 +1,127 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Energy Fix</title>
+    <title>Jimi Coin - Official</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding-top: 30px; overflow: hidden; user-select: none; }
-        .coin-img { width: 220px; border-radius: 50%; border: 4px solid #ffcc00; cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
-        .coin-img:active { transform: scale(0.95); }
-        #balance { font-size: 35px; color: #ffcc00; font-weight: bold; margin-bottom: 10px; }
-        .energy-container { width: 80%; height: 20px; background: #333; border-radius: 10px; margin: 20px auto; position: relative; border: 1px solid #444; }
-        #energy-bar { height: 100%; background: linear-gradient(to right, #ffcc00, #ff6600); border-radius: 10px; width: 100%; transition: width 0.3s; }
-        .menu-footer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 10px; }
-        .btn-menu { background: #1a1a1a; color: #fff; border: 1px solid #ffcc00; padding: 10px 15px; border-radius: 12px; font-size: 14px; }
-        .modal { display: none; position: fixed; top: 20%; left: 10%; right: 10%; background: #1a1a1a; padding: 20px; border: 2px solid #ffcc00; border-radius: 15px; z-index: 10; }
+        :root { --gold: #ffcc00; --soft-white: #f0f0f0; }
+        body { background: #000; color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; overflow-x: hidden; text-align: center; }
+        
+        /* القسم العلوي */
+        .header-text { margin-top: 15px; font-weight: bold; }
+        .hit-text { color: var(--gold); font-size: 22px; display: block; letter-spacing: 1px; }
+        .info-text { font-size: 13px; color: #bbb; margin-top: 8px; display: block; }
+
+        /* مواقع التواصل */
+        .social-icons { margin: 15px 0; display: flex; justify-content: center; gap: 25px; font-size: 26px; }
+        .social-icons i { color: #fff; cursor: pointer; transition: 0.3s; }
+        .social-icons i:hover { color: var(--gold); }
+
+        /* شريط المستوى المتطور */
+        .level-container { width: 90%; margin: 20px auto; display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,0.05); padding: 10px; border-radius: 15px; }
+        .mini-jaguar { width: 45px; height: 45px; border-radius: 50%; border: 1px solid var(--gold); }
+        .progress-wrapper { flex-grow: 1; text-align: right; }
+        .progress-bar { width: 100%; height: 14px; background: #222; border-radius: 10px; border: 1px solid var(--soft-white); overflow: hidden; }
+        .progress-fill { height: 100%; background: linear-gradient(to right, #ffcc00, #ff9900); width: 30%; transition: width 0.5s; }
+        .level-stats { font-size: 11px; color: #ccc; margin-top: 6px; display: flex; justify-content: space-between; padding: 0 2px; }
+
+        /* الملف الشخصي */
+        .profile-section { margin: 25px 0; }
+        .user-avatar { width: 85px; height: 85px; border-radius: 50%; border: 3px solid var(--gold); cursor: pointer; box-shadow: 0 0 15px rgba(255, 204, 0, 0.3); }
+        .level-name { display: block; color: var(--gold); font-size: 15px; margin-top: 8px; font-weight: bold; }
+
+        /* العملة الكبيرة */
+        .main-coin { width: 210px; margin: 10px auto; cursor: pointer; transition: 0.1s; -webkit-tap-highlight-color: transparent; }
+        .main-coin:active { transform: scale(0.92); }
+
+        /* المودال (المربعات المنبثقة) */
+        .modal { display: none; position: fixed; top: 15%; left: 5%; right: 5%; background: #111; border: 2px solid var(--gold); border-radius: 25px; padding: 25px; z-index: 100; }
+        .modal-img { width: 100%; border-radius: 15px; margin-bottom: 15px; border: 1px solid #333; }
+        .btn-invite { background: var(--gold); color: #000; border: none; padding: 14px; border-radius: 12px; font-weight: bold; font-size: 16px; width: 100%; cursor: pointer; margin-top: 10px; }
+        
+        .friends-list { margin-top: 20px; text-align: right; max-height: 120px; overflow-y: auto; background: #000; padding: 10px; border-radius: 10px; }
+        .friend-item { padding: 8px 0; border-bottom: 1px solid #222; font-size: 13px; color: #eee; }
+        .close-btn { position: absolute; top: 12px; left: 15px; background: none; border: none; color: #777; font-size: 22px; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div id="balance">0 🪙</div>
-    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="coin-img" onclick="tap(event)">
-
-    <div class="energy-container">
-        <div id="energy-bar"></div>
-        <small id="energy-text" style="position: absolute; width:100%; left:0; top:2px;">1000/1000</small>
+    <div class="header-text">
+        <span class="hit-text">GREAT NEW HIT</span>
+        <span class="info-text">More info on our official channels</span>
     </div>
 
-    <div class="menu-footer">
-        <button class="btn-menu" onclick="toggleModal('taskModal')">📋 المهام</button>
-        <button class="btn-menu">🚀 تعزيز</button>
+    <div class="social-icons">
+        <i class="fab fa-telegram" onclick="window.open('https://t.me/yourchannel')"></i>
+        <i class="fab fa-youtube" onclick="window.open('https://youtube.com')"></i>
+        <i class="fab fa-x-twitter" onclick="window.open('https://x.com')"></i>
     </div>
 
-    <div id="taskModal" class="modal">
-        <h3>المهام 📝</h3>
-        <p>اشترك في القناة (+50k)</p>
-        <button class="btn-menu" onclick="claimTask(50000)">إتمام</button>
-        <button class="btn-menu" onclick="toggleModal('taskModal')">إغلاق</button>
+    <div class="level-container">
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="mini-jaguar">
+        <div class="progress-wrapper">
+            <div class="progress-bar">
+                <div class="progress-fill" id="p-fill"></div>
+            </div>
+            <div class="level-stats">
+                <span id="next-level-info">باقي 3500 للمستوى التالي</span>
+                <span id="current-pts">1500 / 5000</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-section">
+        <img src="https://via.placeholder.com/85" class="user-avatar" id="profileBtn" alt="User">
+        <span class="level-name">LEVEL: BRONZE</span>
+    </div>
+
+    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="main-coin" id="mainCoin">
+
+    <div id="friendsModal" class="modal">
+        <button class="close-btn" onclick="closeM('friendsModal')">✕</button>
+        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="modal-img">
+        <h2 style="color:var(--gold); margin:0;">FRIENDS</h2>
+        <button class="btn-invite" onclick="openInvite()">انقر لعرض الدعوة</button>
+    </div>
+
+    <div id="inviteModal" class="modal">
+        <button class="close-btn" onclick="closeM('inviteModal')">✕</button>
+        <img src="https://i.ibb.co/F4Zp8mX/DALL-E-2024-04-22-Jaguars-shaking-hands.webp" class="modal-img">
+        <h2 style="color:var(--gold); margin:0;">INVITE</h2>
+        <button class="btn-invite">
+            <i class="fas fa-link"></i> نسخ رابط الدعوة
+        </button>
+        <div class="friends-list">
+            <div style="color:var(--gold); font-size:12px; margin-bottom:5px;">الأصدقاء المدعوين:</div>
+            <div class="friend-item">1. محمد كوجا</div>
+            <div class="friend-item">2. أحمد علي</div>
+        </div>
     </div>
 
     <script>
-        let maxEnergy = 1000;
-        let balance = parseInt(localStorage.getItem('jolt_balance')) || 0;
-        
-        // حساب الطاقة عند العودة
-        let lastEnergy = parseInt(localStorage.getItem('last_energy'));
-        let lastTime = parseInt(localStorage.getItem('last_time'));
-        let energy = isNaN(lastEnergy) ? maxEnergy : lastEnergy;
+        let balance = 1500;
+        let maxLevel = 5000;
 
-        if (lastTime) {
-            let now = Date.now();
-            let secondsPassed = Math.floor((now - lastTime) / 1000);
-            energy = Math.min(maxEnergy, energy + secondsPassed); // شحن 1 طاقة لكل ثانية غياب
-        }
+        // وظائف المودال
+        document.getElementById('profileBtn').onclick = () => document.getElementById('friendsModal').style.display = 'block';
+        function openInvite() { closeM('friendsModal'); document.getElementById('inviteModal').style.display = 'block'; }
+        function closeM(id) { document.getElementById(id).style.display = 'none'; }
+
+        // وظيفة النقر
+        document.getElementById('mainCoin').onclick = () => {
+            balance += 3;
+            updateUI();
+        };
 
         function updateUI() {
-            document.getElementById('balance').innerText = balance.toLocaleString() + " 🪙";
-            document.getElementById('energy-bar').style.width = (energy / maxEnergy) * 100 + "%";
-            document.getElementById('energy-text').innerText = `${energy}/${maxEnergy}`;
-            
-            // حفظ البيانات فورياً
-            localStorage.setItem('jolt_balance', balance);
-            localStorage.setItem('last_energy', energy);
-            localStorage.setItem('last_time', Date.now());
+            document.getElementById('current-pts').innerText = `${balance.toLocaleString()} / ${maxLevel.toLocaleString()}`;
+            let needed = maxLevel - balance;
+            document.getElementById('next-level-info').innerText = needed > 0 ? `باقي ${needed.toLocaleString()} للمستوى التالي` : "وصلت للحد الأقصى!";
+            let percent = Math.min((balance / maxLevel) * 100, 100);
+            document.getElementById('p-fill').style.width = percent + "%";
         }
-
-        function tap(e) {
-            if (energy >= 3) {
-                balance += 3;
-                energy -= 3;
-                updateUI();
-            }
-        }
-
-        function toggleModal(id) {
-            let m = document.getElementById(id);
-            m.style.display = m.style.display === 'block' ? 'none' : 'block';
-        }
-
-        function claimTask(r) {
-            balance += r;
-            alert("تمت إضافة المكافأة! 🎁");
-            updateUI();
-            toggleModal('taskModal');
-        }
-
-        // شحن الطاقة المستمر أثناء فتح البوت
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy++;
-                updateUI();
-            } else {
-                localStorage.setItem('last_time', Date.now()); // تحديث الوقت حتى لو الطاقة ممتلئة
-            }
-        }, 1000);
 
         updateUI();
     </script>
