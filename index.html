@@ -3,181 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Jimi Coin Final</title>
+    <title>Jimi Coin Pro</title>
     <style>
-        /* إجبار الأرقام الإنجليزية ومنع التحديد */
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            user-select: none; 
-            -webkit-user-select: none;
-            font-variant-numeric: tabular-nums;
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+        body { background: #000; color: #fff; margin: 0; font-family: Arial, sans-serif; overflow: hidden; touch-action: none; text-align: center; }
 
-        body { 
-            background: #000; color: #fff; margin: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            overflow: hidden; touch-action: none; 
-        }
-
-        /* شاشة التحميل المضمونة */
+        /* شاشة التحميل */
         #splash { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.8; }
-        #load-ui { position: relative; z-index: 10001; width: 80%; text-align: center; margin-top: 250px; }
-        .bar-bg { width: 100%; height: 10px; background: #1a1a1a; border-radius: 20px; border: 1px solid gold; overflow: hidden; margin-top: 10px; }
-        #bar-fill { width: 0%; height: 100%; background: gold; transition: width 0.1s; }
+        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+        #loader-ui { position: relative; z-index: 10001; width: 80%; margin-top: 350px; }
+        .bar-bg { width: 100%; height: 12px; background: #222; border-radius: 20px; border: 1px solid gold; overflow: hidden; margin-top: 10px; }
+        #bar-fill { width: 0%; height: 100%; background: gold; }
 
         #app { display: none; height: 100vh; flex-direction: column; }
-        .page { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: flex-start; padding-top: 50px; }
+        .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 40px; }
         .active { display: flex !important; }
 
-        /* الأرقام الذهبية الإنجليزية */
-        #score { font-size: 75px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        #score { font-size: 80px; color: gold; font-weight: bold; margin: 0; font-family: 'Courier New', Courier, monospace; }
         .level { color: #00d2ff; letter-spacing: 2px; font-size: 14px; margin-bottom: 30px; }
 
-        /* حل مشكلة السواد حول العملة */
-        .coin-box { 
-            position: relative; width: 300px; height: 300px; 
+        /* حل نهائي لمشكلة شكل العملة */
+        .coin-trigger {
+            width: 300px; height: 300px;
             display: flex; align-items: center; justify-content: center;
+            background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
         }
-        .ring { position: absolute; width: 280px; height: 160px; border: 2px solid gold; border-radius: 50%; box-shadow: 0 0 30px gold; pointer-events: none; }
-        #coinMain { 
-            width: 240px; height: 240px; 
-            border-radius: 50%; /* لجعلها دائرية */
-            object-fit: cover; /* لإزالة الحواف السوداء */
-            border: 3px solid #222; 
-            z-index: 5;
-            transition: transform 0.05s linear;
+        #coin-circle {
+            width: 240px; height: 240px;
+            border-radius: 50%;
+            border: 4px solid #FFD700;
+            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+            background-size: cover;
+            background-position: center;
+            box-shadow: 0 0 30px #FFD700;
+            transition: transform 0.05s;
         }
 
-        /* شريط الطاقة */
-        .energy-ui { width: 85%; margin-top: 60px; }
-        .en-bg { width: 100%; height: 14px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
+        /* الطاقة */
+        .en-box { width: 85%; position: absolute; bottom: 130px; left: 7.5%; }
+        .en-bar-bg { width: 100%; height: 14px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
         #en-fill { width: 100%; height: 100%; background: #00d2ff; }
 
-        /* الأزرار السفلية - استجابة فورية */
-        .navbar { 
-            position: fixed; bottom: 0; width: 100%; height: 90px; 
-            background: #050505; display: flex; z-index: 9999; 
-            border-top: 1px solid #222; padding-bottom: 15px;
-        }
-        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; cursor: pointer; }
-        .nav-btn.active-btn { color: gold; }
-        .nav-btn span { font-size: 24px; margin-bottom: 4px; }
-        .nav-btn b { font-size: 11px; text-transform: uppercase; }
+        /* الأزرار السفلية */
+        .navbar { position: fixed; bottom: 0; width: 100%; height: 95px; background: #050505; display: flex; z-index: 999; border-top: 2px solid #222; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-weight: bold; }
+        .nav-item.selected { color: gold; }
+        .nav-item span { font-size: 28px; margin-bottom: 4px; }
 
-        .pop-num { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; pointer-events: none; animation: floatUp 0.6s ease-out forwards; z-index: 1000; }
-        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+        .plus-one { position: absolute; color: #00d2ff; font-size: 40px; font-weight: bold; pointer-events: none; animation: upMove 0.6s ease-out forwards; }
+        @keyframes upMove { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
     </style>
 </head>
-<body onload="init()">
+<body onload="startLoading()">
 
     <div id="splash">
         <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png">
-        <div id="load-ui">
-            <div id="pct" style="color:gold; font-size:24px; font-weight:bold;">0%</div>
+        <div id="loader-ui">
+            <div id="pct" style="color:gold; font-size:24px;">0%</div>
             <div class="bar-bg"><div id="bar-fill"></div></div>
         </div>
     </div>
 
     <div id="app">
-        <div id="page-tap" class="page active">
-            <h1 id="score">0</h1>
+        <div id="p-tap" class="page active">
+            <div id="score">0</div>
             <div class="level">BRONZE LEVEL</div>
-            <div class="coin-box" id="tap-area">
-                <div class="ring"></div>
-                <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" id="coinMain">
+            <div class="coin-trigger" id="touch-zone">
+                <div id="coin-circle"></div>
             </div>
-            <div class="energy-ui">
-                <div style="display:flex; justify-content:space-between; font-size:14px; margin-bottom:6px; color:#aaa">
-                    <span>⚡ ENERGY</span><span id="en-text">2000 / 2000</span>
+            <div class="en-box">
+                <div style="display:flex; justify-content:space-between; font-size:14px; color:#aaa; margin-bottom:5px">
+                    <span>⚡ ENERGY</span><span id="en-txt">2000 / 2000</span>
                 </div>
-                <div class="en-bg"><div id="en-fill"></div></div>
+                <div class="en-bar-bg"><div id="en-fill"></div></div>
             </div>
         </div>
 
-        <div id="page-boost" class="page"><h2 style="color:gold">BOOSTERS</h2><p>Coming Soon...</p></div>
-        <div id="page-lead" class="page"><h2 style="color:gold">LEADERBOARD</h2><p>Coming Soon...</p></div>
+        <div id="p-boost" class="page"><h2 style="color:gold">BOOSTERS</h2></div>
+        <div id="p-lead" class="page"><h2 style="color:gold">LEADERS</h2></div>
 
         <div class="navbar">
-            <div class="nav-btn active-btn" onclick="go('tap', this)"><span>💰</span><b>Tap</b></div>
-            <div class="nav-btn" onclick="go('boost', this)"><span>🚀</span><b>Boost</b></div>
-            <div class="nav-btn" onclick="go('lead', this)"><span>🏆</span><b>Leaders</b></div>
+            <div class="nav-item selected" onclick="tab('tap', this)"><span>💰</span>TAP</div>
+            <div class="nav-item" onclick="tab('boost', this)"><span>🚀</span>BOOST</div>
+            <div class="nav-item" onclick="tab('lead', this)"><span>🏆</span>LEADERS</div>
         </div>
     </div>
 
     <script>
-        let pts = parseInt(localStorage.getItem('j_pts')) || 0;
-        let en = parseFloat(localStorage.getItem('j_en')) || 2000;
+        let pts = parseInt(localStorage.getItem('j_p')) || 0;
+        let en = parseFloat(localStorage.getItem('j_e')) || 2000;
 
-        function init() {
+        function startLoading() {
             let p = 0;
-            let loader = setInterval(() => {
+            let itv = setInterval(() => {
                 p += 2;
                 document.getElementById('bar-fill').style.width = p + "%";
                 document.getElementById('pct').innerText = p + "%";
                 if(p >= 100) {
-                    clearInterval(loader);
+                    clearInterval(itv);
                     document.getElementById('splash').style.display = 'none';
                     document.getElementById('app').style.display = 'flex';
-                    render();
+                    refresh();
                 }
             }, 40);
         }
 
-        // التبديل بين الصفحات (إصلاح مشكلة الأزرار)
-        function go(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-btn'));
-            document.getElementById('page-' + id).classList.add('active');
-            btn.classList.add('active-btn');
+        // دالة التبديل المضمونة
+        function tab(name, el) {
+            document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
+            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('selected'));
+            document.getElementById('p-' + name).style.display = 'flex';
+            el.classList.add('selected');
             if(navigator.vibrate) navigator.vibrate(10);
         }
 
-        function render() {
-            // إجبار التنسيق الإنجليزي للأرقام
-            document.getElementById('score').innerText = pts.toLocaleString('en-US');
-            document.getElementById('en-text').innerText = Math.floor(en) + " / 2000";
+        function refresh() {
+            // إجبار الأرقام الإنجليزية
+            document.getElementById('score').innerText = pts.toLocaleString('en-GB');
+            document.getElementById('en-txt').innerText = Math.floor(en) + " / 2000";
             document.getElementById('en-fill').style.width = (en/20) + "%";
         }
 
-        const tapArea = document.getElementById('tap-area');
-        const coin = document.getElementById('coinMain');
+        const zone = document.getElementById('touch-zone');
+        const coin = document.getElementById('coin-circle');
 
-        tapArea.addEventListener('touchstart', (e) => {
+        zone.addEventListener('touchstart', (e) => {
             e.preventDefault();
             if(en < 1) return;
 
-            // اهتزاز مضمون
-            if(navigator.vibrate) navigator.vibrate(20);
-
-            // زيادة النقاط
+            if(navigator.vibrate) navigator.vibrate(15);
             pts++; en--;
-            render();
-            localStorage.setItem('j_pts', pts);
-            localStorage.setItem('j_en', en);
+            refresh();
+            localStorage.setItem('j_p', pts);
+            localStorage.setItem('j_e', en);
 
             // تأثير النقرة
             let t = e.touches[0];
             let d = document.createElement('div');
-            d.className = 'pop-num'; d.innerText = '+1';
-            d.style.left = t.pageX + 'px'; d.style.top = (t.pageY - 50) + 'px';
+            d.className = 'plus-one'; d.innerText = '+1';
+            d.style.left = t.pageX + 'px'; d.style.top = t.pageY + 'px';
             document.body.appendChild(d);
             setTimeout(() => d.remove(), 600);
 
-            // تأثير الإمالة البسيط
-            let rect = tapArea.getBoundingClientRect();
-            let x = (t.clientX - (rect.left + rect.width/2)) / 10;
-            let y = (t.clientY - (rect.top + rect.height/2)) / 10;
-            coin.style.transform = `rotateX(${-y}deg) rotateY(${x}deg) scale(0.94)`;
+            // حركة العملة
+            coin.style.transform = "scale(0.92) rotate(3deg)";
         });
 
-        tapArea.addEventListener('touchend', () => {
-            coin.style.transform = "rotateX(0) rotateY(0) scale(1)";
+        zone.addEventListener('touchend', () => {
+            coin.style.transform = "scale(1) rotate(0deg)";
         });
 
-        // تعبئة الطاقة
-        setInterval(() => { if(en < 2000) { en = Math.min(2000, en + 1.2); render(); } }, 1000);
+        setInterval(() => { if(en < 2000) { en = Math.min(2000, en + 1.2); refresh(); } }, 1000);
     </script>
 </body>
 </html>
