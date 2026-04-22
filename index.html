@@ -1,98 +1,208 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jimi Coin - Original Black</title>
+    <title>Jolt Coin - Tasks</title>
     <style>
-        body { background: #000; color: #fff; font-family: sans-serif; margin: 0; padding: 0; text-align: center; overflow: hidden; }
-
-        /* شاشة التحميل (الجاكوار) */
-        #loader {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: #000; z-index: 9999; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
+        body {
+            background-color: #000;
+            color: #fff;
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
+            user-select: none;
         }
-        .jag-img { width: 200px; height: 200px; border-radius: 50%; border: 2px solid #f3ba2f; margin-bottom: 20px; }
-        .load-bar { width: 220px; height: 8px; background: #222; border: 1px solid #fff; border-radius: 5px; overflow: hidden; }
-        .load-fill { width: 0%; height: 100%; background: #f3ba2f; animation: loading 2.5s forwards; }
-        @keyframes loading { to { width: 100%; } }
 
-        /* واجهة الساعة 5:50 (الصورة 1000025356) */
-        #app { display: none; padding-top: 40px; }
-        .score { font-size: 80px; font-weight: bold; color: #f3ba2f; margin: 0; }
-        .level-label { font-size: 18px; color: #aaa; letter-spacing: 2px; margin-bottom: 30px; }
-
-        .coin-container { 
-            position: relative; width: 280px; height: 200px; margin: 0 auto; 
-            display: flex; align-items: center; justify-content: center;
+        #game-container {
+            text-align: center;
+            width: 100%;
         }
-        /* الهالة الصفراء خلف العملة */
-        .coin-glow {
-            position: absolute; width: 250px; height: 130px;
-            border: 3px solid #f3ba2f; border-radius: 50%;
-            box-shadow: 0 0 20px #f3ba2f;
+
+        .stats {
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: bold;
+            color: #ffcc00;
         }
-        .main-coin-img { width: 130px; z-index: 2; cursor: pointer; transition: transform 0.1s; }
-        .main-coin-img:active { transform: scale(0.9); }
 
-        .energy-section { position: absolute; bottom: 80px; width: 100%; }
-        .energy-info { display: flex; justify-content: space-between; width: 90%; margin: 0 auto 5px auto; font-size: 14px; font-weight: bold; }
-        .energy-bar-wrap { width: 90%; height: 12px; background: #111; border-radius: 10px; margin: 0 auto; overflow: hidden; }
-        .energy-bar-fill { height: 100%; background: #00d2ff; width: 100%; }
+        .level-badge {
+            background: linear-gradient(45deg, #ffd700, #ffa500);
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 14px;
+            color: #000;
+            margin-bottom: 20px;
+            display: inline-block;
+        }
 
-        .bottom-menu { position: fixed; bottom: 0; width: 100%; display: flex; justify-content: space-around; padding: 15px 0; background: #000; }
-        .menu-btn { color: #888; font-size: 12px; text-decoration: none; }
-        .menu-btn.active { color: #f3ba2f; }
-        .menu-btn img { display: block; margin: 0 auto 5px auto; width: 24px; }
+        #coin {
+            width: 220px;
+            height: 220px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #coin:active {
+            transform: scale(0.95);
+        }
+
+        .energy-container {
+            width: 80%;
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        #energy-bar {
+            height: 100%;
+            background: linear-gradient(to right, #ffcc00, #ff6600);
+            border-radius: 10px;
+            transition: width 0.3s;
+        }
+
+        /* القائمة السفلية */
+        .bottom-menu {
+            position: fixed;
+            bottom: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .menu-btn {
+            background: #222;
+            border: 1px solid #444;
+            color: #fff;
+            padding: 10px 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* نافذة المهام */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(50%, -50%); /* ستتعدل بالجافاسكريبت */
+            background: #1a1a1a;
+            width: 85%;
+            padding: 20px;
+            border-radius: 20px;
+            border: 2px solid #ffcc00;
+            z-index: 100;
+        }
+
+        .task-item {
+            background: #333;
+            margin: 10px 0;
+            padding: 15px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .claim-btn {
+            background: #ffcc00;
+            color: #000;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
 
-    <div id="loader">
-        <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="jag-img">
-        <div class="load-bar"><div class="load-fill"></div></div>
+    <div id="game-container">
+        <div class="level-badge" id="level-name">Bronze Level</div>
+        <div class="stats" id="balance">0 🪙</div>
+        
+        <img id="coin" src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" alt="Jolt Coin">
+        
+        <div class="energy-container">
+            <div id="energy-bar" style="width: 100%;"></div>
+            <div id="energy-text" style="position: absolute; width: 100%; top:0; font-size: 12px;">1000/1000</div>
+        </div>
     </div>
 
-    <div id="app">
-        <h1 class="score">15</h1>
-        <div class="level-label">BRONZE LEVEL</div>
+    <div class="bottom-menu">
+        <button class="menu-btn" onclick="toggleModal('tasks-modal')">📋 المهام</button>
+        <button class="menu-btn">🚀 تعزيز</button>
+        <button class="menu-btn">👥 الأصدقاء</button>
+    </div>
 
-        <div class="coin-container">
-            <div class="coin-glow"></div>
-            <img src="https://i.ibb.co/Kzs676k/DALL-E-2025-10-27-21-38-16-A-close-up-design-of-a-round-golden-coin-for-a-digital-game-called-Jolt-Coi.webp" class="main-coin-img" onclick="tap()">
-            <div style="position:absolute; right:20px; top:20px; color:#00d2ff; font-size:30px; font-weight:bold;">+3</div>
+    <div id="tasks-modal" class="modal" style="left: 7.5%; transform: none; top: 20%;">
+        <h3>قائمة المهام 📝</h3>
+        <div class="task-item">
+            <span>اشترك في القناة (+50k)</span>
+            <button class="claim-btn" onclick="completeTask(50000)">إتمام</button>
         </div>
-
-        <div class="energy-section">
-            <div class="energy-info">
-                <span>⚡ ENERGY</span>
-                <span>1997 / 2000</span>
-            </div>
-            <div class="energy-bar-wrap">
-                <div class="energy-bar-fill"></div>
-            </div>
-        </div>
-
-        <div class="bottom-menu">
-            <a href="#" class="menu-btn active">
-                <img src="https://cdn-icons-png.flaticon.com/512/2311/2311992.png"> TAP
-            </a>
-            <a href="#" class="menu-btn">
-                <img src="https://cdn-icons-png.flaticon.com/512/1043/1043444.png"> BOOST
-            </a>
-        </div>
+        <button class="menu-btn" style="width: 100%; margin-top: 10px;" onclick="toggleModal('tasks-modal')">إغلاق</button>
     </div>
 
     <script>
-        setTimeout(() => {
-            document.getElementById('loader').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        }, 2500);
+        let balance = parseInt(localStorage.getItem('jolt_balance')) || 0;
+        let energy = 1000;
+        let maxEnergy = 1000;
 
-        function tap() {
-            // كود النقرات
+        const balanceEl = document.getElementById('balance');
+        const coinEl = document.getElementById('coin');
+        const energyBar = document.getElementById('energy-bar');
+        const energyText = document.getElementById('energy-text');
+
+        function updateUI() {
+            balanceEl.innerText = `${balance.toLocaleString()} 🪙`;
+            let level = "Bronze";
+            if(balance >= 5000) { level = "Silver"; maxEnergy = 2000; }
+            document.getElementById('level-name').innerText = `${level} Level`;
+            
+            energyBar.style.width = (energy / maxEnergy) * 100 + "%";
+            energyText.innerText = `${energy}/${maxEnergy}`;
         }
+
+        coinEl.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (energy >= 3) {
+                balance += 3;
+                energy -= 3;
+                updateUI();
+                localStorage.setItem('jolt_balance', balance);
+            }
+        });
+
+        function toggleModal(id) {
+            const modal = document.getElementById(id);
+            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function completeTask(reward) {
+            balance += reward;
+            alert("مبروك! حصلت على المكافأة 🎁");
+            updateUI();
+            localStorage.setItem('jolt_balance', balance);
+            toggleModal('tasks-modal');
+        }
+
+        // شحن الطاقة تلقائياً
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy = Math.min(maxEnergy, energy + 1);
+                updateUI();
+            }
+        }, 1000);
+
+        updateUI();
     </script>
 </body>
 </html>
