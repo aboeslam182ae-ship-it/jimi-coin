@@ -3,147 +3,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jimi Coin Pro Edition</title>
+    <title>Jimi Coin</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; text-align: center; }
 
-        /* شاشة التحميل مع الصورة */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.7; z-index: -1; }
-        .bar-o { width: 220px; height: 10px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid gold; overflow: hidden; margin-top: 300px; }
+        /* شاشة التحميل مصلحة بالكامل */
+        #loader { 
+            position: fixed; inset: 0; background: #000; z-index: 99999; 
+            display: flex; flex-direction: column; align-items: center; justify-content: center; 
+        }
+        /* خلفية التحميل */
+        .load-bg {
+            position: absolute; inset: 0;
+            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat;
+            opacity: 0.8; z-index: -1;
+        }
+        .bar-o { width: 200px; height: 10px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid gold; overflow: hidden; margin-top: 280px; }
         #bar-i { width: 0%; height: 100%; background: gold; }
 
         /* الأقسام */
-        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 40px; }
+        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 30px; }
         .active { display: flex !important; }
 
-        .score { font-size: 80px; color: gold; font-weight: bold; margin: 0; font-variant-numeric: tabular-nums; }
+        /* الأرقام */
+        .score { font-size: 70px; color: gold; font-weight: bold; margin: 0; font-variant-numeric: tabular-nums; }
 
         /* العملة */
         .coin-box { 
-            width: 280px; height: 280px; margin-top: 40px; border-radius: 50%;
-            border: 4px solid gold; box-shadow: 0 0 25px gold;
-            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/112% no-repeat;
-            position: relative; z-index: 5;
+            width: 260px; height: 260px; margin-top: 30px; border-radius: 50%;
+            border: 4px solid gold; box-shadow: 0 0 20px gold;
+            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/115% no-repeat;
+            position: relative; z-index: 10;
         }
 
         /* الطاقة */
-        .en-ui { width: 85%; margin-top: 70px; }
-        .en-bg { width: 100%; height: 14px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
+        .en-ui { width: 80%; margin-top: 40px; }
+        .en-bg { width: 100%; height: 12px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
         #en-f { width: 100%; height: 100%; background: #00d2ff; }
 
-        /* الأزرار السفلية - إضافة BOOST */
+        /* الأزرار - تم رفعها للأعلى لتجنب تعليق تلغرام */
         .nav { 
-            position: fixed; bottom: 0; width: 100%; height: 90px; 
-            background: #080808; display: flex; z-index: 9999; 
-            border-top: 2px solid #222; padding-bottom: 10px;
+            position: fixed; bottom: 20px; /* رفعنا الأزرار عن حافة الشاشة */
+            left: 5%; width: 90%; height: 75px; 
+            background: rgba(15, 15, 15, 0.95); display: flex; 
+            z-index: 100000; border-radius: 20px; border: 1px solid #333;
+            box-shadow: 0 -5px 15px rgba(0,0,0,0.5);
         }
-        .nav-i { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 11px; font-weight: bold; cursor: pointer; }
-        .nav-i.on { color: gold; }
-        .nav-i i { font-size: 24px; margin-bottom: 4px; font-style: normal; }
-
-        .pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; animation: up 0.6s forwards; pointer-events: none; z-index: 100; }
-        @keyframes up { to { transform: translateY(-130px); opacity: 0; } }
-    </style>
-</head>
-<body onload="start()">
-
-    <div id="loader">
-        <div id="loader-bg"></div>
-        <h1 id="pct" style="color:gold; text-shadow: 2px 2px #000;">0%</h1>
-        <div class="bar-o"><div id="bar-i"></div></div>
-    </div>
-
-    <div id="p-tap" class="page active">
-        <div id="sc" class="score">0</div>
-        <div style="color:#00d2ff; letter-spacing:2px; font-size:14px">BRONZE LEVEL</div>
-        <div class="coin-box" id="tap-area"></div>
-        <div class="en-ui">
-            <div style="display:flex; justify-content:space-between; font-size:14px; color:#aaa; margin-bottom:5px">
-                <span>⚡ ENERGY</span><span id="ev">2000 / 2000</span>
-            </div>
-            <div class="en-bg"><div id="en-f"></div></div>
-        </div>
-    </div>
-
-    <div id="p-boost" class="page">
-        <h2 style="color:gold; font-size:30px">BOOST SHOP</h2>
-        <p style="color:#aaa">Upgrades coming tomorrow...</p>
-    </div>
-
-    <div id="p-lead" class="page">
-        <h2 style="color:gold; font-size:30px">LEADERBOARD</h2>
-        <div style="width:85%; background:#111; border-radius:15px; padding:20px; border:1px solid #333; text-align:left">
-            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222"><span>1. Ahmed</span><span style="color:gold">1,250,000</span></div>
-            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:1px solid #222"><span>2. Noor</span><span style="color:gold">840,000</span></div>
-            <div style="display:flex; justify-content:space-between; padding:12px 0; color:gold; font-weight:bold"><span>3. You</span><span id="my-sc">0</span></div>
-        </div>
-    </div>
-
-    <div class="nav">
-        <div class="nav-i on" onclick="go('tap', this)"><i>💰</i>TAP</div>
-        <div class="nav-i" onclick="go('boost', this)"><i>🚀</i>BOOST</div>
-        <div class="nav-i" onclick="go('lead', this)"><i>🏆</i>LEADERS</div>
-    </div>
-
-    <script>
-        let s = parseInt(localStorage.getItem('j_s')) || 0;
-        let e = parseFloat(localStorage.getItem('j_e')) || 2000;
-
-        function start() {
-            let p = 0;
-            let itv = setInterval(() => {
-                p += 5;
-                document.getElementById('bar-i').style.width = p + "%";
-                document.getElementById('pct').innerText = p + "%";
-                if(p >= 100) {
-                    clearInterval(itv);
-                    document.getElementById('loader').style.display = 'none';
-                    upd();
-                }
-            }, 30);
-        }
-
-        function go(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-i').forEach(n => n.classList.remove('on'));
-            document.getElementById('p-' + id).classList.add('active');
-            el.classList.add('on');
-            if(navigator.vibrate) navigator.vibrate(10);
-        }
-
-        function upd() {
-            document.getElementById('sc').innerText = s.toLocaleString('en-US');
-            document.getElementById('my-sc').innerText = s.toLocaleString('en-US');
-            document.getElementById('ev').innerText = Math.floor(e).toLocaleString('en-US') + " / 2000";
-            document.getElementById('en-f').style.width = (e/20) + "%";
-        }
-
-        const area = document.getElementById('tap-area');
-        area.addEventListener('touchstart', (ev) => {
-            ev.preventDefault();
-            if(e < 1) return;
-
-            if(navigator.vibrate) navigator.vibrate(15);
-            s++; e--;
-            upd();
-            localStorage.setItem('j_s', s);
-            localStorage.setItem('j_e', e);
-
-            area.style.transform = "scale(0.94)";
-
-            let t = ev.touches[0];
-            let n = document.createElement('div');
-            n.className = 'pop'; n.innerText = '+1';
-            n.style.left = t.pageX + 'px'; n.style.top = t.pageY + 'px';
-            document.body.appendChild(n);
-            setTimeout(() => n.remove(), 600);
-        });
-
-        area.addEventListener('touchend', () => { area.style.transform = "scale(1)"; });
-
-        setInterval(() => { if(e < 2000) { e = Math.min(2000, e + 1.5); upd(); } }, 1000);
-    </script>
-</body>
-</html>
+        .nav-i { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; color: #666; font-size
+            
