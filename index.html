@@ -2,158 +2,157 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Jimi Coin Pro</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Jimi Coin Final</title>
     <style>
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
-        body { background: #000; color: #fff; margin: 0; font-family: Arial, sans-serif; overflow: hidden; touch-action: none; text-align: center; }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body { background: #000; color: #fff; margin: 0; font-family: Arial, Helvetica, sans-serif; overflow: hidden; touch-action: none; }
 
         /* شاشة التحميل */
-        #splash { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
-        #loader-ui { position: relative; z-index: 10001; width: 80%; margin-top: 350px; }
-        .bar-bg { width: 100%; height: 12px; background: #222; border-radius: 20px; border: 1px solid gold; overflow: hidden; margin-top: 10px; }
-        #bar-fill { width: 0%; height: 100%; background: gold; }
+        #loader { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .bar-o { width: 200px; height: 10px; background: #222; border-radius: 10px; overflow: hidden; margin-top: 15px; border: 1px solid gold; }
+        #bar-i { width: 0%; height: 100%; background: gold; }
 
-        #app { display: none; height: 100vh; flex-direction: column; }
-        .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 40px; }
+        /* الصفحات */
+        .page { display: none; height: 100vh; width: 100%; flex-direction: column; align-items: center; padding-top: 40px; }
         .active { display: flex !important; }
 
-        #score { font-size: 80px; color: gold; font-weight: bold; margin: 0; font-family: 'Courier New', Courier, monospace; }
-        .level { color: #00d2ff; letter-spacing: 2px; font-size: 14px; margin-bottom: 30px; }
-
-        /* حل نهائي لمشكلة شكل العملة */
-        .coin-trigger {
-            width: 300px; height: 300px;
-            display: flex; align-items: center; justify-content: center;
-            background: radial-gradient(circle, rgba(255,215,0,0.2) 0%, transparent 70%);
+        /* الأرقام */
+        .pts { font-size: 70px; color: gold; font-weight: bold; margin: 0; font-variant-numeric: tabular-nums; }
+        
+        /* العملة - الحل النهائي للمظهر والسواد */
+        .c-wrap { 
+            width: 260px; height: 260px; margin-top: 30px; 
+            border-radius: 50%; border: 4px solid gold;
+            box-shadow: 0 0 20px gold;
+            overflow: hidden; display: flex; align-items: center; justify-content: center;
+            background: #111;
+            position: relative; z-index: 10;
         }
-        #coin-circle {
-            width: 240px; height: 240px;
-            border-radius: 50%;
-            border: 4px solid #FFD700;
-            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
-            background-size: cover;
-            background-position: center;
-            box-shadow: 0 0 30px #FFD700;
+        #coin { 
+            width: 100%; height: 100%; 
+            object-fit: cover; /* يمسح السواد ويجعل الصورة تملأ الدائرة */
+            transform: scale(1.1); /* تكبير بسيط لضمان عدم وجود حواف */
             transition: transform 0.05s;
         }
 
         /* الطاقة */
-        .en-box { width: 85%; position: absolute; bottom: 130px; left: 7.5%; }
-        .en-bar-bg { width: 100%; height: 14px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
-        #en-fill { width: 100%; height: 100%; background: #00d2ff; }
+        .en-ui { width: 80%; margin-top: 50px; }
+        .eb-o { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; }
+        #eb-i { width: 100%; height: 100%; background: #00d2ff; }
 
-        /* الأزرار السفلية */
-        .navbar { position: fixed; bottom: 0; width: 100%; height: 95px; background: #050505; display: flex; z-index: 999; border-top: 2px solid #222; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #666; font-weight: bold; }
-        .nav-item.selected { color: gold; }
-        .nav-item span { font-size: 28px; margin-bottom: 4px; }
+        /* الأزرار السفلية - طبقة عليا جداً */
+        .nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; height: 80px; 
+            background: #080808; display: flex; z-index: 99999; 
+            border-top: 1px solid #333; pointer-events: auto;
+        }
+        .nav-i { 
+            flex: 1; display: flex; flex-direction: column; align-items: center; 
+            justify-content: center; color: #555; font-size: 12px; font-weight: bold;
+            cursor: pointer;
+        }
+        .nav-i.on { color: gold; }
+        .nav-i span { font-size: 24px; margin-bottom: 4px; }
 
-        .plus-one { position: absolute; color: #00d2ff; font-size: 40px; font-weight: bold; pointer-events: none; animation: upMove 0.6s ease-out forwards; }
-        @keyframes upMove { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+        .pop { position: absolute; color: #00d2ff; font-size: 40px; font-weight: bold; animation: up 0.5s forwards; pointer-events: none; z-index: 50; }
+        @keyframes up { to { transform: translateY(-100px); opacity: 0; } }
     </style>
 </head>
-<body onload="startLoading()">
+<body onload="start()">
 
-    <div id="splash">
-        <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png">
-        <div id="loader-ui">
-            <div id="pct" style="color:gold; font-size:24px;">0%</div>
-            <div class="bar-bg"><div id="bar-fill"></div></div>
+    <div id="loader">
+        <h2 id="pct" style="color:gold">0%</h2>
+        <div class="bar-o"><div id="bar-i"></div></div>
+    </div>
+
+    <div id="pg-tap" class="page active">
+        <div id="sc" class="pts">0</div>
+        <div style="color:#00d2ff; font-size:14px; letter-spacing:2px">BRONZE</div>
+        <div class="c-wrap" id="tap-btn">
+            <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" id="coin">
+        </div>
+        <div class="en-ui">
+            <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:13px; color:#aaa">
+                <span>⚡ ENERGY</span><span id="ev">2000/2000</span>
+            </div>
+            <div class="eb-o"><div id="eb-i"></div></div>
         </div>
     </div>
 
-    <div id="app">
-        <div id="p-tap" class="page active">
-            <div id="score">0</div>
-            <div class="level">BRONZE LEVEL</div>
-            <div class="coin-trigger" id="touch-zone">
-                <div id="coin-circle"></div>
-            </div>
-            <div class="en-box">
-                <div style="display:flex; justify-content:space-between; font-size:14px; color:#aaa; margin-bottom:5px">
-                    <span>⚡ ENERGY</span><span id="en-txt">2000 / 2000</span>
-                </div>
-                <div class="en-bar-bg"><div id="en-fill"></div></div>
-            </div>
+    <div id="pg-lead" class="page">
+        <h2 style="color:gold">LEADERBOARD</h2>
+        <div style="width:80%; background:#111; padding:20px; border-radius:10px">
+            <p>1. Ahmed: 1,250,000</p>
+            <p style="color:gold">3. You: <span id="my-sc">0</span></p>
         </div>
+    </div>
 
-        <div id="p-boost" class="page"><h2 style="color:gold">BOOSTERS</h2></div>
-        <div id="p-lead" class="page"><h2 style="color:gold">LEADERS</h2></div>
-
-        <div class="navbar">
-            <div class="nav-item selected" onclick="tab('tap', this)"><span>💰</span>TAP</div>
-            <div class="nav-item" onclick="tab('boost', this)"><span>🚀</span>BOOST</div>
-            <div class="nav-item" onclick="tab('lead', this)"><span>🏆</span>LEADERS</div>
-        </div>
+    <div class="nav">
+        <div class="nav-i on" onclick="go('tap', this)"><span>💰</span>TAP</div>
+        <div class="nav-i" onclick="go('lead', this)"><span>🏆</span>LEADERS</div>
     </div>
 
     <script>
-        let pts = parseInt(localStorage.getItem('j_p')) || 0;
-        let en = parseFloat(localStorage.getItem('j_e')) || 2000;
+        let s = parseInt(localStorage.getItem('j_s')) || 0;
+        let e = parseFloat(localStorage.getItem('j_e')) || 2000;
 
-        function startLoading() {
+        function start() {
             let p = 0;
             let itv = setInterval(() => {
-                p += 2;
-                document.getElementById('bar-fill').style.width = p + "%";
+                p += 5;
+                document.getElementById('bar-i').style.width = p + "%";
                 document.getElementById('pct').innerText = p + "%";
                 if(p >= 100) {
                     clearInterval(itv);
-                    document.getElementById('splash').style.display = 'none';
-                    document.getElementById('app').style.display = 'flex';
-                    refresh();
+                    document.getElementById('loader').style.display = 'none';
+                    upd();
                 }
             }, 40);
         }
 
-        // دالة التبديل المضمونة
-        function tab(name, el) {
-            document.querySelectorAll('.page').forEach(pg => pg.style.display = 'none');
-            document.querySelectorAll('.nav-item').forEach(ni => ni.classList.remove('selected'));
-            document.getElementById('p-' + name).style.display = 'flex';
-            el.classList.add('selected');
+        // دالة التبديل - تم اختبارها لتعمل قسرياً
+        function go(pg, el) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-i').forEach(n => n.classList.remove('on'));
+            document.getElementById('pg-' + pg).classList.add('active');
+            el.classList.add('on');
             if(navigator.vibrate) navigator.vibrate(10);
         }
 
-        function refresh() {
-            // إجبار الأرقام الإنجليزية
-            document.getElementById('score').innerText = pts.toLocaleString('en-GB');
-            document.getElementById('en-txt').innerText = Math.floor(en) + " / 2000";
-            document.getElementById('en-fill').style.width = (en/20) + "%";
+        function upd() {
+            document.getElementById('sc').innerText = s.toLocaleString('en-US');
+            document.getElementById('my-sc').innerText = s.toLocaleString('en-US');
+            document.getElementById('ev').innerText = Math.floor(e).toLocaleString('en-US') + " / 2000";
+            document.getElementById('eb-i').style.width = (e/20) + "%";
         }
 
-        const zone = document.getElementById('touch-zone');
-        const coin = document.getElementById('coin-circle');
+        const btn = document.getElementById('tap-btn');
+        const img = document.getElementById('coin');
 
-        zone.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if(en < 1) return;
+        btn.addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
+            if(e < 1) return;
 
             if(navigator.vibrate) navigator.vibrate(15);
-            pts++; en--;
-            refresh();
-            localStorage.setItem('j_p', pts);
-            localStorage.setItem('j_e', en);
+            s++; e--;
+            upd();
+            localStorage.setItem('j_s', s);
+            localStorage.setItem('j_e', e);
 
-            // تأثير النقرة
-            let t = e.touches[0];
-            let d = document.createElement('div');
-            d.className = 'plus-one'; d.innerText = '+1';
-            d.style.left = t.pageX + 'px'; d.style.top = t.pageY + 'px';
-            document.body.appendChild(d);
-            setTimeout(() => d.remove(), 600);
+            img.style.transform = "scale(0.9) rotate(2deg)";
 
-            // حركة العملة
-            coin.style.transform = "scale(0.92) rotate(3deg)";
+            let t = ev.touches[0];
+            let p = document.createElement('div');
+            p.className = 'pop'; p.innerText = '+1';
+            p.style.left = t.pageX + 'px'; p.style.top = t.pageY + 'px';
+            document.body.appendChild(p);
+            setTimeout(() => p.remove(), 500);
         });
 
-        zone.addEventListener('touchend', () => {
-            coin.style.transform = "scale(1) rotate(0deg)";
-        });
+        btn.addEventListener('touchend', () => { img.style.transform = "scale(1.1) rotate(0deg)"; });
 
-        setInterval(() => { if(en < 2000) { en = Math.min(2000, en + 1.2); refresh(); } }, 1000);
+        setInterval(() => { if(e < 2000) { e = Math.min(2000, e + 1); upd(); } }, 1000);
     </script>
 </body>
 </html>
