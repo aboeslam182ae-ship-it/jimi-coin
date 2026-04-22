@@ -3,206 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Tasks</title>
+    <title>Jolt Coin</title>
     <style>
-        body {
-            background-color: #000;
-            color: #fff;
-            font-family: 'Arial', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
-            user-select: none;
-        }
-
-        #game-container {
-            text-align: center;
-            width: 100%;
-        }
-
-        .stats {
-            font-size: 24px;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #ffcc00;
-        }
-
-        .level-badge {
-            background: linear-gradient(45deg, #ffd700, #ffa500);
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            color: #000;
-            margin-bottom: 20px;
-            display: inline-block;
-        }
-
-        #coin {
-            width: 220px;
-            height: 220px;
-            cursor: pointer;
-            transition: transform 0.1s;
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        #coin:active {
-            transform: scale(0.95);
-        }
-
-        .energy-container {
-            width: 80%;
-            height: 20px;
-            background-color: #333;
-            border-radius: 10px;
-            margin: 20px auto;
-            position: relative;
-        }
-
-        #energy-bar {
-            height: 100%;
-            background: linear-gradient(to right, #ffcc00, #ff6600);
-            border-radius: 10px;
-            transition: width 0.3s;
-        }
-
-        /* القائمة السفلية */
-        .bottom-menu {
-            position: fixed;
-            bottom: 20px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .menu-btn {
-            background: #222;
-            border: 1px solid #444;
-            color: #fff;
-            padding: 10px 15px;
-            border-radius: 12px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-
-        /* نافذة المهام */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(50%, -50%); /* ستتعدل بالجافاسكريبت */
-            background: #1a1a1a;
-            width: 85%;
-            padding: 20px;
-            border-radius: 20px;
-            border: 2px solid #ffcc00;
-            z-index: 100;
-        }
-
-        .task-item {
-            background: #333;
-            margin: 10px 0;
-            padding: 15px;
-            border-radius: 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .claim-btn {
-            background: #ffcc00;
-            color: #000;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding-top: 50px; }
+        .coin-img { width: 200px; border-radius: 50%; border: 5px solid #ffcc00; margin-bottom: 20px; }
+        .btn-menu { background: #222; color: #ffcc00; border: 1px solid #ffcc00; padding: 10px 20px; border-radius: 10px; margin: 5px; cursor: pointer; }
+        #balance { font-size: 30px; color: #ffcc00; margin-bottom: 20px; }
+        .modal { display: none; position: fixed; top: 20%; left: 10%; right: 10%; background: #1a1a1a; padding: 20px; border: 2px solid #ffcc00; border-radius: 15px; }
     </style>
 </head>
 <body>
 
-    <div id="game-container">
-        <div class="level-badge" id="level-name">Bronze Level</div>
-        <div class="stats" id="balance">0 🪙</div>
-        
-        <img id="coin" src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" alt="Jolt Coin">
-        
-        <div class="energy-container">
-            <div id="energy-bar" style="width: 100%;"></div>
-            <div id="energy-text" style="position: absolute; width: 100%; top:0; font-size: 12px;">1000/1000</div>
-        </div>
+    <div id="balance">0 🪙</div>
+    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="coin-img" onclick="tap()">
+
+    <div style="margin-top: 50px;">
+        <button class="btn-menu" onclick="showTasks()">📋 المهام</button>
+        <button class="btn-menu">🚀 تعزيز</button>
     </div>
 
-    <div class="bottom-menu">
-        <button class="menu-btn" onclick="toggleModal('tasks-modal')">📋 المهام</button>
-        <button class="menu-btn">🚀 تعزيز</button>
-        <button class="menu-btn">👥 الأصدقاء</button>
-    </div>
-
-    <div id="tasks-modal" class="modal" style="left: 7.5%; transform: none; top: 20%;">
-        <h3>قائمة المهام 📝</h3>
-        <div class="task-item">
-            <span>اشترك في القناة (+50k)</span>
-            <button class="claim-btn" onclick="completeTask(50000)">إتمام</button>
-        </div>
-        <button class="menu-btn" style="width: 100%; margin-top: 10px;" onclick="toggleModal('tasks-modal')">إغلاق</button>
+    <div id="taskModal" class="modal">
+        <h3>المهام اليومية 🎁</h3>
+        <p>اشترك في القناة واربح 50,000</p>
+        <button class="btn-menu" onclick="claim()">إتمام المهمة</button>
+        <button class="btn-menu" onclick="closeTasks()">إغلاق</button>
     </div>
 
     <script>
-        let balance = parseInt(localStorage.getItem('jolt_balance')) || 0;
-        let energy = 1000;
-        let maxEnergy = 1000;
+        let balance = parseInt(localStorage.getItem('balance')) || 0;
+        document.getElementById('balance').innerText = balance + " 🪙";
 
-        const balanceEl = document.getElementById('balance');
-        const coinEl = document.getElementById('coin');
-        const energyBar = document.getElementById('energy-bar');
-        const energyText = document.getElementById('energy-text');
-
-        function updateUI() {
-            balanceEl.innerText = `${balance.toLocaleString()} 🪙`;
-            let level = "Bronze";
-            if(balance >= 5000) { level = "Silver"; maxEnergy = 2000; }
-            document.getElementById('level-name').innerText = `${level} Level`;
-            
-            energyBar.style.width = (energy / maxEnergy) * 100 + "%";
-            energyText.innerText = `${energy}/${maxEnergy}`;
+        function tap() {
+            balance += 3;
+            document.getElementById('balance').innerText = balance + " 🪙";
+            localStorage.setItem('balance', balance);
         }
 
-        coinEl.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if (energy >= 3) {
-                balance += 3;
-                energy -= 3;
-                updateUI();
-                localStorage.setItem('jolt_balance', balance);
-            }
-        });
-
-        function toggleModal(id) {
-            const modal = document.getElementById(id);
-            modal.style.display = modal.style.display === 'block' ? 'none' : 'block';
+        function showTasks() { document.getElementById('taskModal').style.display = 'block'; }
+        function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
+        
+        function claim() {
+            balance += 50000;
+            document.getElementById('balance').innerText = balance + " 🪙";
+            localStorage.setItem('balance', balance);
+            alert("مبروك! تم إضافة المكافأة");
+            closeTasks();
         }
-
-        function completeTask(reward) {
-            balance += reward;
-            alert("مبروك! حصلت على المكافأة 🎁");
-            updateUI();
-            localStorage.setItem('jolt_balance', balance);
-            toggleModal('tasks-modal');
-        }
-
-        // شحن الطاقة تلقائياً
-        setInterval(() => {
-            if (energy < maxEnergy) {
-                energy = Math.min(maxEnergy, energy + 1);
-                updateUI();
-            }
-        }, 1000);
-
-        updateUI();
     </script>
 </body>
 </html>
