@@ -1,57 +1,60 @@
 <!DOCTYPE html>
-<html lang="ar">
-<head>
+<html lang="en"> <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, maximum-scale=1.0">
-    <title>Jimi Coin - Interaction Fix</title>
+    <title>Jimi Coin - Final Fix</title>
     <style>
-        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; }
+        /* إضافة خط يضمن ظهور الأرقام باللغة الإنجليزية (Latin) */
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@700&display=swap');
+
+        body { 
+            background: #000; color: #fff; margin: 0; 
+            font-family: 'Roboto', sans-serif; /* استخدام خط يدعم الأرقام الإنجليزية */
+            overflow: hidden; touch-action: none; 
+            -webkit-user-select: none; user-select: none; 
+        }
         
-        /* شاشة التحميل المضمونة */
         #splash { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; }
         #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
-        .loader-bar { width: 80%; height: 6px; background: #1a1a1a; border-radius: 10px; margin-bottom: 60px; border: 1px solid gold; overflow: hidden; }
-        #loader-fill { width: 0%; height: 100%; background: gold; }
+        
+        .loader-container { width: 80%; margin-bottom: 60px; text-align: center; }
+        .loader-bar { width: 100%; height: 8px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid #FFD700; }
+        #loader-fill { width: 0%; height: 100%; background: #FFD700; transition: width 0.2s; }
+        #load-pct { color: #FFD700; font-weight: bold; font-size: 20px; margin-bottom: 10px; }
 
         #app { display: none; height: 100vh; flex-direction: column; }
         .page { display: none; flex: 1; flex-direction: column; align-items: center; padding-top: 40px; }
         .active { display: flex !important; }
 
-        #score { font-size: 70px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
-        .level-tag { color: #00d2ff; font-size: 14px; letter-spacing: 2px; margin-bottom: 30px; }
+        /* الأرقام تظهر بالخط العريض واللون الذهبي */
+        #score { font-size: 80px; color: gold; font-weight: 900; margin: 0; font-variant-numeric: tabular-nums; }
+        .level-tag { color: #00d2ff; font-size: 14px; letter-spacing: 2px; margin-bottom: 20px; }
         
-        /* العملة مع تأثير الإمالة 3D */
-        .coin-wrapper { position: relative; width: 300px; height: 300px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
-        .coin-glow { position: absolute; width: 280px; height: 160px; border: 2px solid gold; border-radius: 50%; box-shadow: 0 0 20px gold; z-index: 1; }
-        #coinMain { width: 210px; height: 210px; z-index: 10; border-radius: 50%; object-fit: contain; transition: transform 0.1s ease-out; pointer-events: none; will-change: transform; }
+        .coin-wrapper { position: relative; width: 320px; height: 320px; display: flex; align-items: center; justify-content: center; perspective: 1000px; }
+        .coin-glow { position: absolute; width: 280px; height: 180px; border: 2px solid gold; border-radius: 50%; box-shadow: 0 0 30px gold; z-index: 1; }
+        #coinMain { width: 260px; height: 260px; z-index: 10; border-radius: 50%; object-fit: contain; transition: transform 0.1s; pointer-events: none; }
 
-        /* لوحة الصدارة */
-        .lead-list { width: 90%; background: #0a0a0a; border-radius: 15px; border: 1px solid #222; margin-top: 20px; overflow: hidden; }
-        .lead-row { display: flex; justify-content: space-between; padding: 15px; border-bottom: 1px solid #111; }
-        .lead-row span:first-child { color: #aaa; }
-        .lead-row span:last-child { color: gold; font-weight: bold; }
-
-        /* التنقل السفلي */
-        .nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: #000; display: flex; border-top: 1px solid #222; z-index: 10000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 12px; font-weight: bold; cursor: pointer; }
+        .nav { position: fixed; bottom: 0; width: 100%; height: 90px; background: #000; display: flex; border-top: 1px solid #222; z-index: 10000; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 12px; font-weight: bold; }
         .nav-item.active-nav { color: gold; }
         .nav-icon { font-size: 24px; margin-bottom: 5px; }
 
-        /* الطاقة */
-        .energy-box { width: 85%; position: absolute; bottom: 110px; }
-        .bar-bg { height: 10px; background: #111; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
-        #bar-fill { width: 100%; height: 100%; background: #00d2ff; transition: width 0.3s; }
+        .energy-box { width: 85%; position: absolute; bottom: 120px; }
+        .bar-bg { height: 12px; background: #111; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
+        #bar-fill { width: 100%; height: 100%; background: #00d2ff; }
 
-        /* تأثير +1 */
-        .pop { position: absolute; color: #00d2ff; font-size: 38px; font-weight: bold; pointer-events: none; animation: moveUp 0.6s ease-out forwards; z-index: 5000; }
-        @keyframes moveUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-130px); opacity: 0; } }
+        .pop { position: absolute; color: #00d2ff; font-size: 40px; font-weight: bold; pointer-events: none; animation: moveUp 0.6s forwards; }
+        @keyframes moveUp { to { transform: translateY(-130px); opacity: 0; } }
     </style>
 </head>
 <body onload="start()">
 
     <div id="splash">
         <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png">
-        <div class="loader-bar"><div id="loader-fill"></div></div>
+        <div class="loader-container">
+            <div id="load-pct">0%</div>
+            <div class="loader-bar"><div id="loader-fill"></div></div>
+        </div>
     </div>
 
     <div id="app">
@@ -63,115 +66,91 @@
                 <img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png" id="coinMain">
             </div>
             <div class="energy-box">
-                <div style="display:flex; justify-content:space-between; font-size:12px; margin-bottom:8px; color:#aaa">
-                    <span>⚡ ENERGY</span><span id="en-val">2000/2000</span>
+                <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:5px; color:#aaa">
+                    <span>⚡ ENERGY</span><span id="en-val">2000 / 2000</span>
                 </div>
                 <div class="bar-bg"><div id="bar-fill"></div></div>
             </div>
         </div>
 
-        <div id="p-lead" class="page">
-            <h2 style="color:gold; margin-bottom: 5px;">LEADERBOARD</h2>
-            <p style="color:#555; font-size: 12px;">Top players this week</p>
-            <div class="lead-list">
-                <div class="lead-row"><span>1. Ahmed</span><span>1,250,000</span></div>
-                <div class="lead-row"><span>2. Noor</span><span>840,000</span></div>
-                <div class="lead-row" style="background:#111;"><span>3. You (Muhammed)</span><span id="my-rank-val">0</span></div>
-            </div>
-        </div>
-
         <div class="nav">
-            <div class="nav-item active-nav" id="btn-tap">
-                <span class="nav-icon">💰</span>TAP
-            </div>
-            <div class="nav-item" id="btn-lead">
-                <span class="nav-icon">🏆</span>LEADERS
-            </div>
+            <div class="nav-item active-nav"><span class="nav-icon">💰</span>TAP</div>
+            <div class="nav-item"><span class="nav-icon">🚀</span>BOOST</div>
+            <div class="nav-item"><span class="nav-icon">🏆</span>LEADERS</div>
         </div>
     </div>
 
     <script>
-        let pts = parseInt(localStorage.getItem('j_pts')) || 143;
+        let pts = parseInt(localStorage.getItem('j_pts')) || 0;
         let en = parseFloat(localStorage.getItem('j_en')) || 2000;
-        let pwr = 1;
+
+        // وظيفة لتحويل الأرقام إلى صيغة إنجليزية قسرياً
+        function toEng(num) {
+            return num.toString().replace(/[٠-٩]/g, d => "٠١٢٣٤٥٦٧٨٩".indexOf(d));
+        }
 
         function start() {
             let p = 0;
-            let t = setInterval(() => {
-                p += 5; document.getElementById('loader-fill').style.width = p + "%";
+            const t = setInterval(() => {
+                p += 2;
+                document.getElementById('loader-fill').style.width = p + "%";
+                document.getElementById('load-pct').innerText = toEng(Math.floor(p)) + "%";
                 if(p >= 100) { 
                     clearInterval(t); 
                     document.getElementById('splash').style.display='none'; 
                     document.getElementById('app').style.display='flex'; 
                     updateUI(); 
                 }
-            }, 30);
-        }
-
-        // تحسين التنقل ليعمل باللمس الفوري
-        document.getElementById('btn-tap').onclick = function() { switchPage('tap', this); };
-        document.getElementById('btn-lead').onclick = function() { switchPage('lead', this); };
-
-        function switchPage(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active-nav'));
-            document.getElementById('p-' + id).classList.add('active');
-            el.classList.add('active-nav');
-            if(navigator.vibrate) navigator.vibrate(5); // اهتزاز خفيف عند التبديل
+            }, 40);
         }
 
         function updateUI() {
-            document.getElementById('score').innerText = pts.toLocaleString();
-            document.getElementById('my-rank-val').innerText = pts.toLocaleString();
-            document.getElementById('en-val').innerText = Math.floor(en) + "/2000";
+            // استخدام toLocaleString('en-US') لضمان الأرقام الإنجليزية
+            document.getElementById('score').innerText = pts.toLocaleString('en-US');
+            document.getElementById('en-val').innerText = toEng(Math.floor(en)) + " / 2000";
             document.getElementById('bar-fill').style.width = (en/20) + "%";
         }
 
         const tapZone = document.getElementById('tapZone');
-        const coinImg = document.getElementById('coinMain');
+        const img = document.getElementById('coinMain');
 
         tapZone.addEventListener('touchstart', (e) => {
             e.preventDefault();
             const touch = e.changedTouches[0];
             
-            // 1. الاهتزاز (Haptic)
-            if(navigator.vibrate) navigator.vibrate(12);
-            
-            // 2. حساب زوايا الإمالة بدقة
+            // إصلاح الاهتزاز: محاولة التفعيل بأكثر من نمط
+            if (window.navigator && window.navigator.vibrate) {
+                window.navigator.vibrate([20]); 
+            }
+
+            // إمالة العملة
             const rect = tapZone.getBoundingClientRect();
-            const centerX = rect.left + rect.width / 2;
-            const centerY = rect.top + rect.height / 2;
-            const tiltX = (touch.clientY - centerY) / 10;
-            const tiltY = (touch.clientX - centerX) / 10;
+            const x = (touch.clientX - (rect.left + rect.width / 2)) / 10;
+            const y = (touch.clientY - (rect.top + rect.height / 2)) / 10;
+            img.style.transform = `rotateX(${-y}deg) rotateY(${x}deg) scale(0.95)`;
 
-            coinImg.style.transform = `rotateX(${-tiltX}deg) rotateY(${tiltY}deg) scale(0.92)`;
-
-            // 3. إضافة النقطة
-            if(en >= pwr) {
-                pts += pwr; en -= pwr;
+            if(en >= 1) {
+                pts += 1; en -= 1;
                 createPop(touch.pageX, touch.pageY);
-                updateUI(); save();
+                updateUI();
+                localStorage.setItem('j_pts', pts);
+                localStorage.setItem('j_en', en);
             }
         });
 
         tapZone.addEventListener('touchend', () => {
-            coinImg.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
+            img.style.transform = 'rotateX(0deg) rotateY(0deg) scale(1)';
         });
 
         function createPop(x, y) {
             const d = document.createElement('div');
-            d.className = 'pop'; d.innerText = '+' + pwr;
-            d.style.left = (x - 20) + 'px'; d.style.top = (y - 50) + 'px';
+            d.className = 'pop'; d.innerText = '+1';
+            d.style.left = (x - 20) + 'px'; d.style.top = (y - 40) + 'px';
             document.body.appendChild(d);
             setTimeout(() => d.remove(), 600);
         }
 
-        function save() {
-            localStorage.setItem('j_pts', pts);
-            localStorage.setItem('j_en', en);
-        }
-
-        setInterval(() => { if(en < 2000) { en = Math.min(2000, en + 1.2); updateUI(); } }, 1000);
+        setInterval(() => { if(en < 2000) { en = Math.min(2000, en + 1.5); updateUI(); } }, 1000);
     </script>
 </body>
 </html>
