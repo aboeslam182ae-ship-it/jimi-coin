@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>Jolt Coin - Boost System</title>
+    <title>Jolt Coin - Boost Fixed</title>
     <style>
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; }
         
@@ -12,161 +12,169 @@
         #splash img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; z-index: -1; }
         .loader-container { width: 80%; margin-bottom: 60px; text-align: center; }
         .loader-bar { width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 10px; overflow: hidden; border: 1px solid gold; }
-        #loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); }
+        #loader-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); transition: width 0.1s; }
 
         /* الشاشة الرئيسية */
-        #main-ui { display: none; height: 100vh; display: flex; flex-direction: column; }
-        .content-section { flex: 1; display: none; text-align: center; overflow-y: auto; padding-bottom: 100px; }
-        .active-section { display: block; }
+        #game-container { display: none; height: 100vh; flex-direction: column; }
+        
+        .section { display: none; text-align: center; width: 100%; flex: 1; overflow-y: auto; }
+        .active { display: block !important; }
 
-        /* قسم اللعب */
-        #score { font-size: 60px; color: #FFD700; font-weight: bold; margin-top: 40px; }
-        .coin-btn { width: 260px; height: 260px; margin: 50px auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
-        .coin-btn img { width: 100%; border-radius: 50%; border: 4px solid gold; }
+        /* قسم النقر */
+        #score { font-size: 60px; color: #FFD700; font-weight: bold; margin-top: 40px; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
+        .coin-btn { width: 260px; height: 260px; margin: 40px auto; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+        .coin-btn img { width: 100%; border-radius: 50%; border: 4px solid gold; box-shadow: 0 0 20px rgba(255,215,0,0.3); }
 
-        /* قسم التطوير (Boost) */
-        .boost-card { background: #111; margin: 15px; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
+        /* قسم المتجر */
+        .boost-item { background: #111; margin: 15px; padding: 20px; border-radius: 15px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #333; }
         .boost-info { text-align: left; }
-        .boost-info h3 { margin: 0; color: #FFD700; }
+        .boost-info h3 { margin: 0; color: #FFD700; font-size: 18px; }
         .boost-info p { margin: 5px 0 0; font-size: 12px; color: #888; }
-        .buy-btn { background: #FFD700; color: #000; border: none; padding: 10px 15px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+        .buy-btn { background: #FFD700; color: #000; border: none; padding: 10px 20px; border-radius: 8px; font-weight: bold; }
 
         /* شريط التنقل السفلي */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0a0a0a; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid #222; z-index: 1000; }
-        .nav-item { color: #555; text-decoration: none; font-size: 12px; display: flex; flex-direction: column; align-items: center; }
-        .nav-item.active { color: #FFD700; }
-        .nav-icon { font-size: 24px; margin-bottom: 5px; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; background: #0a0a0a; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid #222; z-index: 1000; }
+        .nav-btn { color: #555; font-size: 12px; display: flex; flex-direction: column; align-items: center; cursor: pointer; border: none; background: none; width: 50%; }
+        .nav-btn.active-nav { color: #FFD700; }
+        .nav-icon { font-size: 24px; margin-bottom: 3px; }
 
-        /* تأثير +1 */
-        .float-text { position: absolute; color: #00BFFF; font-size: 30px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s forwards; }
+        /* شريط الطاقة */
+        .energy-box { width: 85%; margin: 0 auto 100px; }
+        .energy-bar-bg { height: 12px; background: #222; border-radius: 10px; border: 1px solid #fff; overflow: hidden; }
+        #energy-fill { width: 100%; height: 100%; background: #00BFFF; transition: width 0.2s; }
+
+        .float-text { position: absolute; color: #00BFFF; font-size: 30px; font-weight: bold; pointer-events: none; animation: floatUp 0.8s forwards; z-index: 1500; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-100px); } }
-
-        .energy-wrapper { width: 85%; margin: 20px auto; }
-        .energy-bar { height: 12px; background: #222; border-radius: 10px; border: 1px solid #fff; overflow: hidden; }
-        #energy-fill { width: 100%; height: 100%; background: #00BFFF; }
     </style>
 </head>
-<body onload="startLoading()">
+<body onload="init()">
 
     <div id="splash">
         <img src="splash.png">
         <div class="loader-container">
-            <div id="load-text" style="margin-bottom:10px">0%</div>
+            <div id="load-pct" style="margin-bottom:10px">0%</div>
             <div class="loader-bar"><div id="loader-fill"></div></div>
         </div>
     </div>
 
-    <div id="main-ui">
-        <div id="tap-section" class="content-section active-section">
+    <div id="game-container">
+        <div id="tap-page" class="section active">
             <div id="score">0</div>
-            <div style="color:#888">BRONZE LEVEL</div>
+            <div style="color:#888; letter-spacing:2px; font-size:12px;">BRONZE LEVEL</div>
             <div class="coin-btn" id="coinArea"><img src="coin.png"></div>
-            <div class="energy-wrapper">
-                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:14px;">
+            
+            <div class="energy-box">
+                <div style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:14px; font-weight:bold;">
                     <span>⚡ ENERGY</span>
-                    <span id="energy-val">1000/1000</span>
+                    <span id="energy-stat">1000 / 1000</span>
                 </div>
-                <div class="energy-bar"><div id="energy-fill"></div></div>
+                <div class="energy-bar-bg"><div id="energy-fill"></div></div>
             </div>
         </div>
 
-        <div id="boost-section" class="content-section">
-            <h2 style="margin-top:30px">BOOSTERS</h2>
-            <div class="boost-card">
+        <div id="boost-page" class="section">
+            <h2 style="margin-top:40px; color:#FFD700;">BOOSTERS</h2>
+            <div class="boost-item">
                 <div class="boost-info">
                     <h3>Multitap</h3>
-                    <p>+1 per tap | Cost: 500</p>
+                    <p>Get more per tap | Cost: 500</p>
                 </div>
-                <button class="buy-btn" onclick="buyBoost('multi')">Buy</button>
+                <button class="buy-btn" onclick="upgrade('tap')">Upgrade</button>
             </div>
-            <div class="boost-card">
+            <div class="boost-item">
                 <div class="boost-info">
                     <h3>Energy Limit</h3>
-                    <p>+500 capacity | Cost: 1000</p>
+                    <p>+500 Max Energy | Cost: 1000</p>
                 </div>
-                <button class="buy-btn" onclick="buyBoost('limit')">Buy</button>
+                <button class="buy-btn" onclick="upgrade('limit')">Upgrade</button>
             </div>
         </div>
 
-        <nav class="nav-bar">
-            <div class="nav-item active" onclick="showSection('tap')">
+        <div class="nav-bar">
+            <button class="nav-btn active-nav" onclick="tab('tap')">
                 <span class="nav-icon">🟡</span>
                 <span>TAP</span>
-            </div>
-            <div class="nav-item" onclick="showSection('boost')">
+            </button>
+            <button class="nav-btn" onclick="tab('boost')">
                 <span class="nav-icon">🚀</span>
                 <span>BOOST</span>
-            </div>
-        </nav>
+            </button>
+        </div>
     </div>
 
     <script>
-        let score = parseInt(localStorage.getItem('jolt_pts')) || 0;
-        let energy = parseInt(localStorage.getItem('jolt_en')) || 1000;
-        let maxEnergy = 1000;
-        let tapValue = 1;
+        let pts = parseInt(localStorage.getItem('jolt_pts')) || 0;
+        let en = parseInt(localStorage.getItem('jolt_en')) || 1000;
+        let maxEn = parseInt(localStorage.getItem('jolt_max_en')) || 1000;
+        let perTap = parseInt(localStorage.getItem('jolt_pertap')) || 1;
 
-        function startLoading() {
+        function init() {
             let p = 0;
-            const int = setInterval(() => {
+            const loader = setInterval(() => {
                 p += 2;
                 document.getElementById('loader-fill').style.width = p + "%";
-                document.getElementById('load-text').innerText = p + "%";
+                document.getElementById('load-pct').innerText = p + "%";
                 if(p >= 100) {
-                    clearInterval(int);
+                    clearInterval(loader);
                     document.getElementById('splash').style.display = 'none';
-                    document.getElementById('main-ui').style.display = 'flex';
-                    updateUI();
+                    document.getElementById('game-container').style.display = 'flex';
+                    render();
                 }
-            }, 50);
+            }, 40);
         }
 
-        function showSection(id) {
-            document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active-section'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            document.getElementById(id + '-section').classList.add('active-section');
-            event.currentTarget.classList.add('active');
+        function tab(name) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            document.getElementById(name + '-page').classList.add('active');
+            event.currentTarget.classList.add('active-nav');
         }
 
-        function updateUI() {
-            document.getElementById('score').innerText = score.toLocaleString();
-            document.getElementById('energy-val').innerText = `${energy}/${maxEnergy}`;
-            document.getElementById('energy-fill').style.width = (energy/maxEnergy*100) + "%";
+        function render() {
+            document.getElementById('score').innerText = pts.toLocaleString();
+            document.getElementById('energy-stat').innerText = `${Math.floor(en)} / ${maxEn}`;
+            document.getElementById('energy-fill').style.width = (en / maxEn * 100) + "%";
         }
 
         document.getElementById('coinArea').addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if(energy >= tapValue) {
-                score += tapValue;
-                energy -= tapValue;
-                const t = e.changedTouches[0];
-                const el = document.createElement('div');
-                el.className = 'float-text'; el.innerText = '+' + tapValue;
-                el.style.left = t.pageX + 'px'; el.style.top = t.pageY + 'px';
-                document.body.appendChild(el);
-                setTimeout(() => el.remove(), 800);
-                updateUI();
-                save();
+            for(let i=0; i<e.changedTouches.length; i++) {
+                if(en >= perTap) {
+                    pts += perTap; en -= perTap;
+                    const t = e.changedTouches[i];
+                    pop(t.pageX, t.pageY);
+                }
             }
-        });
+            render(); save();
+        }, {passive: false});
 
-        function buyBoost(type) {
-            if(type === 'multi' && score >= 500) {
-                score -= 500; tapValue++; alert('Multitap upgraded!');
-            } else if(type === 'limit' && score >= 1000) {
-                score -= 1000; maxEnergy += 500; energy = maxEnergy; alert('Energy increased!');
+        function pop(x, y) {
+            const d = document.createElement('div');
+            d.className = 'float-text'; d.innerText = '+' + perTap;
+            d.style.left = x + 'px'; d.style.top = y + 'px';
+            document.body.appendChild(d);
+            setTimeout(() => d.remove(), 800);
+        }
+
+        function upgrade(type) {
+            if(type === 'tap' && pts >= 500) {
+                pts -= 500; perTap++; alert('Success! Tap is now +' + perTap);
+            } else if(type === 'limit' && pts >= 1000) {
+                pts -= 1000; maxEn += 500; en = maxEn; alert('Success! Energy limit increased');
             } else {
                 alert('Not enough coins!');
             }
-            updateUI(); save();
+            render(); save();
         }
 
         function save() {
-            localStorage.setItem('jolt_pts', score);
-            localStorage.setItem('jolt_en', energy);
+            localStorage.setItem('jolt_pts', pts);
+            localStorage.setItem('jolt_en', en);
+            localStorage.setItem('jolt_max_en', maxEn);
+            localStorage.setItem('jolt_pertap', perTap);
         }
 
-        setInterval(() => { if(energy < maxEnergy) { energy += 2; updateUI(); } }, 1000);
+        setInterval(() => { if(en < maxEn) { en = Math.min(maxEn, en + 2); render(); } }, 1000);
     </script>
 </body>
 </html>
