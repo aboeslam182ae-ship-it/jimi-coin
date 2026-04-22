@@ -3,52 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jolt Coin</title>
+    <title>Jolt Coin - Energy Fix</title>
     <style>
-        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding-top: 50px; }
-        .coin-img { width: 200px; border-radius: 50%; border: 5px solid #ffcc00; margin-bottom: 20px; }
-        .btn-menu { background: #222; color: #ffcc00; border: 1px solid #ffcc00; padding: 10px 20px; border-radius: 10px; margin: 5px; cursor: pointer; }
-        #balance { font-size: 30px; color: #ffcc00; margin-bottom: 20px; }
-        .modal { display: none; position: fixed; top: 20%; left: 10%; right: 10%; background: #1a1a1a; padding: 20px; border: 2px solid #ffcc00; border-radius: 15px; }
+        body { background: #000; color: #fff; text-align: center; font-family: sans-serif; margin: 0; padding-top: 30px; overflow: hidden; user-select: none; }
+        .coin-img { width: 220px; border-radius: 50%; border: 4px solid #ffcc00; cursor: pointer; transition: transform 0.1s; -webkit-tap-highlight-color: transparent; }
+        .coin-img:active { transform: scale(0.95); }
+        #balance { font-size: 35px; color: #ffcc00; font-weight: bold; margin-bottom: 10px; }
+        .energy-container { width: 80%; height: 20px; background: #333; border-radius: 10px; margin: 20px auto; position: relative; border: 1px solid #444; }
+        #energy-bar { height: 100%; background: linear-gradient(to right, #ffcc00, #ff6600); border-radius: 10px; width: 100%; transition: width 0.3s; }
+        .menu-footer { position: fixed; bottom: 20px; width: 100%; display: flex; justify-content: center; gap: 10px; }
+        .btn-menu { background: #1a1a1a; color: #fff; border: 1px solid #ffcc00; padding: 10px 15px; border-radius: 12px; font-size: 14px; }
+        .modal { display: none; position: fixed; top: 20%; left: 10%; right: 10%; background: #1a1a1a; padding: 20px; border: 2px solid #ffcc00; border-radius: 15px; z-index: 10; }
     </style>
 </head>
 <body>
 
     <div id="balance">0 🪙</div>
-    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="coin-img" onclick="tap()">
+    <img src="https://i.ibb.co/L6M7XmF/DALL-E-2025-10-27-21-44-33-A-realistic-cinematic-portrait-of-a-fierce-jaguar-made-of-solid-polished.webp" class="coin-img" onclick="tap(event)">
 
-    <div style="margin-top: 50px;">
-        <button class="btn-menu" onclick="showTasks()">📋 المهام</button>
+    <div class="energy-container">
+        <div id="energy-bar"></div>
+        <small id="energy-text" style="position: absolute; width:100%; left:0; top:2px;">1000/1000</small>
+    </div>
+
+    <div class="menu-footer">
+        <button class="btn-menu" onclick="toggleModal('taskModal')">📋 المهام</button>
         <button class="btn-menu">🚀 تعزيز</button>
     </div>
 
     <div id="taskModal" class="modal">
-        <h3>المهام اليومية 🎁</h3>
-        <p>اشترك في القناة واربح 50,000</p>
-        <button class="btn-menu" onclick="claim()">إتمام المهمة</button>
-        <button class="btn-menu" onclick="closeTasks()">إغلاق</button>
+        <h3>المهام 📝</h3>
+        <p>اشترك في القناة (+50k)</p>
+        <button class="btn-menu" onclick="claimTask(50000)">إتمام</button>
+        <button class="btn-menu" onclick="toggleModal('taskModal')">إغلاق</button>
     </div>
 
     <script>
-        let balance = parseInt(localStorage.getItem('balance')) || 0;
-        document.getElementById('balance').innerText = balance + " 🪙";
-
-        function tap() {
-            balance += 3;
-            document.getElementById('balance').innerText = balance + " 🪙";
-            localStorage.setItem('balance', balance);
-        }
-
-        function showTasks() { document.getElementById('taskModal').style.display = 'block'; }
-        function closeTasks() { document.getElementById('taskModal').style.display = 'none'; }
+        let maxEnergy = 1000;
+        let balance = parseInt(localStorage.getItem('jolt_balance')) || 0;
         
-        function claim() {
-            balance += 50000;
-            document.getElementById('balance').innerText = balance + " 🪙";
-            localStorage.setItem('balance', balance);
-            alert("مبروك! تم إضافة المكافأة");
-            closeTasks();
+        // حساب الطاقة عند العودة
+        let lastEnergy = parseInt(localStorage.getItem('last_energy'));
+        let lastTime = parseInt(localStorage.getItem('last_time'));
+        let energy = isNaN(lastEnergy) ? maxEnergy : lastEnergy;
+
+        if (lastTime) {
+            let now = Date.now();
+            let secondsPassed = Math.floor((now - lastTime) / 1000);
+            energy = Math.min(maxEnergy, energy + secondsPassed); // شحن 1 طاقة لكل ثانية غياب
         }
+
+        function updateUI() {
+            document.getElementById('balance').innerText = balance.toLocaleString() + " 🪙";
+            document.getElementById('energy-bar').style.width = (energy / maxEnergy) * 100 + "%";
+            document.getElementById('energy-text').innerText = `${energy}/${maxEnergy}`;
+            
+            // حفظ البيانات فورياً
+            localStorage.setItem('jolt_balance', balance);
+            localStorage.setItem('last_energy', energy);
+            localStorage.setItem('last_time', Date.now());
+        }
+
+        function tap(e) {
+            if (energy >= 3) {
+                balance += 3;
+                energy -= 3;
+                updateUI();
+            }
+        }
+
+        function toggleModal(id) {
+            let m = document.getElementById(id);
+            m.style.display = m.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function claimTask(r) {
+            balance += r;
+            alert("تمت إضافة المكافأة! 🎁");
+            updateUI();
+            toggleModal('taskModal');
+        }
+
+        // شحن الطاقة المستمر أثناء فتح البوت
+        setInterval(() => {
+            if (energy < maxEnergy) {
+                energy++;
+                updateUI();
+            } else {
+                localStorage.setItem('last_time', Date.now()); // تحديث الوقت حتى لو الطاقة ممتلئة
+            }
+        }, 1000);
+
+        updateUI();
     </script>
 </body>
 </html>
