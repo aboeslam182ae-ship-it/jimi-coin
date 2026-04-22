@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" translate="no">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <meta name="google" content="notranslate">
-    <title>Jolt Coin - English Numbers</title>
+    <title>Jolt Coin - Final Effect</title>
     <style>
         body { background: #000; color: #fff; margin: 0; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: sans-serif; touch-action: none; }
         #splash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 1000; display: flex; align-items: center; justify-content: center; }
@@ -13,37 +12,38 @@
         #game { display: none; text-align: center; width: 100%; position: relative; height: 100vh; }
         
         #score-container { margin-top: 50px; }
-        /* استخدام خط يدعم الأرقام الإنجليزية فقط لضمان الشكل */
-        #score { font-size: 70px; color: #FFD700; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); font-family: Arial, sans-serif; }
+        #score { font-size: 70px; color: #FFD700; font-weight: bold; text-shadow: 0 0 20px rgba(255,215,0,0.5); }
         #level { color: #888; font-size: 14px; margin-top: 5px; letter-spacing: 2px; }
 
         .coin-btn { width: 280px; height: 280px; cursor: pointer; margin: 60px auto; -webkit-tap-highlight-color: transparent; position: relative; transition: transform 0.05s; }
         .coin-btn:active { transform: scale(0.92); }
         .coin-btn img { width: 100%; height: 100%; border-radius: 50%; border: 4px solid #FFD700; box-shadow: 0 0 30px rgba(255,215,0,0.2); }
 
-        .energy-wrapper { position: absolute; bottom: 40px; width: 100%; text-align: center; }
-        .energy-info { width: 85%; margin: 0 auto 8px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; color: #fff; font-family: Arial, sans-serif; }
-        
-        .energy-bar-container { 
-            width: 85%; 
-            height: 16px; 
-            background: #222; 
-            border-radius: 20px; 
-            margin: 0 auto; 
-            overflow: hidden; 
-            border: 2px solid #FFFFFF; 
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+        /* تأثير الرقم الطائر +1 */
+        .float-text {
+            position: absolute;
+            color: #00BFFF; /* أزرق ليتناسب مع شريط الطاقة */
+            font-size: 32px;
+            font-weight: bold;
+            pointer-events: none;
+            animation: floatUp 0.8s ease-out forwards;
+            z-index: 500;
+            text-shadow: 0 0 10px rgba(0, 191, 255, 0.6);
         }
 
-        #energy-fill { 
-            width: 100%; 
-            height: 100%; 
-            background: linear-gradient(90deg, #00BFFF, #1E90FF); 
-            transition: width 0.2s ease-out;
-            box-shadow: 0 0 15px rgba(30, 144, 255, 0.6);
+        @keyframes floatUp {
+            0% { opacity: 1; transform: translateY(0) scale(1); }
+            100% { opacity: 0; transform: translateY(-120px) scale(1.2); }
         }
-        
-        .energy-icon { color: #00BFFF; margin-right: 5px; }
+
+        /* شريط الطاقة السفلي */
+        .energy-wrapper { position: absolute; bottom: 40px; width: 100%; text-align: center; }
+        .energy-info { width: 85%; margin: 0 auto 8px; display: flex; justify-content: space-between; font-size: 18px; font-weight: bold; }
+        .energy-bar-container { 
+            width: 85%; height: 16px; background: #222; border-radius: 20px; margin: 0 auto; overflow: hidden; 
+            border: 2px solid #FFFFFF; /* إطار أبيض */
+        }
+        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00BFFF, #1E90FF); transition: width 0.2s ease-out; }
     </style>
 </head>
 <body onload="startGame()">
@@ -62,7 +62,7 @@
 
         <div class="energy-wrapper">
             <div class="energy-info">
-                <span><span class="energy-icon">⚡</span> ENERGY</span>
+                <span>⚡ ENERGY</span>
                 <span id="energy-val">1000 / 1000</span>
             </div>
             <div class="energy-bar-container">
@@ -72,11 +72,6 @@
     </div>
 
     <script>
-        // دالة لتحويل الأرقام إلى شكلها الإنجليزي الصرف لضمان عدم التعريب
-        function toEng(n) {
-            return n.toLocaleString('en-US');
-        }
-
         let score = parseInt(localStorage.getItem('jolt_pts')) || 0;
         let maxEnergy = 1000;
         let currentEnergy = parseInt(localStorage.getItem('jolt_en')) || maxEnergy;
@@ -84,45 +79,17 @@
         const scoreDisplay = document.getElementById('score');
         const energyDisplay = document.getElementById('energy-val');
         const energyBar = document.getElementById('energy-fill');
-        const levelDisplay = document.getElementById('level');
 
         function updateUI() {
-            scoreDisplay.innerText = toEng(score);
-            energyDisplay.innerText = toEng(Math.floor(currentEnergy)) + " / " + toEng(maxEnergy);
+            scoreDisplay.innerText = score.toLocaleString();
+            energyDisplay.innerText = Math.floor(currentEnergy) + " / " + maxEnergy;
             energyBar.style.width = (currentEnergy / maxEnergy * 100) + "%";
             
-            if (score > 10000) { levelDisplay.innerText = "SILVER LEVEL"; }
-            if (score > 50000) { levelDisplay.innerText = "GOLD LEVEL"; }
+            if (score > 10000) document.getElementById('level').innerText = "SILVER LEVEL";
+            if (score > 50000) document.getElementById('level').innerText = "GOLD LEVEL";
         }
 
         function startGame() {
             setTimeout(() => {
-                document.getElementById('splash').style.display = 'none';
-                document.getElementById('game').style.display = 'block';
-                updateUI();
-            }, 3000);
-
-            setInterval(() => {
-                if (currentEnergy < maxEnergy) {
-                    currentEnergy = Math.min(maxEnergy, currentEnergy + 2);
-                    updateUI();
-                    localStorage.setItem('jolt_en', currentEnergy);
-                }
-            }, 1000);
-        }
-
-        document.getElementById('coinArea').addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            for (let i = 0; i < e.changedTouches.length; i++) {
-                if (currentEnergy >= 1) {
-                    score++;
-                    currentEnergy -= 1;
-                }
-            }
-            updateUI();
-            localStorage.setItem('jolt_pts', score);
-            localStorage.setItem('jolt_en', currentEnergy);
-        }, { passive: false });
-    </script>
-</body>
-</html>
+                document.getElementById('splash').
+        
