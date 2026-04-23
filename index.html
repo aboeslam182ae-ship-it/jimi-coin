@@ -7,7 +7,7 @@
         Jimi Coin Pro
     </title>
     <style>
-        /* --- الأساسيات --- */
+        /* --- GLOBAL RESET --- */
         * {
             box-sizing: border-box;
         }
@@ -40,7 +40,7 @@
             height: 100vh;
         }
 
-        /* --- شاشة التحميل --- */
+        /* --- LOADER SECTION --- */
         #loader-screen {
             position: fixed;
         }
@@ -108,7 +108,7 @@
             background-color: #FFD700;
         }
 
-        /* --- نظام الصفحات --- */
+        /* --- PAGES SYSTEM --- */
         .page {
             display: none;
         }
@@ -129,7 +129,7 @@
             display: flex !important;
         }
 
-        /* --- شريط الطاقة (تم الإصلاح) --- */
+        /* --- ENERGY BAR FIX --- */
         .energy-container {
             width: 85%;
         }
@@ -186,7 +186,7 @@
             transition: width 0.2s;
         }
 
-        /* --- الأزرار السفلية (تم الإصلاح) --- */
+        /* --- NAVIGATION FIX --- */
         .nav-bar {
             position: fixed;
         }
@@ -215,7 +215,7 @@
             border: 1px solid #222;
         }
         .nav-bar {
-            z-index: 999; /* لضمان ظهورها فوق كل شيء */
+            z-index: 999;
         }
 
         .nav-btn {
@@ -244,7 +244,7 @@
             color: #FFD700;
         }
 
-        /* --- العملة --- */
+        /* --- COIN IMAGE --- */
         #coin-click {
             width: 260px;
         }
@@ -269,6 +269,9 @@
         #coin-click {
             background-repeat: no-repeat;
         }
+        #coin-click {
+            transition: transform 0.05s;
+        }
     </style>
 </head>
 <body onload="initApp()">
@@ -288,7 +291,7 @@
 
         <div class="energy-container">
             <div class="energy-header">
-                <span style="color: #aaa;">⚡ ENERGY</span>
+                <span style="color: #aaa;">ENERGY</span>
                 <span id="energy-text">2000 / 2000</span>
             </div>
             <div class="energy-bar-bg">
@@ -297,25 +300,31 @@
         </div>
     </div>
 
-    <div id="tab-tasks" class="page"><h1 style="margin-top:100px">TASKS LIST</h1></div>
-    <div id="tab-boost" class="page"><h1 style="margin-top:100px">BOOSTERS</h1></div>
-    <div id="tab-top" class="page"><h1 style="margin-top:100px">TOP PLAYERS</h1></div>
+    <div id="tab-tasks" class="page">
+        <h1 style="margin-top:100px">TASKS LIST</h1>
+    </div>
+    <div id="tab-boost" class="page">
+        <h1 style="margin-top:100px">BOOSTERS</h1>
+    </div>
+    <div id="tab-top" class="page">
+        <h1 style="margin-top:100px">TOP PLAYERS</h1>
+    </div>
 
     <div class="nav-bar">
         <div class="nav-btn nav-active" onclick="switchTab('tap', this)">
-            <div style="font-size: 22px;">💰</div>
+            <div style="font-size: 22px;">GOLD</div>
             <div style="font-size: 10px; font-weight: bold;">TAP</div>
         </div>
         <div class="nav-btn" onclick="switchTab('tasks', this)">
-            <div style="font-size: 22px;">📜</div>
+            <div style="font-size: 22px;">TASK</div>
             <div style="font-size: 10px; font-weight: bold;">TASKS</div>
         </div>
         <div class="nav-btn" onclick="switchTab('boost', this)">
-            <div style="font-size: 22px;">🚀</div>
+            <div style="font-size: 22px;">UP</div>
             <div style="font-size: 10px; font-weight: bold;">BOOST</div>
         </div>
         <div class="nav-btn" onclick="switchTab('top', this)">
-            <div style="font-size: 22px;">🏆</div>
+            <div style="font-size: 22px;">TOP</div>
             <div style="font-size: 10px; font-weight: bold;">TOP</div>
         </div>
     </div>
@@ -337,7 +346,6 @@
                 }
             }, 40);
 
-            // استعادة الطاقة تلقائياً
             setInterval(() => {
                 if(energy < 2000) {
                     energy = Math.min(2000, energy + 1);
@@ -354,7 +362,6 @@
             localStorage.setItem('j_energy', energy);
         }
 
-        // وظيفة تبديل الأزرار (تم إصلاحها)
         function switchTab(tabId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
@@ -363,7 +370,6 @@
             element.classList.add('nav-active');
         }
 
-        // وظيفة النقر على العملة
         document.getElementById('coin-click').addEventListener('touchstart', function(e) {
             e.preventDefault();
             if(energy >= 1) {
@@ -377,3 +383,4 @@
     </script>
 </body>
 </html>
+
