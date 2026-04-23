@@ -3,67 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin Stable</title>
+    <title>Jimi Coin Fixed</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; }
-        body { background: #000; color: #fff; margin: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; touch-action: none; text-align: center; }
+        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; touch-action: none; text-align: center; }
 
-        /* شاشة التحميل المتزنة */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: center; }
-        #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.75; z-index: -1; }
-        .bar-o { width: 240px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 1px solid gold; overflow: hidden; margin-top: 320px; }
-        #bar-i { width: 0%; height: 100%; background: linear-gradient(90deg, gold, #ffcc00); transition: width 0.3s; }
+        /* شاشة التحميل */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
+        #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.8; z-index: -1; }
+        
+        /* حاوية التحميل لضمان التصاق الرقم بالشريط */
+        .load-cont { display: flex; flex-direction: column; align-items: center; width: 100%; }
+        #pct { color: gold; font-size: 30px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 5px #000; }
+        .bar-o { width: 220px; height: 12px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid gold; overflow: hidden; }
+        #bar-i { width: 0%; height: 100%; background: gold; transition: width 0.2s; }
 
-        /* الصفحات */
-        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 50px; }
+        /* باقي التنسيقات (نفس النسخة المستقرة) */
+        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 40px; }
         .active { display: flex !important; }
-
-        /* أرقام النقاط */
-        .score { font-size: 85px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255, 215, 0, 0.3); font-variant-numeric: tabular-nums; }
-
-        /* العملة الذهبية المثالية */
+        .score { font-size: 80px; color: gold; font-weight: bold; margin: 0; font-variant-numeric: tabular-nums; }
         .coin-box { 
-            width: 290px; height: 290px; margin-top: 40px; border-radius: 50%;
-            border: 5px solid gold; box-shadow: 0 0 30px gold;
+            width: 280px; height: 280px; margin-top: 40px; border-radius: 50%; border: 4px solid gold; box-shadow: 0 0 25px gold;
             background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/112% no-repeat;
-            position: relative; z-index: 10; transition: transform 0.05s;
         }
-
-        /* شريط الطاقة الأزرق المصلح */
         .en-ui { width: 85%; margin-top: 60px; }
-        .en-bg { width: 100%; height: 15px; background: #1a1a1a; border-radius: 20px; border: 1px solid #333; overflow: hidden; }
-        #en-f { width: 100%; height: 100%; background: linear-gradient(90deg, #00d2ff, #3a7bd5); }
-
-        /* الأزرار السفلية المرفوعة */
-        .nav { 
-            position: fixed; bottom: 35px; left: 15px; right: 15px; height: 85px; 
-            background: rgba(15, 15, 15, 0.98); display: flex; z-index: 9999; 
-            border: 1px solid #222; border-radius: 25px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-        }
-        .nav-i { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 13px; font-weight: bold; cursor: pointer; }
+        .en-bg { width: 100%; height: 14px; background: #1a1a1a; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
+        #en-f { width: 100%; height: 100%; background: #00d2ff; }
+        .nav { position: fixed; bottom: 35px; left: 15px; right: 15px; height: 80px; background: #0a0a0a; display: flex; z-index: 9999; border-radius: 20px; border: 1px solid #222; }
+        .nav-i { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 12px; font-weight: bold; }
         .nav-i.on { color: gold; }
-        .nav-i i { font-size: 28px; margin-bottom: 4px; font-style: normal; }
-
-        /* تأثير +1 */
-        .pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; animation: up 0.7s forwards; pointer-events: none; z-index: 100; }
-        @keyframes up { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+        .nav-i i { font-size: 26px; margin-bottom: 2px; font-style: normal; }
+        .pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; animation: up 0.6s forwards; pointer-events: none; }
+        @keyframes up { to { transform: translateY(-130px); opacity: 0; } }
     </style>
 </head>
 <body onload="init()">
 
     <div id="loader">
         <div id="loader-bg"></div>
-        <h1 id="pct" style="color:gold; font-size: 35px;">0%</h1>
-        <div class="bar-o"><div id="bar-i"></div></div>
+        <div class="load-cont">
+            <div id="pct">0%</div>
+            <div class="bar-o"><div id="bar-i"></div></div>
+        </div>
     </div>
 
     <div id="p-tap" class="page active">
         <div id="sc" class="score">0</div>
-        <div style="color:#00d2ff; letter-spacing:3px; font-size:15px; font-weight: bold;">BRONZE LEVEL</div>
+        <div style="color:#00d2ff; font-weight:bold">BRONZE LEVEL</div>
         <div class="coin-box" id="tap-area"></div>
-        
         <div class="en-ui">
-            <div style="display:flex; justify-content:space-between; font-size:14px; color:#ccc; margin-bottom:8px">
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:#aaa; margin-bottom:5px">
                 <span>⚡ ENERGY</span><span id="ev">2000 / 2000</span>
             </div>
             <div class="en-bg"><div id="en-f"></div></div>
@@ -71,11 +60,10 @@
     </div>
 
     <div id="p-lead" class="page">
-        <h2 style="color:gold; font-size: 32px;">LEADERBOARD</h2>
-        <div style="width:85%; background:#0a0a0a; border-radius:20px; padding:25px; border:1px solid #222; text-align:left">
-            <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #222"><span>1. Ahmed</span><span style="color:gold">1,250,000</span></div>
-            <div style="display:flex; justify-content:space-between; padding:15px 0; border-bottom:1px solid #222"><span>2. Noor</span><span style="color:gold">840,000</span></div>
-            <div style="display:flex; justify-content:space-between; padding:15px 0; color:gold; font-weight:bold; font-size: 20px;"><span>3. You</span><span id="my-sc">0</span></div>
+        <h2 style="color:gold">LEADERBOARD</h2>
+        <div style="width:85%; background:#111; padding:20px; border-radius:15px; border:1px solid #333">
+            <p>1. Ahmed: 1,250,000</p>
+            <p style="color:gold">You: <span id="my-sc">0</span></p>
         </div>
     </div>
 
@@ -85,8 +73,8 @@
     </div>
 
     <script>
-        let score = parseInt(localStorage.getItem('js_score')) || 0;
-        let energy = parseFloat(localStorage.getItem('js_energy')) || 2000;
+        let s = parseInt(localStorage.getItem('js_s')) || 0;
+        let e = parseFloat(localStorage.getItem('js_e')) || 2000;
 
         function init() {
             let p = 0;
@@ -96,11 +84,8 @@
                 document.getElementById('pct').innerText = p + "%";
                 if(p >= 100) {
                     clearInterval(itv);
-                    setTimeout(() => {
-                        document.getElementById('loader').style.opacity = '0';
-                        setTimeout(() => document.getElementById('loader').style.display = 'none', 500);
-                    }, 200);
-                    refreshUI();
+                    setTimeout(() => document.getElementById('loader').style.display='none', 300);
+                    upd();
                 }
             }, 30);
         }
@@ -110,46 +95,32 @@
             document.querySelectorAll('.nav-i').forEach(ni => ni.classList.remove('on'));
             document.getElementById('p-' + id).classList.add('active');
             el.classList.add('on');
-            if(navigator.vibrate) navigator.vibrate(10);
         }
 
-        function refreshUI() {
-            document.getElementById('sc').innerText = score.toLocaleString('en-US');
-            document.getElementById('my-sc').innerText = score.toLocaleString('en-US');
-            document.getElementById('ev').innerText = Math.floor(energy).toLocaleString('en-US') + " / 2000";
-            document.getElementById('en-f').style.width = (energy/20) + "%";
+        function upd() {
+            document.getElementById('sc').innerText = s.toLocaleString('en-US');
+            document.getElementById('my-sc').innerText = s.toLocaleString('en-US');
+            document.getElementById('ev').innerText = Math.floor(e).toLocaleString('en-US') + " / 2000";
+            document.getElementById('en-f').style.width = (e/20) + "%";
         }
 
-        const tapArea = document.getElementById('tap-area');
-        tapArea.addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if(energy < 1) return;
-
-            score++; energy--;
-            refreshUI();
-            localStorage.setItem('js_score', score);
-            localStorage.setItem('js_energy', energy);
-
+        const area = document.getElementById('tap-area');
+        area.addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
+            if(e < 1) return;
+            s++; e--; upd();
+            localStorage.setItem('js_s', s);
+            localStorage.setItem('js_e', e);
             if(navigator.vibrate) navigator.vibrate(15);
-            tapArea.style.transform = "scale(0.94)";
-
-            let t = e.touches[0];
+            let t = ev.touches[0];
             let n = document.createElement('div');
             n.className = 'pop'; n.innerText = '+1';
-            n.style.left = t.pageX + 'px'; n.style.top = (t.pageY - 50) + 'px';
+            n.style.left = t.pageX + 'px'; n.style.top = t.pageY + 'px';
             document.body.appendChild(n);
-            setTimeout(() => n.remove(), 700);
+            setTimeout(() => n.remove(), 600);
         });
 
-        tapArea.addEventListener('touchend', () => { tapArea.style.transform = "scale(1)"; });
-
-        // شحن الطاقة التلقائي
-        setInterval(() => {
-            if(energy < 2000) {
-                energy = Math.min(2000, energy + 1.5);
-                refreshUI();
-            }
-        }, 1000);
+        setInterval(() => { if(e < 2000) { e = Math.min(2000, e + 1.5); upd(); } }, 1000);
     </script>
 </body>
 </html>
