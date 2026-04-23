@@ -3,151 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Ultimate Evolution</title>
+    <title>Jimi Coin - Universe Edition</title>
     <style>
-        /* --- 1. GLOBAL RESET & BASE (Line 10+) --- */
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            user-select: none; 
-            touch-action: none; 
-        }
-        
-        body { 
-            background: #000; 
-            color: #fff; 
-            margin: 0; 
-            font-family: 'Roboto', sans-serif; 
-            overflow: hidden; 
-            text-align: center; 
-        }
+        /* --- 1. GLOBAL SETTINGS (Line 10+) --- */
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
+        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; text-align: center; }
 
-        /* --- 2. LOADER COMPONENT (Line 30+) --- */
-        #loader { 
-            position: fixed; 
-            inset: 0; 
-            background: #000; 
-            z-index: 99999; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: flex-end; 
-            padding-bottom: 25%; 
-        }
-        
-        #loader-bg { 
-            position: absolute; 
-            inset: 0; 
-            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; 
-            opacity: 0.7; 
-            z-index: -1; 
-        }
-        
+        /* --- 2. LOADER SECTION (Line 20+) --- */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
+        #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.7; z-index: -1; }
         #pct { color: gold; font-size: 34px; font-weight: bold; margin-bottom: 12px; }
         .bar-o { width: 240px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 1px solid gold; overflow: hidden; }
-        #bar-i { width: 0%; height: 100%; background: gold; transition: width 0.1s; }
+        #bar-i { width: 0%; height: 100%; background: gold; }
 
-        /* --- 3. PAGE SYSTEM (Line 55+) --- */
-        .page { 
-            display: none; 
-            height: 100vh; 
-            flex-direction: column; 
-            align-items: center; 
-            padding-top: 50px; 
-            padding-bottom: 120px;
-            overflow-y: auto;
-        }
+        /* --- 3. PAGE SYSTEM (Line 40+) --- */
+        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 50px; padding-bottom: 120px; overflow-y: auto; }
         .active { display: flex !important; }
 
-        /* --- 4. TAP PAGE UI (Line 70+) --- */
-        .score-container { margin-bottom: 10px; }
+        /* --- 4. TAP PAGE & DYNAMIC LEVEL (Line 50+) --- */
         .score { font-size: 75px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
-        .level-badge { color: #00d2ff; font-weight: bold; letter-spacing: 2px; font-size: 14px; margin-bottom: 20px; }
         
-        #tap-area { 
-            width: 270px; 
-            height: 270px; 
-            border-radius: 50%; 
-            border: 6px solid gold; 
-            box-shadow: 0 0 40px gold;
-            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/115% no-repeat;
-            position: relative; 
-            z-index: 100; 
-            transition: transform 0.05s ease-out;
+        /* NEW: Level Label Styling with Animation */
+        #level-label { 
+            font-weight: 900; 
+            letter-spacing: 3px; 
+            font-size: 16px; 
+            margin-bottom: 20px; 
+            text-transform: uppercase;
+            transition: all 0.5s ease;
         }
 
-        /* --- 5. TASKS & BOOST CARDS (Line 95+) --- */
+        #tap-area { 
+            width: 270px; height: 270px; border-radius: 50%; border: 6px solid gold; box-shadow: 0 0 40px gold;
+            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/115% no-repeat;
+            position: relative; z-index: 100; transition: transform 0.05s;
+        }
+
+        /* --- 5. CARDS & UI COMPONENTS (Line 75+) --- */
         .card-list { width: 92%; margin-top: 15px; }
-        
-        .card-item { 
-            background: #0f0f0f; 
-            border: 1px solid #1a1a1a; 
-            border-radius: 18px; 
-            padding: 18px; 
-            margin-bottom: 14px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
-        }
-        
+        .card-item { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px; padding: 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
         .card-data { text-align: left; }
-        .card-title { font-weight: bold; font-size: 17px; color: #fff; }
+        .card-title { font-weight: bold; font-size: 17px; }
         .card-sub { color: gold; font-size: 13px; margin-top: 5px; }
-        
-        .card-action { 
-            background: gold; 
-            color: #000; 
-            padding: 10px 22px; 
-            border-radius: 12px; 
-            font-weight: 900; 
-            text-decoration: none; 
-            font-size: 13px; 
-            box-shadow: 0 4px 10px rgba(255, 215, 0, 0.2);
-        }
-        
+        .card-action { background: gold; color: #000; padding: 10px 22px; border-radius: 12px; font-weight: 900; text-decoration: none; font-size: 13px; }
         .card-locked { background: #222 !important; color: #666 !important; pointer-events: none; }
 
-        /* --- 6. ENERGY BAR (Line 125+) --- */
+        /* --- 6. ENERGY SYSTEM (Line 95+) --- */
         .energy-box { width: 85%; margin-top: 45px; }
         .energy-bar-bg { width: 100%; height: 14px; background: #151515; border-radius: 30px; border: 1px solid #252525; overflow: hidden; }
-        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00d2ff, #3a7bd5); transition: width 0.3s; }
+        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00d2ff, #3a7bd5); }
 
-        /* --- 7. NAVIGATION SYSTEM (Line 135+) --- */
-        .nav-bar { 
-            position: fixed; 
-            bottom: 25px; 
-            left: 12px; 
-            right: 12px; 
-            height: 85px; 
-            background: rgba(10, 10, 10, 0.95); 
-            backdrop-filter: blur(10px);
-            display: flex; 
-            z-index: 1000; 
-            border-radius: 25px; 
-            border: 1px solid #222; 
-        }
-        
-        .nav-btn { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: #444; 
-            font-size: 10px; 
-            font-weight: 800; 
-            transition: color 0.2s;
-        }
-        
+        /* --- 7. NAVIGATION BAR (Line 105+) --- */
+        .nav-bar { position: fixed; bottom: 25px; left: 12px; right: 12px; height: 85px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); display: flex; z-index: 1000; border-radius: 25px; border: 1px solid #222; }
+        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 10px; font-weight: 800; }
         .nav-btn.active-nav { color: gold; }
         .nav-icon { font-size: 24px; margin-bottom: 4px; }
 
-        /* --- 8. ANIMATIONS (Line 165+) --- */
-        .tap-pop { position: absolute; color: #00d2ff; font-size: 48px; font-weight: 900; animation: floatUp 0.7s ease-out forwards; pointer-events: none; z-index: 2000; }
-        @keyframes floatUp { 
-            0% { transform: translateY(0) scale(1); opacity: 1; } 
-            100% { transform: translateY(-160px) scale(1.2); opacity: 0; } 
-        }
+        /* --- 8. POPUP EFFECT (Line 125+) --- */
+        .tap-pop { position: absolute; color: #00d2ff; font-size: 48px; font-weight: 900; animation: floatUp 0.7s forwards; pointer-events: none; z-index: 2000; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-160px); opacity: 0; } }
     </style>
 </head>
 <body onload="startApp()">
@@ -159,10 +73,8 @@
     </div>
 
     <div id="p-tap" class="page active">
-        <div class="score-container">
-            <div id="sc" class="score">0</div>
-            <div class="level-badge">BRONZE LEVEL</div>
-        </div>
+        <div id="sc" class="score">0</div>
+        <div id="level-label">BRONZE LEVEL</div>
         <div id="tap-area"></div>
         <div class="energy-box">
             <div style="display:flex; justify-content:space-between; font-size:14px; color:#888; margin-bottom:8px">
@@ -173,37 +85,29 @@
     </div>
 
     <div id="p-tasks" class="page">
-        <h2 style="color:gold; font-size: 32px; margin-bottom: 5px;">TASKS</h2>
-        <p style="color:#666; margin-bottom: 20px;">Earn extra bonus coins</p>
+        <h2 style="color:gold; font-size: 32px;">TASKS</h2>
         <div class="card-list">
             <div class="card-item">
                 <div class="card-data"><div class="card-title">Join Channel</div><div class="card-sub">+10,000</div></div>
-                <a href="https://t.me/YourChannel" target="_blank" class="card-action" onclick="claim(this, 10000)">GO</a>
+                <a href="#" class="card-action" onclick="claim(this, 10000)">GO</a>
             </div>
             <div class="card-item">
-                <div class="card-data"><div class="card-title">Follow X</div><div class="card-sub">+5,000</div></div>
-                <a href="https://x.com/YourProfile" target="_blank" class="card-action" onclick="claim(this, 5000)">GO</a>
+                <div class="card-data"><div class="card-title">Invite Friends</div><div class="card-sub">+20,000</div></div>
+                <a href="#" class="card-action" onclick="claim(this, 20000)">GO</a>
             </div>
         </div>
     </div>
 
     <div id="p-boost" class="page">
-        <h2 style="color:gold; font-size: 32px; margin-bottom: 5px;">BOOSTS</h2>
-        <p style="color:#666; margin-bottom: 20px;">Upgrade your tapping power</p>
+        <h2 style="color:gold; font-size: 32px;">BOOSTS</h2>
         <div class="card-list">
             <div class="card-item">
-                <div class="card-data">
-                    <div class="card-title">Multitap</div>
-                    <div class="card-sub" id="mt-price">Cost: 1,000</div>
-                </div>
-                <div class="card-action" onclick="buyBoost('multitap')">UPGRADE</div>
+                <div class="card-data"><div class="card-title">Multitap</div><div class="card-sub">Increase tap power</div></div>
+                <div class="card-action" onclick="buyBoost('mt')">UPGRADE</div>
             </div>
             <div class="card-item">
-                <div class="card-data">
-                    <div class="card-title">Energy Limit</div>
-                    <div class="card-sub" id="el-price">Cost: 2,000</div>
-                </div>
-                <div class="card-action" onclick="buyBoost('limit')">UPGRADE</div>
+                <div class="card-data"><div class="card-title">Energy Limit</div><div class="card-sub">Increase capacity</div></div>
+                <div class="card-action" onclick="buyBoost('el')">UPGRADE</div>
             </div>
         </div>
     </div>
@@ -211,12 +115,8 @@
     <div id="p-lead" class="page">
         <h2 style="color:gold; font-size: 30px;">TOP PLAYERS</h2>
         <div style="width:90%; background:#0a0a0a; padding:25px; border-radius:25px; border:1px solid #1a1a1a">
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #111; padding:15px 0;">
-                <span>1. AHMED</span><span style="color:gold">1,250,000</span>
-            </div>
-            <div style="display:flex; justify-content:space-between; padding:25px 0; font-weight:900; color:gold; font-size: 22px;">
-                <span>YOU</span><span id="my-sc">0</span>
-            </div>
+            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #111; padding:15px 0;"><span>1. AHMED</span><span style="color:gold">1,250,000</span></div>
+            <div style="display:flex; justify-content:space-between; padding:25px 0; font-weight:900; color:gold; font-size: 22px;"><span>YOU</span><span id="my-sc">0</span></div>
         </div>
     </div>
 
@@ -233,18 +133,43 @@
         let tapValue = parseInt(localStorage.getItem('js_tv')) || 1;
         let maxEnergy = parseInt(localStorage.getItem('js_me')) || 2000;
 
+        // NEW: Levels Definition (Adding 5 levels beyond Legendary)
+        const levels = [
+            { n: "Bronze", v: 0, c: "#00d2ff" },
+            { n: "Silver", v: 5000, c: "#C0C0C0" },
+            { n: "Gold", v: 25000, c: "#FFD700" },
+            { n: "Platinum", v: 100000, c: "#E5E4E2" },
+            { n: "Diamond", v: 500000, c: "#B9F2FF" },
+            { n: "Legendary", v: 1000000, c: "#FF4500" },
+            { n: "Master", v: 5000000, c: "#A020F0" },
+            { n: "Grandmaster", v: 10000000, c: "#39FF14" },
+            { n: "Jimi King", v: 50000000, c: "#FFD700" },
+            { n: "Universe Creator", v: 100000000, c: "#0000FF" }
+        ];
+
         function startApp() {
             let load = 0;
             let timer = setInterval(() => {
-                load += 4;
+                load += 5;
                 document.getElementById('bar-i').style.width = load + "%";
                 document.getElementById('pct').innerText = load + "%";
-                if(load >= 100) { 
-                    clearInterval(timer); 
-                    document.getElementById('loader').remove(); 
-                    render(); 
-                }
+                if(load >= 100) { clearInterval(timer); document.getElementById('loader').remove(); render(); }
             }, 30);
+        }
+
+        // NEW: Level Auto-Update Function
+        function updateLevel() {
+            let currentLevel = levels[0];
+            for (let i = levels.length - 1; i >= 0; i--) {
+                if (balance >= levels[i].v) {
+                    currentLevel = levels[i];
+                    break;
+                }
+            }
+            const label = document.getElementById('level-label');
+            label.innerText = currentLevel.n + " LEVEL";
+            label.style.color = currentLevel.c;
+            label.style.textShadow = "0 0 10px " + currentLevel.c;
         }
 
         function switchPg(id, btn) {
@@ -252,7 +177,6 @@
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
             document.getElementById('p-' + id).classList.add('active');
             btn.classList.add('active-nav');
-            if(navigator.vibrate) navigator.vibrate(15);
         }
 
         function render() {
@@ -260,38 +184,23 @@
             document.getElementById('my-sc').innerText = balance.toLocaleString();
             document.getElementById('ev').innerText = Math.floor(energy).toLocaleString() + " / " + maxEnergy;
             document.getElementById('energy-fill').style.width = (energy / (maxEnergy/100)) + "%";
+            updateLevel(); // Call Level Update
+        }
+
+        function buyBoost(t) {
+            if(t==='mt' && balance>=1000){ balance-=1000; tapValue++; }
+            else if(t==='el' && balance>=2000){ balance-=2000; maxEnergy+=500; energy=maxEnergy; }
+            save(); render();
         }
 
         function claim(btn, reward) {
-            balance += reward;
-            btn.innerText = "DONE";
-            btn.classList.add('card-locked');
-            save();
-            render();
-        }
-
-        function buyBoost(type) {
-            if(type === 'multitap' && balance >= 1000) {
-                balance -= 1000;
-                tapValue += 1;
-                alert('Tapping Power Increased!');
-            } else if(type === 'limit' && balance >= 2000) {
-                balance -= 2000;
-                maxEnergy += 500;
-                energy = maxEnergy;
-                alert('Energy Limit Increased!');
-            } else {
-                alert('Not enough coins!');
-            }
-            save();
-            render();
+            balance += reward; btn.innerText = "DONE"; btn.classList.add('card-locked');
+            save(); render();
         }
 
         function save() {
-            localStorage.setItem('js_s', balance);
-            localStorage.setItem('js_e', energy);
-            localStorage.setItem('js_tv', tapValue);
-            localStorage.setItem('js_me', maxEnergy);
+            localStorage.setItem('js_s', balance); localStorage.setItem('js_e', energy);
+            localStorage.setItem('js_tv', tapValue); localStorage.setItem('js_me', maxEnergy);
         }
 
         const tapBox = document.getElementById('tap-area');
@@ -299,33 +208,23 @@
             e.preventDefault();
             for (let i = 0; i < e.changedTouches.length; i++) {
                 if(energy >= tapValue) {
-                    balance += tapValue;
-                    energy -= tapValue;
+                    balance += tapValue; energy -= tapValue;
                     let t = e.changedTouches[i];
-                    createEffect(t.pageX, t.pageY);
+                    let p = document.createElement('div');
+                    p.className = 'tap-pop'; p.innerText = '+' + tapValue;
+                    p.style.left = t.pageX + 'px'; p.style.top = t.pageY + 'px';
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 600);
                 }
             }
-            save();
-            render();
+            save(); render();
             if(navigator.vibrate) navigator.vibrate(10);
-            tapBox.style.transform = "scale(0.94)";
+            tapBox.style.transform = "scale(0.95)";
             setTimeout(() => tapBox.style.transform = "scale(1)", 50);
         }, { passive: false });
 
-        function createEffect(x, y) {
-            let el = document.createElement('div');
-            el.className = 'tap-pop'; el.innerText = '+' + tapValue;
-            el.style.left = x + 'px'; el.style.top = (y - 50) + 'px';
-            document.body.appendChild(el);
-            setTimeout(() => el.remove(), 650);
-        }
-
-        setInterval(() => { 
-            if(energy < maxEnergy) { 
-                energy = Math.min(maxEnergy, energy + 1.5); 
-                render(); 
-            } 
-        }, 1000);
+        setInterval(() => { if(energy < maxEnergy) { energy = Math.min(maxEnergy, energy + 1.5); render(); } }, 1000);
     </script>
 </body>
-</html>
+                </html>
+    
