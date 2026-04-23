@@ -3,240 +3,181 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>
-        Jimi Coin Pro
-    </title>
+    <title>Jimi Coin Pro</title>
     <style>
         /* --- GLOBAL RESET --- */
         * {
             box-sizing: border-box;
-        }
-        * {
             margin: 0;
-        }
-        * {
             padding: 0;
-        }
-        * {
             user-select: none;
-        }
-        * {
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             background-color: #000000;
-        }
-        body {
             color: #ffffff;
-        }
-        body {
             font-family: sans-serif;
-        }
-        body {
             overflow: hidden;
-        }
-        body {
             height: 100vh;
         }
 
-        /* --- LOADER SECTION --- */
+        /* --- LOADER --- */
         #loader-screen {
             position: fixed;
-        }
-        #loader-screen {
             inset: 0;
-        }
-        #loader-screen {
             background-color: #000000;
-        }
-        #loader-screen {
             z-index: 10000;
-        }
-        #loader-screen {
             display: flex;
-        }
-        #loader-screen {
             flex-direction: column;
-        }
-        #loader-screen {
             align-items: center;
-        }
-        #loader-screen {
             justify-content: flex-end;
-        }
-        #loader-screen {
             padding-bottom: 100px;
         }
 
         #load-percent {
             font-size: 38px;
-        }
-        #load-percent {
             font-weight: 800;
-        }
-        #load-percent {
             color: #FFD700;
-        }
-        #load-percent {
             margin-bottom: 12px;
         }
 
         .bar-outer {
             width: 220px;
-        }
-        .bar-outer {
             height: 7px;
-        }
-        .bar-outer {
             background-color: rgba(255, 255, 255, 0.1);
-        }
-        .bar-outer {
             border-radius: 15px;
-        }
-        .bar-outer {
             overflow: hidden;
         }
 
         #bar-inner {
             width: 0%;
-        }
-        #bar-inner {
             height: 100%;
-        }
-        #bar-inner {
             background-color: #FFD700;
         }
 
-        /* --- PAGES SYSTEM --- */
+        /* --- PAGE SYSTEM --- */
         .page {
             display: none;
-        }
-        .page {
             height: 100vh;
-        }
-        .page {
+            width: 100%;
             flex-direction: column;
-        }
-        .page {
             align-items: center;
-        }
-        .page {
             padding-top: 50px;
+            position: absolute;
+            top: 0;
+            left: 0;
         }
 
         .page-active {
             display: flex !important;
         }
 
-        /* --- ENERGY BAR FIX --- */
+        /* --- MAIN TAP ELEMENTS --- */
+        #main-balance {
+            font-size: 60px;
+            font-weight: 800;
+            margin-top: 20px;
+        }
+
+        .level-text {
+            color: #FFD700;
+            font-size: 14px;
+            margin-bottom: 40px;
+        }
+
+        #coin-container {
+            position: relative;
+            width: 280px;
+            height: 280px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #coin-click {
+            width: 260px;
+            height: 260px;
+            border-radius: 50%;
+            border: 6px solid #cd7f32;
+            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+            background-size: cover;
+            background-position: center;
+            z-index: 5;
+            transition: transform 0.05s;
+            cursor: pointer;
+        }
+
+        /* Click Effect (+1) */
+        .plus-one {
+            position: absolute;
+            color: #ffffff;
+            font-size: 24px;
+            font-weight: bold;
+            animation: moveUp 0.8s ease-out forwards;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        @keyframes moveUp {
+            0% { opacity: 1; transform: translateY(0); }
+            100% { opacity: 0; transform: translateY(-100px); }
+        }
+
+        /* --- ENERGY BAR --- */
         .energy-container {
             width: 85%;
-        }
-        .energy-container {
             margin-top: 40px;
         }
 
         .energy-header {
             display: flex;
-        }
-        .energy-header {
             justify-content: space-between;
-        }
-        .energy-header {
             margin-bottom: 8px;
         }
 
         #energy-text {
             font-size: 14px;
-        }
-        #energy-text {
             font-weight: bold;
         }
 
         .energy-bar-bg {
             width: 100%;
-        }
-        .energy-bar-bg {
             height: 12px;
-        }
-        .energy-bar-bg {
             background-color: #1a1a1a;
-        }
-        .energy-bar-bg {
             border-radius: 10px;
-        }
-        .energy-bar-bg {
             border: 1px solid #333;
-        }
-        .energy-bar-bg {
             overflow: hidden;
         }
 
         #energy-fill {
             width: 100%;
-        }
-        #energy-fill {
             height: 100%;
-        }
-        #energy-fill {
             background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-        }
-        #energy-fill {
             transition: width 0.2s;
         }
 
-        /* --- NAVIGATION FIX --- */
+        /* --- NAVIGATION BAR --- */
         .nav-bar {
             position: fixed;
-        }
-        .nav-bar {
             bottom: 25px;
-        }
-        .nav-bar {
             left: 20px;
-        }
-        .nav-bar {
             right: 20px;
-        }
-        .nav-bar {
             height: 80px;
-        }
-        .nav-bar {
             background-color: #0f0f0f;
-        }
-        .nav-bar {
             display: flex;
-        }
-        .nav-bar {
             border-radius: 20px;
-        }
-        .nav-bar {
             border: 1px solid #222;
-        }
-        .nav-bar {
-            z-index: 999;
+            z-index: 1000;
         }
 
         .nav-btn {
             flex: 1;
-        }
-        .nav-btn {
             display: flex;
-        }
-        .nav-btn {
             flex-direction: column;
-        }
-        .nav-btn {
             align-items: center;
-        }
-        .nav-btn {
             justify-content: center;
-        }
-        .nav-btn {
             color: #555;
-        }
-        .nav-btn {
             cursor: pointer;
         }
 
@@ -244,33 +185,14 @@
             color: #FFD700;
         }
 
-        /* --- COIN IMAGE --- */
-        #coin-click {
-            width: 260px;
+        .nav-icon {
+            font-size: 22px;
+            margin-bottom: 4px;
         }
-        #coin-click {
-            height: 260px;
-        }
-        #coin-click {
-            border-radius: 50%;
-        }
-        #coin-click {
-            border: 6px solid #cd7f32;
-        }
-        #coin-click {
-            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
-        }
-        #coin-click {
-            background-size: contain;
-        }
-        #coin-click {
-            background-position: center;
-        }
-        #coin-click {
-            background-repeat: no-repeat;
-        }
-        #coin-click {
-            transition: transform 0.05s;
+
+        .nav-label {
+            font-size: 10px;
+            font-weight: bold;
         }
     </style>
 </head>
@@ -284,10 +206,12 @@
     </div>
 
     <div id="tab-tap" class="page page-active">
-        <div id="main-balance" style="font-size: 60px; font-weight: 800; margin-top: 20px;">0</div>
-        <div style="color: #FFD700; font-size: 14px; margin-bottom: 40px;">BRONZE LEVEL</div>
+        <div id="main-balance">0</div>
+        <div class="level-text">BRONZE LEVEL</div>
         
-        <div id="coin-click"></div>
+        <div id="coin-container">
+            <div id="coin-click"></div>
+        </div>
 
         <div class="energy-container">
             <div class="energy-header">
@@ -312,20 +236,20 @@
 
     <div class="nav-bar">
         <div class="nav-btn nav-active" onclick="switchTab('tap', this)">
-            <div style="font-size: 22px;">GOLD</div>
-            <div style="font-size: 10px; font-weight: bold;">TAP</div>
+            <span class="nav-icon">💰</span>
+            <span class="nav-label">TAP</span>
         </div>
         <div class="nav-btn" onclick="switchTab('tasks', this)">
-            <div style="font-size: 22px;">TASK</div>
-            <div style="font-size: 10px; font-weight: bold;">TASKS</div>
+            <span class="nav-icon">📜</span>
+            <span class="nav-label">TASKS</span>
         </div>
         <div class="nav-btn" onclick="switchTab('boost', this)">
-            <div style="font-size: 22px;">UP</div>
-            <div style="font-size: 10px; font-weight: bold;">BOOST</div>
+            <span class="nav-icon">🚀</span>
+            <span class="nav-label">BOOST</span>
         </div>
         <div class="nav-btn" onclick="switchTab('top', this)">
-            <div style="font-size: 22px;">TOP</div>
-            <div style="font-size: 10px; font-weight: bold;">TOP</div>
+            <span class="nav-icon">🏆</span>
+            <span class="nav-label">TOP</span>
         </div>
     </div>
 
@@ -344,8 +268,9 @@
                     document.getElementById('loader-screen').style.display = 'none';
                     updateUI();
                 }
-            }, 40);
+            }, 30);
 
+            // Energy Recovery
             setInterval(() => {
                 if(energy < 2000) {
                     energy = Math.min(2000, energy + 1);
@@ -370,17 +295,33 @@
             element.classList.add('nav-active');
         }
 
-        document.getElementById('coin-click').addEventListener('touchstart', function(e) {
+        // Tap Functionality with Visual Effect
+        const coin = document.getElementById('coin-click');
+        const coinContainer = document.getElementById('coin-container');
+
+        coin.addEventListener('touchstart', function(e) {
             e.preventDefault();
             if(energy >= 1) {
                 score++;
                 energy--;
                 updateUI();
-                this.style.transform = "scale(0.96)";
+
+                // Animation scale
+                this.style.transform = "scale(0.95)";
                 setTimeout(() => this.style.transform = "scale(1)", 50);
+
+                // Create +1 effect
+                const touch = e.touches[0];
+                const plusOne = document.createElement('div');
+                plusOne.innerText = "+1";
+                plusOne.className = 'plus-one';
+                plusOne.style.left = (touch.clientX - 20) + "px";
+                plusOne.style.top = (touch.clientY - 40) + "px";
+                
+                document.body.appendChild(plusOne);
+                setTimeout(() => plusOne.remove(), 800);
             }
         });
     </script>
 </body>
 </html>
-
