@@ -3,145 +3,353 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin Global</title>
+    <title>Jimi Coin Ultimate Edition</title>
     <style>
-        /* Base Configuration */
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
-        body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; text-align: center; }
-
-        /* Loader Screen Styles */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
-        #pct { color: #FFD700; font-size: 42px; font-weight: bold; margin-bottom: 10px; }
-        .bar-o { width: 250px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 1px solid #FFD700; overflow: hidden; }
-        #bar-i { width: 0%; height: 100%; background: #FFD700; }
-
-        /* Page Layouts */
-        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 50px; padding-bottom: 120px; }
-        .active { display: flex !important; }
-        .score { font-size: 72px; font-weight: bold; margin-bottom: 5px; }
-        #level-label { font-weight: bold; font-size: 14px; margin-bottom: 25px; letter-spacing: 1px; }
-
-        /* Main Coin Area Fix */
-        #tap-area { 
-            width: 280px; height: 280px; border-radius: 50%; 
-            border: 6px solid #cd7f32; box-shadow: 0 0 50px #cd7f32;
-            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
-            background-position: center; background-size: 80%; background-repeat: no-repeat;
-            position: relative; transition: transform 0.05s; display: flex; align-items: center; justify-content: center;
+        /* [SECTION 1: GLOBAL STYLES] */
+        * { 
+            box-sizing: border-box; 
+            -webkit-tap-highlight-color: transparent; 
+            user-select: none; 
+            margin: 0; 
+            padding: 0; 
         }
 
-        /* Energy UI */
-        .energy-box { width: 80%; margin-top: 40px; }
-        .energy-bar-bg { width: 100%; height: 14px; background: #151515; border-radius: 30px; border: 1px solid #222; overflow: hidden; }
-        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00d2ff, #3a7bd5); }
+        body { 
+            background-color: #000000; 
+            color: #ffffff; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            overflow: hidden; 
+            height: 100vh; 
+        }
 
-        /* Navigation Menu Fix */
-        .nav-bar { position: fixed; bottom: 20px; left: 15px; right: 15px; height: 85px; background: #0f0f0f; display: flex; border-radius: 25px; border: 1px solid #222; }
-        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 10px; font-weight: bold; cursor: pointer; }
-        .nav-btn.active-nav { color: #FFD700; }
-        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+        /* [SECTION 2: LOADER SYSTEM] */
+        #loading-screen { 
+            position: fixed; 
+            inset: 0; 
+            background: #000; 
+            z-index: 10000; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+        }
 
-        /* Tap Animation */
-        .tap-pop { position: absolute; color: #FFD700; font-size: 40px; font-weight: bold; animation: floatUp 0.7s forwards; pointer-events: none; }
-        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-150px); opacity: 0; } }
+        .loader-percentage { 
+            font-size: 50px; 
+            font-weight: 900; 
+            color: #FFD700; 
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); 
+        }
+
+        .loader-bar-bg { 
+            width: 280px; 
+            height: 10px; 
+            background: #1a1a1a; 
+            border-radius: 10px; 
+            margin-top: 20px; 
+            border: 1px solid #333; 
+            overflow: hidden; 
+        }
+
+        #loader-bar-fill { 
+            width: 0%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #FFD700, #FFA500); 
+            transition: width 0.1s; 
+        }
+
+        /* [SECTION 3: PAGE MANAGEMENT] */
+        .page-container { 
+            display: none; 
+            height: 100vh; 
+            flex-direction: column; 
+            align-items: center; 
+            padding: 60px 20px 120px 20px; 
+            overflow-y: auto; 
+        }
+
+        .page-active { 
+            display: flex !important; 
+        }
+
+        /* [SECTION 4: MAIN TAP UI - FIXED IMAGE] */
+        .score-container { 
+            font-size: 65px; 
+            font-weight: 800; 
+            margin-bottom: 5px; 
+        }
+
+        #rank-display { 
+            font-size: 16px; 
+            font-weight: bold; 
+            letter-spacing: 2px; 
+            margin-bottom: 10px; 
+        }
+
+        .profit-header { 
+            color: #00ff00; 
+            font-size: 14px; 
+            font-weight: bold; 
+            margin-bottom: 30px; 
+        }
+
+        #coin-trigger { 
+            width: 300px; 
+            height: 300px; 
+            border-radius: 50%; 
+            border: 8px solid #cd7f32; 
+            box-shadow: 0 0 60px rgba(205, 127, 50, 0.6);
+            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+            background-position: center; 
+            background-size: 82%; 
+            background-repeat: no-repeat;
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            position: relative; 
+            transition: transform 0.05s; 
+            cursor: pointer;
+        }
+
+        /* [SECTION 5: ENERGY UI] */
+        .energy-wrapper { 
+            width: 90%; 
+            margin-top: 50px; 
+        }
+
+        .energy-text-row { 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 13px; 
+            font-weight: bold; 
+            color: #ccc; 
+            margin-bottom: 8px; 
+        }
+
+        .energy-bar-outline { 
+            width: 100%; 
+            height: 16px; 
+            background: #111; 
+            border-radius: 20px; 
+            border: 1px solid #222; 
+            overflow: hidden; 
+        }
+
+        #energy-progress { 
+            width: 100%; 
+            height: 100%; 
+            background: linear-gradient(90deg, #00c6ff, #0072ff); 
+        }
+
+        /* [SECTION 6: TASKS PAGE UI - RESTORED] */
+        .task-list { width: 100%; margin-top: 20px; }
+        .task-item { 
+            background: #111; 
+            border-radius: 18px; 
+            padding: 20px; 
+            margin-bottom: 12px; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            border: 1px solid #222; 
+        }
+        .task-meta h4 { font-size: 16px; margin-bottom: 4px; }
+        .task-meta p { color: #FFD700; font-size: 14px; font-weight: bold; }
+        .task-action { 
+            background: #222; 
+            color: #888; 
+            padding: 10px 15px; 
+            border-radius: 10px; 
+            font-size: 12px; 
+        }
+
+        /* [SECTION 7: BOOST & TOP UI - RESTORED] */
+        .boost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
+        .boost-card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; }
+        
+        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .leader-row { background: #111; border-bottom: 1px solid #222; }
+        .leader-row td { padding: 15px; font-size: 14px; }
+
+        /* [SECTION 8: BOTTOM NAVIGATION] */
+        .footer-nav { 
+            position: fixed; 
+            bottom: 25px; 
+            left: 20px; 
+            right: 20px; 
+            height: 85px; 
+            background: rgba(15, 15, 15, 0.98); 
+            display: flex; 
+            border-radius: 25px; 
+            border: 1px solid #222; 
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.5); 
+        }
+
+        .nav-item { 
+            flex: 1; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            justify-content: center; 
+            color: #666; 
+            transition: 0.3s; 
+        }
+
+        .nav-item-active { color: #FFD700 !important; }
+        .nav-item i { font-size: 24px; margin-bottom: 4px; }
+        .nav-item span { font-size: 11px; font-weight: 800; }
+
+        /* Animations */
+        .plus-one { position: absolute; color: #FFD700; font-size: 45px; font-weight: 900; animation: rise 0.8s ease-out forwards; pointer-events: none; z-index: 50; }
+        @keyframes rise { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-200px); opacity: 0; } }
     </style>
 </head>
-<body onload="initApp()">
+<body onload="bootSequence()">
 
-    <div id="loader">
-        <div id="pct">0%</div>
-        <div class="bar-o"><div id="bar-i"></div></div>
+    <div id="loading-screen">
+        <div class="loader-percentage" id="load-pct">0%</div>
+        <div class="loader-bar-bg"><div id="loader-bar-fill"></div></div>
     </div>
 
-    <div id="page-tap" class="page active">
-        <div id="score-display" class="score">0</div>
-        <div id="level-label">BRONZE LEVEL</div>
-        <div id="tap-area"></div>
-        <div class="energy-box">
-            <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:5px">
-                <span>⚡ ENERGY</span><span id="energy-val">2000 / 2000</span>
+    <div id="p-tap" class="page-container page-active">
+        <div class="score-container" id="total-balance">0</div>
+        <div id="rank-display">BRONZE LEVEL</div>
+        <div class="profit-header">Profit per hour: +500</div>
+        <div id="coin-trigger"></div>
+        <div class="energy-wrapper">
+            <div class="energy-text-row">
+                <span>⚡ ENERGY</span>
+                <span id="energy-status">2000 / 2000</span>
             </div>
-            <div class="energy-bar-bg"><div id="energy-fill"></div></div>
+            <div class="energy-bar-outline">
+                <div id="energy-progress"></div>
+            </div>
         </div>
     </div>
 
-    <div id="page-tasks" class="page"><h1>TASKS</h1></div>
-    <div id="page-boost" class="page"><h1>BOOST</h1></div>
-    <div id="page-lead" class="page"><h1>TOP</h1></div>
+    <div id="p-tasks" class="page-container">
+        <h2 style="font-size: 28px; color: #FFD700; margin-bottom: 20px;">TASKS LIST</h2>
+        <div class="task-list">
+            <div class="task-item">
+                <div class="task-meta"><h4>Watch YouTube</h4><p>+25,000</p></div>
+                <div class="task-action">Wait 59m</div>
+            </div>
+            <div class="task-item">
+                <div class="task-meta"><h4>Join Channel</h4><p>+10,000</p></div>
+                <div class="task-action">CLAIM</div>
+            </div>
+            <div class="task-item">
+                <div class="task-meta"><h4>Follow X</h4><p>+5,000</p></div>
+                <div class="task-action">DONE</div>
+            </div>
+        </div>
+    </div>
 
-    <div class="nav-bar">
-        <div class="nav-btn active-nav" onclick="switchPage('tap', this)"><span class="nav-icon">💰</span>TAP</div>
-        <div class="nav-btn" onclick="switchPage('tasks', this)"><span class="nav-icon">📜</span>TASKS</div>
-        <div class="nav-btn" onclick="switchPage('boost', this)"><span class="nav-icon">🚀</span>BOOST</div>
-        <div class="nav-btn" onclick="switchPage('lead', this)"><span class="nav-icon">🏆</span>TOP</div>
+    <div id="p-boost" class="page-container">
+        <h2 style="font-size: 28px; color: #00c6ff; margin-bottom: 20px;">BOOSTERS</h2>
+        <div class="boost-grid">
+            <div class="boost-card"><h3>Multi-Tap</h3><p>Level 1</p></div>
+            <div class="boost-card"><h3>Energy Limit</h3><p>Level 2</p></div>
+            <div class="boost-card"><h3>Recharge</h3><p>Level 1</p></div>
+            <div class="boost-card"><h3>Auto-Bot</h3><p>Locked</p></div>
+        </div>
+    </div>
+
+    <div id="p-lead" class="page-container">
+        <h2 style="font-size: 28px; color: #FFA500; margin-bottom: 20px;">TOP PLAYERS</h2>
+        <table class="leaderboard-table">
+            <tr class="leader-row"><td>1. Muhammad</td><td>1,500,400</td></tr>
+            <tr class="leader-row"><td>2. Alex</td><td>1,200,000</td></tr>
+            <tr class="leader-row"><td>3. Sarah</td><td>900,500</td></tr>
+        </table>
+    </div>
+
+    <div class="footer-nav">
+        <div class="nav-item nav-item-active" onclick="navigateTo('tap', this)"><i>💰</i><span>TAP</span></div>
+        <div class="nav-item" onclick="navigateTo('tasks', this)"><i>📜</i><span>TASKS</span></div>
+        <div class="nav-item" onclick="navigateTo('boost', this)"><i>🚀</i><span>BOOST</span></div>
+        <div class="nav-item" onclick="navigateTo('lead', this)"><i>🏆</i><span>TOP</span></div>
     </div>
 
     <script>
-        let balance = parseInt(localStorage.getItem('bal')) || 0;
-        let energy = parseFloat(localStorage.getItem('nrg')) || 2000;
-        let power = 1;
-        const maxEnergy = 2000;
+        /* [JS SECTION: CORE LOGIC] */
+        let bal = parseInt(localStorage.getItem('j_bal')) || 0;
+        let nrg = parseFloat(localStorage.getItem('j_nrg')) || 2000;
+        const max_nrg = 2000;
 
-        const levels = [
-            { name: "BRONZE", min: 0, color: "#cd7f32" },
-            { name: "SILVER", min: 5000, color: "#C0C0C0" },
-            { name: "GOLD", min: 25000, color: "#FFD700" }
+        const rank_tiers = [
+            { title: "BRONZE", min: 0, hex: "#cd7f32" },
+            { title: "SILVER", min: 5000, hex: "#C0C0C0" },
+            { title: "GOLD", min: 25000, hex: "#FFD700" }
         ];
 
-        function initApp() {
+        function bootSequence() {
             let p = 0;
-            let t = setInterval(() => {
+            let loader = setInterval(() => {
                 p += 2;
-                document.getElementById('bar-i').style.width = p + "%";
-                document.getElementById('pct').innerText = p + "%";
-                if(p >= 100) { clearInterval(t); document.getElementById('loader').style.display = 'none'; updateUI(); }
-            }, 30);
-            setInterval(() => { save(); updateUI(); }, 1000);
-        }
-
-        function updateUI() {
-            document.getElementById('score-display').innerText = Math.floor(balance).toLocaleString();
-            document.getElementById('energy-val').innerText = Math.floor(energy) + " / 2000";
-            document.getElementById('energy-fill').style.width = (energy/20) + "%";
+                document.getElementById('loader-bar-fill').style.width = p + "%";
+                document.getElementById('load-pct').innerText = p + "%";
+                if(p >= 100) { 
+                    clearInterval(loader); 
+                    document.getElementById('loading-screen').style.display = 'none'; 
+                    refreshUI();
+                }
+            }, 35);
             
-            let lvl = levels[0];
-            levels.forEach(l => { if(balance >= l.min) lvl = l; });
+            // Auto-Save System
+            setInterval(() => {
+                localStorage.setItem('j_bal', bal);
+                localStorage.setItem('j_nrg', nrg);
+                if(nrg < max_nrg) nrg = Math.min(max_nrg, nrg + 1.5);
+                refreshUI();
+            }, 1000);
+        }
+
+        function refreshUI() {
+            document.getElementById('total-balance').innerText = Math.floor(bal).toLocaleString();
+            document.getElementById('energy-status').innerText = Math.floor(nrg) + " / 2000";
+            document.getElementById('energy-progress').style.width = (nrg/20) + "%";
+
+            // Dynamic Rank & Visual System
+            let current = rank_tiers[0];
+            rank_tiers.forEach(r => { if(bal >= r.min) current = r; });
+
+            const rLabel = document.getElementById('rank-display');
+            const cArea = document.getElementById('coin-trigger');
             
-            const label = document.getElementById('level-label');
-            const coin = document.getElementById('tap-area');
-            label.innerText = lvl.name + " LEVEL";
-            label.style.color = lvl.color;
-            coin.style.borderColor = lvl.color;
-            coin.style.boxShadow = "0 0 50px " + lvl.color;
+            rLabel.innerText = current.title + " LEVEL";
+            rLabel.style.color = current.hex;
+            cArea.style.borderColor = current.hex;
+            cArea.style.boxShadow = "0 0 60px " + current.hex;
         }
 
-        function switchPage(id, btn) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById('page-' + id).classList.add('active');
-            btn.classList.add('active-nav');
+        function navigateTo(id, el) {
+            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('page-active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-item-active'));
+            
+            document.getElementById('p-' + id).classList.add('page-active');
+            el.classList.add('nav-item-active');
         }
 
-        function save() {
-            localStorage.setItem('bal', balance);
-            localStorage.setItem('nrg', energy);
-        }
-
-        document.getElementById('tap-area').addEventListener('touchstart', (e) => {
+        // Tapping Mechanism
+        document.getElementById('coin-trigger').addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if(energy >= power) {
-                balance += power; energy -= power; updateUI();
+            if(nrg >= 1) {
+                bal += 1; nrg -= 1; refreshUI();
+                
                 let t = e.changedTouches[0];
-                let pop = document.createElement('div');
-                pop.className = 'tap-pop'; pop.innerText = '+' + power;
-                pop.style.left = t.pageX + 'px'; pop.style.top = t.pageY + 'px';
-                document.body.appendChild(pop); setTimeout(() => pop.remove(), 600);
+                let f = document.createElement('div');
+                f.className = 'plus-one';
+                f.innerText = '+1';
+                f.style.left = t.pageX + 'px';
+                f.style.top = t.pageY + 'px';
+                document.body.appendChild(f);
+                setTimeout(() => f.remove(), 700);
             }
-            e.target.style.transform = "scale(0.95)";
+            e.target.style.transform = "scale(0.94)";
             setTimeout(() => e.target.style.transform = "scale(1)", 50);
         }, {passive: false});
 
-        setInterval(() => { if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1); }, 1000);
     </script>
 </body>
 </html>
