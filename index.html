@@ -3,13 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin Pro</title>
+    <title>Jolt Coin</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; }
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
 
-        /* إصلاح شاشة التحميل (العداد في الأسفل) */
+        /* شاشة التحميل (بناءً على صورتك) */
         #loader-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 150px; transition: opacity 0.5s; }
         #load-percent { font-size: 50px; font-weight: 900; color: #FFD700; margin-bottom: 15px; }
         .bar-outer { width: 80%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
@@ -19,27 +23,27 @@
         .page { display: none; height: 100vh; width: 100%; flex-direction: column; align-items: center; padding-top: 60px; position: absolute; inset: 0; }
         .page-active { display: flex !important; }
 
+        /* الرصيد والربح */
         #main-balance { font-size: 55px; font-weight: 900; margin-top: 10px; }
         .profit-rate { color: #FFD700; font-size: 14px; margin-bottom: 30px; }
         
-        #coin-click { width: 260px; height: 260px; border-radius: 50%; border: 8px solid #cd7f32; 
-            background: #222 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover;
-            box-shadow: 0 0 40px rgba(205, 127, 50, 0.3); transition: transform 0.05s; }
+        /* تصميم العملة الذهبية */
+        #coin-click { width: 280px; height: 280px; border-radius: 50%; border: 8px solid #cd7f32; 
+            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover;
+            box-shadow: 0 0 50px rgba(205, 127, 50, 0.4); transition: transform 0.05s; }
+        #coin-click:active { transform: scale(0.95); }
 
+        /* شريط الطاقة */
         .energy-wrapper { width: 85%; margin-top: 50px; }
         .energy-bg { width: 100%; height: 14px; background: #1a1a1a; border-radius: 20px; border: 1px solid #333; overflow: hidden; margin-top: 10px; }
         #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); }
 
-        /* تصميم القائمة السفلية */
+        /* القائمة السفلية */
         .footer-nav { position: fixed; bottom: 25px; left: 15px; right: 15px; height: 85px; background: #0d0d0d; display: flex; border-radius: 25px; border: 1px solid #222; z-index: 1000; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; cursor: pointer; }
         .nav-item-active { color: #FFD700; }
         .nav-icon { font-size: 24px; margin-bottom: 4px; }
         .nav-text { font-size: 12px; font-weight: bold; }
-
-        /* أشكال البطاقات في الصفحات الأخرى */
-        .card { background: #111; width: 90%; padding: 20px; border-radius: 15px; margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; border: 1px solid #222; }
-        .btn-buy { background: #FFD700; color: #000; padding: 10px 15px; border-radius: 10px; font-weight: bold; }
 
         .plus-one { position: absolute; color: #FFD700; font-size: 32px; font-weight: 900; pointer-events: none; animation: floatAnim 0.7s forwards; z-index: 2000; }
         @keyframes floatAnim { to { opacity: 0; transform: translateY(-120px); } }
@@ -65,61 +69,51 @@
         </div>
     </div>
 
-    <div id="tab-mine" class="page">
-        <h2 style="margin-bottom:20px; color:#FFD700">تطوير الأرباح ⛏️</h2>
-        <div class="card">
-            <div>
-                <h4>معدات بسيطة</h4>
-                <p style="color:#aaa; font-size:12px">+100 / ساعة</p>
-            </div>
-            <div class="btn-buy" onclick="buyUpgrade(1000, 100)">1,000 💰</div>
-        </div>
-        <div class="card">
-            <div>
-                <h4>خوادم متطورة</h4>
-                <p style="color:#aaa; font-size:12px">+500 / ساعة</p>
-            </div>
-            <div class="btn-buy" onclick="buyUpgrade(5000, 500)">5,000 💰</div>
-        </div>
-    </div>
-
-    <div id="tab-tasks" class="page">
-        <h2 style="margin-bottom:20px; color:#FFD700">المهام اليومية 📜</h2>
-        <div class="card">
-            <div>
-                <h4>تابعنا على تيليجرام</h4>
-                <p style="color:#FFD700; font-size:12px">+50,000 💰</p>
-            </div>
-            <div class="btn-buy" onclick="alert('تمت المهمة!')">انطلق</div>
-        </div>
-    </div>
+    <div id="tab-mine" class="page"><h2>Mining Soon.. ⛏️</h2></div>
+    <div id="tab-tasks" class="page"><h2>Tasks Soon.. 📜</h2></div>
 
     <div class="footer-nav">
-        <div class="nav-item" onclick="switchPage('tasks', this)">
-            <span class="nav-icon">📜</span><span class="nav-text">مهام</span>
-        </div>
-        <div class="nav-item" onclick="switchPage('mine', this)">
-            <span class="nav-icon">⛏️</span><span class="nav-text">تعدين</span>
-        </div>
-        <div class="nav-item nav-item-active" onclick="switchPage('tap', this)">
-            <span class="nav-icon">💰</span><span class="nav-text">النقر</span>
-        </div>
+        <div class="nav-item" onclick="switchPage('tasks', this)"><span class="nav-icon">📜</span><span class="nav-text">مهام</span></div>
+        <div class="nav-item" onclick="switchPage('mine', this)"><span class="nav-icon">⛏️</span><span class="nav-text">تعدين</span></div>
+        <div class="nav-item nav-item-active" onclick="switchPage('tap', this)"><span class="nav-icon">💰</span><span class="nav-text">النقر</span></div>
     </div>
 
     <script>
+        // --- دمج بيانات Firebase من صورتك الشخصية ---
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
+            authDomain: "jolt-coin.firebaseapp.com",
+            databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
+            projectId: "jolt-coin",
+            appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
         const tg = window.Telegram.WebApp;
         tg.expand();
+        const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "local_user";
 
-        let score = parseFloat(localStorage.getItem('j_score')) || 0;
-        let energy = parseFloat(localStorage.getItem('j_energy')) || 2000;
-        let pps = parseFloat(localStorage.getItem('j_pps')) || 0;
+        let score = 0;
+        let energy = 2000;
+        let pps = 0;
+
+        // تحميل البيانات المحفوظة سابقاً
+        db.ref('users/' + userId).once('value').then((snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                score = data.score || 0;
+                pps = data.pps || 0;
+                updateUI();
+            }
+        });
 
         function startLoading() {
             let p = 0;
             const bar = document.getElementById('bar-inner');
             const txt = document.getElementById('load-percent');
             const interval = setInterval(() => {
-                p += Math.floor(Math.random() * 5) + 2;
+                p += Math.floor(Math.random() * 8) + 2;
                 if (p > 100) p = 100;
                 bar.style.width = p + "%";
                 txt.innerText = p + "%";
@@ -128,116 +122,56 @@
                     setTimeout(() => {
                         document.getElementById('loader-screen').style.opacity = '0';
                         setTimeout(() => document.getElementById('loader-screen').style.display = 'none', 500);
-                    }, 200);
+                    }, 300);
                 }
-            }, 40);
-            updateUI();
+            }, 50);
         }
 
-        // تبديل الصفحات
         function switchPage(pageId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
             document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('nav-item-active'));
-            
             document.getElementById('tab-' + pageId).classList.add('page-active');
             element.classList.add('nav-item-active');
-            
-            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('light');
         }
-
-        function buyUpgrade(cost, addPps) {
-            if (score >= cost) {
-                score -= cost;
-                pps += addPps;
-                updateUI();
-                alert("تم التطوير!");
-            } else {
-                alert("رصيدك لا يكفي!");
-            }
-        }
-
-        setInterval(() => {
-            if (pps > 0) score += (pps / 3600);
-            if (energy < 2000) energy = Math.min(2000, energy + 1.2);
-            updateUI();
-        }, 1000);
 
         function updateUI() {
             document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
+            document.getElementById('pps-value').innerText = pps.toLocaleString();
             document.getElementById('energy-text').innerText = Math.floor(energy) + " / 2000";
             document.getElementById('energy-fill').style.width = (energy / 20) + "%";
-            document.getElementById('pps-value').innerText = pps.toLocaleString();
-            localStorage.setItem('j_score', score);
-            localStorage.setItem('j_energy', energy);
-            localStorage.setItem('j_pps', pps);
         }
 
+        // تفاعل النقر والحفظ
         document.getElementById('coin-click').addEventListener('touchstart', function(e) {
             e.preventDefault();
             if (energy >= 1) {
                 score++;
                 energy--;
+                updateUI();
                 if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-                
                 const touch = e.touches[0];
                 const p = document.createElement('div');
-                p.className = 'plus-one';
-                p.innerText = '+1';
-                p.style.left = touch.clientX + 'px';
-                p.style.top = touch.clientY + 'px';
+                p.className = 'plus-one'; p.innerText = '+1';
+                p.style.left = touch.clientX + 'px'; p.style.top = touch.clientY + 'px';
                 document.body.appendChild(p);
                 setTimeout(() => p.remove(), 700);
-                
-                this.style.transform = "scale(0.95)";
-                setTimeout(() => this.style.transform = "scale(1)", 50);
-                updateUI();
             }
         });
+
+        // استعادة الطاقة تلقائياً
+        setInterval(() => {
+            if (energy < 2000) { energy = Math.min(2000, energy + 1.2); updateUI(); }
+        }, 1000);
+
+        // وظيفة المزامنة مع Firebase
+        function syncData() {
+            db.ref('users/' + userId).set({
+                username: tg.initDataUnsafe.user ? tg.initDataUnsafe.user.username : "Guest",
+                score: score,
+                pps: pps
+            });
+        }
+        setInterval(syncData, 7000); // حفظ كل 7 ثوانٍ
     </script>
-</body><script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-
-<script>
-  // بيانات الربط (ستجدها في إعدادات مشروع Firebase الخاص بك)
-  const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_PROJECT_ID.appspot.com",
-    messagingSenderId: "YOUR_ID",
-    appId: "YOUR_APP_ID"
-  };
-
-  // تهيئة Firebase
-  firebase.initializeApp(firebaseConfig);
-  const database = firebase.database();
-
-  // الحصول على ID المستخدم من تليجرام
-  const user = window.Telegram.WebApp.initDataUnsafe.user;
-  const userId = user ? user.id : "guest"; // إذا لم يكن من تليجرام سيدخل كضيف
-
-  // 1. جلب البيانات من السيرفر عند فتح اللعبة
-  database.ref('users/' + userId).once('value').then((snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      score = data.score || 0;
-      pps = data.pps || 0;
-      updateUI();
-    }
-  });
-
-  // 2. وظيفة لحفظ البيانات في السيرفر
-  function saveToCloud() {
-    database.ref('users/' + userId).set({
-      username: user ? user.username : "unknown",
-      score: score,
-      pps: pps,
-      lastSync: Date.now()
-    });
-  }
-
-  // حفظ البيانات تلقائياً كل 10 ثوانٍ
-  setInterval(saveToCloud, 10000);
-</script>
+</body>
 </html>
