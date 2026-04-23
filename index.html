@@ -3,38 +3,51 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Multi-Touch Fixed</title>
+    <title>Jimi Coin Tasks Edition</title>
     <style>
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; text-align: center; }
 
-        /* التأكد من حذف شاشة التحميل تماماً بعد الانتهاء */
+        /* Loader */
         #loader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
         #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.8; z-index: -1; }
-        #pct { color: gold; font-size: 30px; font-weight: bold; margin-bottom: 10px; }
+        #pct { color: gold; font-size: 32px; font-weight: bold; margin-bottom: 10px; }
         .bar-o { width: 220px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 1px solid gold; overflow: hidden; }
         #bar-i { width: 0%; height: 100%; background: gold; }
 
-        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 40px; }
+        /* Layout */
+        .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 40px; padding-bottom: 120px; overflow-y: auto; }
         .active { display: flex !important; }
-        .score { font-size: 80px; color: gold; font-weight: bold; margin: 0; }
+        .score { font-size: 70px; color: gold; font-weight: bold; margin: 0; }
         
-        /* جعل منطقة العملة هي الأعلى في الترتيب */
+        /* Tap Area */
         #tap-area { 
-            width: 280px; height: 280px; margin-top: 40px; border-radius: 50%; border: 4px solid gold;
+            width: 260px; height: 260px; margin-top: 30px; border-radius: 50%; border: 4px solid gold; box-shadow: 0 0 25px gold;
             background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/112% no-repeat;
-            position: relative; z-index: 1000; /* رفعنا الترتيب هنا */
+            position: relative; z-index: 100; transition: transform 0.05s;
         }
 
-        .en-ui { width: 85%; margin-top: 60px; }
+        /* Tasks Style */
+        .task-card { 
+            width: 90%; background: #111; border: 1px solid #222; border-radius: 15px; 
+            padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between;
+        }
+        .task-info { text-align: left; }
+        .task-title { font-weight: bold; font-size: 16px; color: #fff; }
+        .task-reward { color: gold; font-size: 14px; }
+        .task-btn { background: gold; color: #000; padding: 8px 15px; border-radius: 10px; font-weight: bold; cursor: pointer; text-decoration: none; }
+        .task-done { background: #333; color: #777; }
+
+        /* Navigation */
+        .nav { position: fixed; bottom: 30px; left: 10px; right: 10px; height: 80px; background: #0a0a0a; display: flex; z-index: 1000; border-radius: 20px; border: 1px solid #222; }
+        .nav-i { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 11px; font-weight: bold; }
+        .nav-i.on { color: gold; }
+
+        .en-ui { width: 85%; margin-top: 40px; }
         .en-bg { width: 100%; height: 14px; background: #1a1a1a; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
         #en-f { width: 100%; height: 100%; background: #00d2ff; }
 
-        .nav { position: fixed; bottom: 35px; left: 15px; right: 15px; height: 80px; background: #0a0a0a; display: flex; z-index: 10001; border-radius: 20px; border: 1px solid #222; }
-        .nav-i { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 12px; font-weight: bold; }
-        .nav-i.on { color: gold; }
-
-        .pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; animation: up 0.6s forwards; pointer-events: none; z-index: 10002; }
+        .pop { position: absolute; color: #00d2ff; font-size: 40px; font-weight: bold; animation: up 0.6s forwards; pointer-events: none; z-index: 2000; }
         @keyframes up { to { transform: translateY(-130px); opacity: 0; } }
     </style>
 </head>
@@ -52,22 +65,44 @@
         <div id="tap-area"></div>
         <div class="en-ui">
             <div style="display:flex; justify-content:space-between; font-size:13px; color:#aaa; margin-bottom:5px">
-                <span>⚡ ENERGY</span><span id="ev">2000 / 2000</span>
+                <span>ENERGY</span><span id="ev">2000 / 2000</span>
             </div>
             <div class="en-bg"><div id="en-f"></div></div>
         </div>
     </div>
 
+    <div id="p-tasks" class="page">
+        <h2 style="color:gold">TASKS</h2>
+        <p style="color:#aaa">Complete tasks to earn extra Jimi Coins</p>
+        
+        <div class="task-card">
+            <div class="task-info">
+                <div class="task-title">Join Channel</div>
+                <div class="task-reward">+5,000 Coins</div>
+            </div>
+            <a href="https://t.me/YourChannel" target="_blank" class="task-btn" onclick="claimTask(this, 5000)">GO</a>
+        </div>
+
+        <div class="task-card">
+            <div class="task-info">
+                <div class="task-title">Follow on X (Twitter)</div>
+                <div class="task-reward">+3,000 Coins</div>
+            </div>
+            <a href="https://x.com/YourProfile" target="_blank" class="task-btn" onclick="claimTask(this, 3000)">GO</a>
+        </div>
+    </div>
+
     <div id="p-lead" class="page">
-        <h2 style="color:gold">LEADERBOARD</h2>
+        <h2 style="color:gold">LEADERS</h2>
         <div style="width:85%; background:#111; padding:20px; border-radius:15px; border:1px solid #333">
-            <p>1. Ahmed: 1,250,000</p>
-            <p style="color:gold">You: <span id="my-sc">0</span></p>
+            <div style="display:flex; justify-content:space-between; margin-bottom:10px"><span>1. Ahmed</span><span>1,250,000</span></div>
+            <div style="display:flex; justify-content:space-between; color:gold"><span>You</span><span id="my-sc">0</span></div>
         </div>
     </div>
 
     <div class="nav">
         <div class="nav-i on" onclick="go('tap', this)">💰 TAP</div>
+        <div class="nav-i" onclick="go('tasks', this)">📜 TASKS</div>
         <div class="nav-i" onclick="go('lead', this)">🏆 LEADERS</div>
     </div>
 
@@ -81,14 +116,7 @@
                 p += 5;
                 document.getElementById('bar-i').style.width = p + "%";
                 document.getElementById('pct').innerText = p + "%";
-                if(p >= 100) { 
-                    clearInterval(itv); 
-                    // حذف العنصر تماماً من الـ HTML لضمان عدم حجب اللمس
-                    const ld = document.getElementById('loader');
-                    ld.style.opacity = '0';
-                    setTimeout(() => ld.remove(), 500); 
-                    upd(); 
-                }
+                if(p >= 100) { clearInterval(itv); document.getElementById('loader').remove(); upd(); }
             }, 30);
         }
 
@@ -106,36 +134,35 @@
             document.getElementById('en-f').style.width = (e/20) + "%";
         }
 
+        function claimTask(btn, reward) {
+            if(btn.classList.contains('task-done')) return;
+            s += reward;
+            btn.innerText = "DONE";
+            btn.classList.add('task-done');
+            localStorage.setItem('js_s', s);
+            upd();
+        }
+
         const area = document.getElementById('tap-area');
-        
-        // استخدام الطريقة الأكثر مباشرة لمعالجة كل لمسة
         area.addEventListener('touchstart', (ev) => {
             ev.preventDefault();
-            
-            // معالجة كل الأصابع التي لمست الشاشة في هذه اللحظة
             for (let i = 0; i < ev.changedTouches.length; i++) {
                 if(e < 1) break;
                 s++; e--;
                 let touch = ev.changedTouches[i];
-                showPop(touch.pageX, touch.pageY);
+                let n = document.createElement('div');
+                n.className = 'pop'; n.innerText = '+1';
+                n.style.left = touch.pageX + 'px'; n.style.top = touch.pageY + 'px';
+                document.body.appendChild(n);
+                setTimeout(() => n.remove(), 600);
             }
-            
             upd();
             localStorage.setItem('js_s', s);
             localStorage.setItem('js_e', e);
             if(navigator.vibrate) navigator.vibrate(10);
             area.style.transform = "scale(0.95)";
+            setTimeout(() => area.style.transform = "scale(1)", 50);
         }, { passive: false });
-
-        area.addEventListener('touchend', () => { area.style.transform = "scale(1)"; });
-
-        function showPop(x, y) {
-            let n = document.createElement('div');
-            n.className = 'pop'; n.innerText = '+1';
-            n.style.left = x + 'px'; n.style.top = y + 'px';
-            document.body.appendChild(n);
-            setTimeout(() => n.remove(), 600);
-        }
 
         setInterval(() => { if(e < 2000) { e = Math.min(2000, e + 1.5); upd(); } }, 1000);
     </script>
