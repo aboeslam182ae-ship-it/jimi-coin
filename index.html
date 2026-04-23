@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>
-        Jimi Coin Professional
+        Jimi Coin Pro
     </title>
     <style>
-        /* --- GLOBAL SETTINGS --- */
+        /* --- الأساسيات --- */
         * {
             box-sizing: border-box;
         }
@@ -40,7 +40,7 @@
             height: 100vh;
         }
 
-        /* --- LOADER SCREEN SECTION (BOTTOM ALIGNED) --- */
+        /* --- شاشة التحميل --- */
         #loader-screen {
             position: fixed;
         }
@@ -69,29 +69,8 @@
             padding-bottom: 100px;
         }
 
-        /* --- SPLASH BACKGROUND --- */
-        #splash-bg {
-            position: absolute;
-        }
-        #splash-bg {
-            inset: 0;
-        }
-        #splash-bg {
-            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png');
-        }
-        #splash-bg {
-            background-size: cover;
-        }
-        #splash-bg {
-            background-position: center;
-        }
-        #splash-bg {
-            z-index: -1;
-        }
-
-        /* --- LOADING PERCENTAGE (MODIFIED SIZE) --- */
         #load-percent {
-            font-size: 38px; /* تم تصغير الحجم هنا */
+            font-size: 38px;
         }
         #load-percent {
             font-weight: 800;
@@ -102,25 +81,18 @@
         #load-percent {
             margin-bottom: 12px;
         }
-        #load-percent {
-            text-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
-        }
 
-        /* --- LOADER BAR (MODIFIED SIZE) --- */
         .bar-outer {
-            width: 220px; /* تم تصغير عرض الشريط هنا */
+            width: 220px;
         }
         .bar-outer {
-            height: 7px; /* تم تقليل سمك الشريط هنا */
+            height: 7px;
         }
         .bar-outer {
             background-color: rgba(255, 255, 255, 0.1);
         }
         .bar-outer {
             border-radius: 15px;
-        }
-        .bar-outer {
-            border: 1px solid rgba(255, 215, 0, 0.3);
         }
         .bar-outer {
             overflow: hidden;
@@ -135,11 +107,8 @@
         #bar-inner {
             background-color: #FFD700;
         }
-        #bar-inner {
-            box-shadow: 0 0 10px #FFD700;
-        }
 
-        /* --- MAIN PAGE LAYOUT --- */
+        /* --- نظام الصفحات --- */
         .page {
             display: none;
         }
@@ -160,159 +129,250 @@
             display: flex !important;
         }
 
-        #coin-main {
-            width: 280px;
+        /* --- شريط الطاقة (تم الإصلاح) --- */
+        .energy-container {
+            width: 85%;
         }
-        #coin-main {
-            height: 280px;
-        }
-        #coin-main {
-            border-radius: 50%;
-        }
-        #coin-main {
-            border: 8px solid #cd7f32;
-        }
-        #coin-main {
-            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
-        }
-        #coin-main {
-            background-size: 82%;
-        }
-        #coin-main {
-            background-position: center;
-        }
-        #coin-main {
-            background-repeat: no-repeat;
-        }
-        #coin-main {
-            box-shadow: 0 0 40px rgba(205, 127, 50, 0.4);
+        .energy-container {
+            margin-top: 40px;
         }
 
-        /* --- NAVIGATION BAR --- */
-        .nav-container {
+        .energy-header {
+            display: flex;
+        }
+        .energy-header {
+            justify-content: space-between;
+        }
+        .energy-header {
+            margin-bottom: 8px;
+        }
+
+        #energy-text {
+            font-size: 14px;
+        }
+        #energy-text {
+            font-weight: bold;
+        }
+
+        .energy-bar-bg {
+            width: 100%;
+        }
+        .energy-bar-bg {
+            height: 12px;
+        }
+        .energy-bar-bg {
+            background-color: #1a1a1a;
+        }
+        .energy-bar-bg {
+            border-radius: 10px;
+        }
+        .energy-bar-bg {
+            border: 1px solid #333;
+        }
+        .energy-bar-bg {
+            overflow: hidden;
+        }
+
+        #energy-fill {
+            width: 100%;
+        }
+        #energy-fill {
+            height: 100%;
+        }
+        #energy-fill {
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        }
+        #energy-fill {
+            transition: width 0.2s;
+        }
+
+        /* --- الأزرار السفلية (تم الإصلاح) --- */
+        .nav-bar {
             position: fixed;
         }
-        .nav-container {
+        .nav-bar {
             bottom: 25px;
         }
-        .nav-container {
+        .nav-bar {
             left: 20px;
         }
-        .nav-container {
+        .nav-bar {
             right: 20px;
         }
-        .nav-container {
+        .nav-bar {
             height: 80px;
         }
-        .nav-container {
+        .nav-bar {
             background-color: #0f0f0f;
         }
-        .nav-container {
+        .nav-bar {
             display: flex;
         }
-        .nav-container {
+        .nav-bar {
             border-radius: 20px;
         }
-        .nav-container {
+        .nav-bar {
             border: 1px solid #222;
         }
+        .nav-bar {
+            z-index: 999; /* لضمان ظهورها فوق كل شيء */
+        }
 
-        .nav-item {
+        .nav-btn {
             flex: 1;
         }
-        .nav-item {
+        .nav-btn {
             display: flex;
         }
-        .nav-item {
+        .nav-btn {
             flex-direction: column;
         }
-        .nav-item {
+        .nav-btn {
             align-items: center;
         }
-        .nav-item {
+        .nav-btn {
             justify-content: center;
         }
-        .nav-item {
+        .nav-btn {
             color: #555;
         }
-        
-        .active-link {
+        .nav-btn {
+            cursor: pointer;
+        }
+
+        .nav-active {
             color: #FFD700;
+        }
+
+        /* --- العملة --- */
+        #coin-click {
+            width: 260px;
+        }
+        #coin-click {
+            height: 260px;
+        }
+        #coin-click {
+            border-radius: 50%;
+        }
+        #coin-click {
+            border: 6px solid #cd7f32;
+        }
+        #coin-click {
+            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+        }
+        #coin-click {
+            background-size: contain;
+        }
+        #coin-click {
+            background-position: center;
+        }
+        #coin-click {
+            background-repeat: no-repeat;
         }
     </style>
 </head>
-<body onload="startApp()">
+<body onload="initApp()">
 
     <div id="loader-screen">
-        <div id="splash-bg"></div>
-        <div id="load-percent">
-            0%
-        </div>
+        <div id="load-percent">0%</div>
         <div class="bar-outer">
             <div id="bar-inner"></div>
         </div>
     </div>
 
-    <div id="page-tap" class="page page-active">
-        <div id="balance" style="font-size: 60px; font-weight: 800; margin-bottom: 5px;">
-            0
+    <div id="tab-tap" class="page page-active">
+        <div id="main-balance" style="font-size: 60px; font-weight: 800; margin-top: 20px;">0</div>
+        <div style="color: #FFD700; font-size: 14px; margin-bottom: 40px;">BRONZE LEVEL</div>
+        
+        <div id="coin-click"></div>
+
+        <div class="energy-container">
+            <div class="energy-header">
+                <span style="color: #aaa;">⚡ ENERGY</span>
+                <span id="energy-text">2000 / 2000</span>
+            </div>
+            <div class="energy-bar-bg">
+                <div id="energy-fill"></div>
+            </div>
         </div>
-        <div id="rank" style="font-size: 14px; letter-spacing: 1px; color: #FFD700; margin-bottom: 40px;">
-            BRONZE LEVEL
-        </div>
-        <div id="coin-main"></div>
     </div>
 
-    <div class="nav-container">
-        <div class="nav-item active-link" onclick="tab('tap', this)">
+    <div id="tab-tasks" class="page"><h1 style="margin-top:100px">TASKS LIST</h1></div>
+    <div id="tab-boost" class="page"><h1 style="margin-top:100px">BOOSTERS</h1></div>
+    <div id="tab-top" class="page"><h1 style="margin-top:100px">TOP PLAYERS</h1></div>
+
+    <div class="nav-bar">
+        <div class="nav-btn nav-active" onclick="switchTab('tap', this)">
             <div style="font-size: 22px;">💰</div>
             <div style="font-size: 10px; font-weight: bold;">TAP</div>
         </div>
-        <div class="nav-item" onclick="tab('tasks', this)">
+        <div class="nav-btn" onclick="switchTab('tasks', this)">
             <div style="font-size: 22px;">📜</div>
             <div style="font-size: 10px; font-weight: bold;">TASKS</div>
         </div>
-        <div class="nav-item" onclick="tab('boost', this)">
+        <div class="nav-btn" onclick="switchTab('boost', this)">
             <div style="font-size: 22px;">🚀</div>
             <div style="font-size: 10px; font-weight: bold;">BOOST</div>
         </div>
-        <div class="nav-item" onclick="tab('top', this)">
+        <div class="nav-btn" onclick="switchTab('top', this)">
             <div style="font-size: 22px;">🏆</div>
             <div style="font-size: 10px; font-weight: bold;">TOP</div>
         </div>
     </div>
 
     <script>
-        /* --- APP LOGIC --- */
-        let score = parseInt(localStorage.getItem('coin_score')) || 0;
+        let score = parseInt(localStorage.getItem('j_score')) || 0;
+        let energy = parseFloat(localStorage.getItem('j_energy')) || 2000;
 
-        function startApp() {
-            let progress = 0;
-            /* تم تعديل السرعة هنا لتصبح أبطأ (الزيادة بـ 1 كل 50 مللي ثانية) */
-            let loader = setInterval(function() {
-                progress = progress + 1; /* الزيادة أصبحت 1 بدل 2 */
-                document.getElementById('bar-inner').style.width = progress + "%";
-                document.getElementById('load-percent').innerText = progress + "%";
-                
-                if (progress >= 100) {
-                    clearInterval(loader);
+        function initApp() {
+            let p = 0;
+            let interval = setInterval(() => {
+                p++;
+                document.getElementById('bar-inner').style.width = p + "%";
+                document.getElementById('load-percent').innerText = p + "%";
+                if(p >= 100) {
+                    clearInterval(interval);
                     document.getElementById('loader-screen').style.display = 'none';
+                    updateUI();
                 }
-            }, 50); /* الوقت أصبح 50 بدل 30 ليكون أبطأ وأكثر نعومة */
+            }, 40);
+
+            // استعادة الطاقة تلقائياً
+            setInterval(() => {
+                if(energy < 2000) {
+                    energy = Math.min(2000, energy + 1);
+                    updateUI();
+                }
+            }, 1500);
         }
 
-        function tab(id, el) {
-            document.querySelectorAll('.nav-item').forEach(function(n) {
-                n.classList.remove('active-link');
-            });
-            el.classList.add('active-link');
+        function updateUI() {
+            document.getElementById('main-balance').innerText = score.toLocaleString();
+            document.getElementById('energy-text').innerText = Math.floor(energy) + " / 2000";
+            document.getElementById('energy-fill').style.width = (energy / 20) + "%";
+            localStorage.setItem('j_score', score);
+            localStorage.setItem('j_energy', energy);
         }
 
-        document.getElementById('coin-main').addEventListener('touchstart', function(e) {
+        // وظيفة تبديل الأزرار (تم إصلاحها)
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+            
+            document.getElementById('tab-' + tabId).classList.add('page-active');
+            element.classList.add('nav-active');
+        }
+
+        // وظيفة النقر على العملة
+        document.getElementById('coin-click').addEventListener('touchstart', function(e) {
             e.preventDefault();
-            score = score + 1;
-            document.getElementById('balance').innerText = score.toLocaleString();
-            localStorage.setItem('coin_score', score);
+            if(energy >= 1) {
+                score++;
+                energy--;
+                updateUI();
+                this.style.transform = "scale(0.96)";
+                setTimeout(() => this.style.transform = "scale(1)", 50);
+            }
         });
     </script>
 </body>
