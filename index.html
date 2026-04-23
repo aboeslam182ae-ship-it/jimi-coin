@@ -73,7 +73,7 @@
             display: flex !important;
         }
 
-        /* --- MAIN TAP ELEMENTS --- */
+        /* --- TAP PAGE STYLES --- */
         #main-balance {
             font-size: 60px;
             font-weight: 800;
@@ -105,10 +105,8 @@
             background-position: center;
             z-index: 5;
             transition: transform 0.05s;
-            cursor: pointer;
         }
 
-        /* Click Effect (+1) */
         .plus-one {
             position: absolute;
             color: #ffffff;
@@ -124,7 +122,6 @@
             100% { opacity: 0; transform: translateY(-100px); }
         }
 
-        /* --- ENERGY BAR --- */
         .energy-container {
             width: 85%;
             margin-top: 40px;
@@ -155,6 +152,59 @@
             height: 100%;
             background: linear-gradient(90deg, #00d2ff, #3a7bd5);
             transition: width 0.2s;
+        }
+
+        /* --- LEADERBOARD PAGE STYLES --- */
+        .leaderboard-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #FFD700;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .list-container {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .player-card {
+            background-color: #111111;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #222;
+        }
+
+        .player-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .rank-number {
+            font-weight: 900;
+            font-size: 18px;
+            color: #555;
+        }
+
+        .top-one {
+            color: #FFD700;
+        }
+
+        .player-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .player-score {
+            font-weight: 800;
+            color: #FFD700;
+            font-size: 14px;
         }
 
         /* --- NAVIGATION BAR --- */
@@ -227,11 +277,36 @@
     <div id="tab-tasks" class="page">
         <h1 style="margin-top:100px">TASKS LIST</h1>
     </div>
+
     <div id="tab-boost" class="page">
         <h1 style="margin-top:100px">BOOSTERS</h1>
     </div>
+
     <div id="tab-top" class="page">
-        <h1 style="margin-top:100px">TOP PLAYERS</h1>
+        <div class="leaderboard-title">TOP PLAYERS</div>
+        <div class="list-container">
+            <div class="player-card">
+                <div class="player-info">
+                    <span class="rank-number top-one">1</span>
+                    <span class="player-name">Muhammad Koca</span>
+                </div>
+                <span class="player-score">2,500,000</span>
+            </div>
+            <div class="player-card">
+                <div class="player-info">
+                    <span class="rank-number">2</span>
+                    <span class="player-name">Alex Pro</span>
+                </div>
+                <span class="player-score">1,800,000</span>
+            </div>
+            <div class="player-card">
+                <div class="player-info">
+                    <span class="rank-number">3</span>
+                    <span class="player-name">Jimi User</span>
+                </div>
+                <span class="player-score">1,200,000</span>
+            </div>
+        </div>
     </div>
 
     <div class="nav-bar">
@@ -270,7 +345,6 @@
                 }
             }, 30);
 
-            // Energy Recovery
             setInterval(() => {
                 if(energy < 2000) {
                     energy = Math.min(2000, energy + 1);
@@ -290,12 +364,10 @@
         function switchTab(tabId, element) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
             document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
-            
             document.getElementById('tab-' + tabId).classList.add('page-active');
             element.classList.add('nav-active');
         }
 
-        // Tap Functionality with Visual Effect
         const coin = document.getElementById('coin-click');
         const coinContainer = document.getElementById('coin-container');
 
@@ -306,22 +378,20 @@
                 energy--;
                 updateUI();
 
-                // Animation scale
                 this.style.transform = "scale(0.95)";
                 setTimeout(() => this.style.transform = "scale(1)", 50);
 
-                // Create +1 effect
                 const touch = e.touches[0];
                 const plusOne = document.createElement('div');
                 plusOne.innerText = "+1";
                 plusOne.className = 'plus-one';
                 plusOne.style.left = (touch.clientX - 20) + "px";
                 plusOne.style.top = (touch.clientY - 40) + "px";
-                
                 document.body.appendChild(plusOne);
                 setTimeout(() => plusOne.remove(), 800);
             }
         });
     </script>
 </body>
-</html>
+                    </html>
+    
