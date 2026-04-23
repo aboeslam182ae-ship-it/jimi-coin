@@ -3,25 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Fixed Edition</title>
+    <title>Jimi Coin - Click Only Edition</title>
     <style>
-        /* --- 1. GLOBAL SETTINGS --- */
+        /* 1. تنسيقات عامة والتحميل */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; text-align: center; }
-
-        /* --- 2. LOADER (ضبط السرعة في الجافا سكربت بالأسفل) --- */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
-        #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.7; z-index: -1; }
+        #loader { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
         #pct { color: gold; font-size: 34px; font-weight: bold; margin-bottom: 12px; }
         .bar-o { width: 240px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 1px solid gold; overflow: hidden; }
-        #bar-i { width: 0%; height: 100%; background: gold; transition: width 0.3s; }
+        #bar-i { width: 0%; height: 100%; background: gold; }
 
-        /* --- 3. PAGES SYSTEM --- */
+        /* 2. نظام الصفحات */
         .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 50px; padding-bottom: 120px; overflow-y: auto; }
         .active { display: flex !important; }
         .score { font-size: 70px; color: gold; font-weight: bold; margin-bottom: 5px; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
-        #level-label { font-weight: 900; letter-spacing: 2px; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; transition: color 0.5s; }
-        .p-hour { color: #39FF14; font-size: 14px; font-weight: bold; margin-bottom: 20px; }
+        #level-label { font-weight: 900; letter-spacing: 2px; font-size: 14px; margin-bottom: 20px; text-transform: uppercase; }
 
         #tap-area { 
             width: 260px; height: 260px; border-radius: 50%; border: 6px solid gold; box-shadow: 0 0 40px gold;
@@ -29,18 +25,168 @@
             position: relative; transition: transform 0.05s;
         }
 
-        /* --- 4. TASKS & CARDS --- */
+        /* 3. القوائم والمهام */
         .card-list { width: 92%; margin-top: 15px; }
         .card-item { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px; padding: 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
         .card-data { text-align: left; }
         .card-title { font-weight: bold; font-size: 16px; }
         .card-sub { color: gold; font-size: 12px; margin-top: 4px; }
         .card-action { background: gold; color: #000; padding: 10px 18px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 12px; text-decoration: none; min-width: 90px; text-align: center; }
-        .card-checking { background: #333 !important; color: #aaa !important; pointer-events: none; font-size: 10px !important; }
+        .card-checking { background: #333 !important; color: #aaa !important; pointer-events: none; }
         .card-done { background: #111 !important; color: #444 !important; pointer-events: none; }
 
-        /* --- 5. ENERGY & NAVIGATION (الدمج المطلوب) --- */
+        /* 4. شريط الطاقة والتنقل */
         .energy-box { width: 85%; margin-top: 40px; }
         .energy-bar-bg { width: 100%; height: 14px; background: #151515; border-radius: 30px; overflow: hidden; border: 1px solid #222; }
-        #energy-fill
-        
+        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00d2ff, #3a7bd5); }
+
+        .nav-bar { position: fixed; bottom: 25px; left: 12px; right: 12px; height: 85px; background: rgba(10,10,10,0.95); backdrop-filter: blur(10px); display: flex; z-index: 1000; border-radius: 25px; border: 1px solid #222; }
+        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 10px; font-weight: 800; }
+        .nav-btn.active-nav { color: gold; }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
+
+        .tap-pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: 900; animation: floatUp 0.7s forwards; pointer-events: none; }
+        @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-160px); opacity: 0; } }
+    </style>
+</head>
+<body onload="startApp()">
+
+    <div id="loader">
+        <div id="pct">0%</div>
+        <div class="bar-o"><div id="bar-i"></div></div>
+    </div>
+
+    <div id="p-tap" class="page active">
+        <div id="sc" class="score">0</div>
+        <div id="level-label">BRONZE LEVEL</div>
+        <div id="tap-area"></div>
+        <div class="energy-box">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:5px">
+                <span>⚡ ENERGY</span><span id="ev">2000 / 2000</span>
+            </div>
+            <div class="energy-bar-bg"><div id="energy-fill"></div></div>
+        </div>
+    </div>
+
+    <div id="p-tasks" class="page">
+        <h2 style="color:gold;">TASKS</h2>
+        <div class="card-list">
+            <div class="card-item">
+                <div class="card-data"><div class="card-title">Join YouTube</div><div class="card-sub">+15,000 Coins</div></div>
+                <a href="https://youtube.com" target="_blank" id="btn-t1" class="card-action" onclick="startVer('t1', 15000, 3600)">GO</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="p-boost" class="page">
+        <h2 style="color:gold;">BOOSTS</h2>
+        <div class="card-list">
+            <div class="card-item">
+                <div class="card-data"><div class="card-title">Multi-Tap</div><div class="card-sub">+1 per click | 5k Cost</div></div>
+                <div class="card-action" onclick="buyBoost(5000)">BUY</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="p-lead" class="page">
+        <h2 style="color:gold">TOP PLAYERS</h2>
+        <div style="width:90%; background:#0a0a0a; padding:20px; border-radius:20px; border:1px solid #1a1a1a">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; color:gold; font-size:20px"><span>YOU</span><span id="my-sc">0</span></div>
+        </div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-btn active-nav" onclick="switchPg('tap', this)"><span class="nav-icon">💰</span>TAP</div>
+        <div class="nav-btn" onclick="switchPg('tasks', this)"><span class="nav-icon">📜</span>TASKS</div>
+        <div class="nav-btn" onclick="switchPg('boost', this)"><span class="nav-icon">🚀</span>BOOST</div>
+        <div class="nav-btn" onclick="switchPg('lead', this)"><span class="nav-icon">🏆</span>TOP</div>
+    </div>
+
+    <script>
+        let bal = parseInt(localStorage.getItem('j_s')) || 0;
+        let nrg = parseFloat(localStorage.getItem('j_e')) || 2000;
+        let tapVal = parseInt(localStorage.getItem('j_v')) || 1; // قيمة النقرة الواحدة
+        const maxNrg = 2000;
+
+        const lvls = [
+            { n: "Bronze", v: 0, c: "#00d2ff" }, { n: "Silver", v: 5000, c: "#C0C0C0" },
+            { n: "Gold", v: 25000, c: "#FFD700" }, { n: "Legendary", v: 1000000, c: "#FF4500" }
+        ];
+
+        function startApp() {
+            let load = 0;
+            let itv = setInterval(() => {
+                load += 2;
+                document.getElementById('bar-i').style.width = load + "%";
+                document.getElementById('pct').innerText = load + "%";
+                if(load >= 100) { clearInterval(itv); document.getElementById('loader').style.display='none'; render(); }
+            }, 50);
+            
+            // تم إيقاف عداد الجمع التلقائي هنا بناءً على طلبك
+            setInterval(() => { save(); chkTimers(); render(); }, 1000);
+        }
+
+        function startVer(id, r, s) {
+            const end = Date.now() + (s * 1000);
+            localStorage.setItem('tk_'+id, JSON.stringify({end, r, done: false}));
+        }
+
+        function chkTimers() {
+            ['t1'].forEach(id => {
+                const data = JSON.parse(localStorage.getItem('tk_'+id));
+                if(!data) return;
+                const btn = document.getElementById('btn-'+id);
+                if(data.done) { btn.innerText="DONE"; btn.className="card-action card-done"; return; }
+                const left = Math.ceil((data.end - Date.now())/1000);
+                if(left > 0) {
+                    btn.innerText = `Wait ${Math.floor(left/60)}m ${left%60}s`;
+                    btn.className = "card-action card-checking";
+                } else {
+                    btn.innerText = "CLAIM"; btn.className = "card-action";
+                    btn.onclick = () => { bal+=data.r; localStorage.setItem('tk_'+id, JSON.stringify({done:true})); render(); };
+                }
+            });
+        }
+
+        function buyBoost(c) { 
+            if(bal >= c) { bal -= c; tapVal += 1; save(); render(); alert("Multi-tap upgraded!"); } 
+        }
+
+        function switchPg(id, btn) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
+            document.getElementById('p-' + id).classList.add('active');
+            btn.classList.add('active-nav');
+        }
+
+        function render() {
+            document.getElementById('sc').innerText = Math.floor(bal).toLocaleString();
+            document.getElementById('my-sc').innerText = Math.floor(bal).toLocaleString();
+            document.getElementById('ev').innerText = Math.floor(nrg) + " / 2000";
+            document.getElementById('energy-fill').style.width = (nrg/20) + "%";
+            let cl = lvls[0]; lvls.forEach(l => { if(bal >= l.v) cl = l; });
+            const lbl = document.getElementById('level-label');
+            lbl.innerText = cl.n + " LEVEL"; lbl.style.color = cl.c;
+        }
+
+        function save() {
+            localStorage.setItem('j_s', bal); localStorage.setItem('j_e', nrg); localStorage.setItem('j_v', tapVal);
+        }
+
+        const area = document.getElementById('tap-area');
+        area.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if(nrg >= tapVal) {
+                bal += tapVal; nrg -= tapVal; render();
+                let t = e.changedTouches[0];
+                let p = document.createElement('div');
+                p.className='tap-pop'; p.innerText='+' + tapVal; p.style.left=t.pageX+'px'; p.style.top=t.pageY+'px';
+                document.body.appendChild(p); setTimeout(()=>p.remove(), 600);
+            }
+            area.style.transform="scale(0.95)"; setTimeout(()=>area.style.transform="scale(1)", 50);
+        }, {passive: false});
+
+        setInterval(() => { if(nrg < maxNrg) nrg = Math.min(maxNrg, nrg + 1.2); }, 1000);
+    </script>
+</body>
+</html>
