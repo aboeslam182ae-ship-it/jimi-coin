@@ -3,64 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Universe Edition</title>
+    <title>Jimi Coin - Passive Income Edition</title>
     <style>
-        /* --- 1. GLOBAL SETTINGS (Line 10+) --- */
+        /* --- 1. GLOBAL & BASE (Lines 10-35) --- */
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; text-align: center; }
 
-        /* --- 2. LOADER SECTION (Line 20+) --- */
+        /* --- 2. LOADER STYLES (Lines 37-55) --- */
         #loader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
         #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.7; z-index: -1; }
         #pct { color: gold; font-size: 34px; font-weight: bold; margin-bottom: 12px; }
         .bar-o { width: 240px; height: 10px; background: rgba(255,255,255,0.1); border-radius: 20px; border: 1px solid gold; overflow: hidden; }
         #bar-i { width: 0%; height: 100%; background: gold; }
 
-        /* --- 3. PAGE SYSTEM (Line 40+) --- */
+        /* --- 3. DYNAMIC UI & PAGES (Lines 57-85) --- */
         .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 50px; padding-bottom: 120px; overflow-y: auto; }
         .active { display: flex !important; }
+        .score { font-size: 70px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
+        #level-label { font-weight: 900; letter-spacing: 2px; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; }
 
-        /* --- 4. TAP PAGE & DYNAMIC LEVEL (Line 50+) --- */
-        .score { font-size: 75px; color: gold; font-weight: bold; margin: 0; text-shadow: 0 0 15px rgba(255,215,0,0.5); }
-        
-        /* NEW: Level Label Styling with Animation */
-        #level-label { 
-            font-weight: 900; 
-            letter-spacing: 3px; 
-            font-size: 16px; 
-            margin-bottom: 20px; 
-            text-transform: uppercase;
-            transition: all 0.5s ease;
-        }
+        /* NEW: Profit Display Styling */
+        .p-hour { color: #39FF14; font-size: 14px; font-weight: bold; margin-bottom: 20px; }
 
         #tap-area { 
-            width: 270px; height: 270px; border-radius: 50%; border: 6px solid gold; box-shadow: 0 0 40px gold;
+            width: 260px; height: 260px; border-radius: 50%; border: 6px solid gold; box-shadow: 0 0 40px gold;
             background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/115% no-repeat;
             position: relative; z-index: 100; transition: transform 0.05s;
         }
 
-        /* --- 5. CARDS & UI COMPONENTS (Line 75+) --- */
+        /* --- 4. CARDS & BOOSTS (Lines 87-120) --- */
         .card-list { width: 92%; margin-top: 15px; }
         .card-item { background: #0f0f0f; border: 1px solid #1a1a1a; border-radius: 18px; padding: 18px; margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center; }
         .card-data { text-align: left; }
-        .card-title { font-weight: bold; font-size: 17px; }
-        .card-sub { color: gold; font-size: 13px; margin-top: 5px; }
-        .card-action { background: gold; color: #000; padding: 10px 22px; border-radius: 12px; font-weight: 900; text-decoration: none; font-size: 13px; }
-        .card-locked { background: #222 !important; color: #666 !important; pointer-events: none; }
+        .card-title { font-weight: bold; font-size: 16px; }
+        .card-sub { color: gold; font-size: 12px; margin-top: 4px; }
+        .card-action { background: gold; color: #000; padding: 10px 18px; border-radius: 12px; font-weight: 900; cursor: pointer; font-size: 12px; }
 
-        /* --- 6. ENERGY SYSTEM (Line 95+) --- */
-        .energy-box { width: 85%; margin-top: 45px; }
-        .energy-bar-bg { width: 100%; height: 14px; background: #151515; border-radius: 30px; border: 1px solid #252525; overflow: hidden; }
+        /* --- 5. ENERGY & NAV (Lines 122-150) --- */
+        .energy-box { width: 85%; margin-top: 40px; }
+        .energy-bar-bg { width: 100%; height: 14px; background: #151515; border-radius: 30px; overflow: hidden; border: 1px solid #222; }
         #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00d2ff, #3a7bd5); }
-
-        /* --- 7. NAVIGATION BAR (Line 105+) --- */
-        .nav-bar { position: fixed; bottom: 25px; left: 12px; right: 12px; height: 85px; background: rgba(10, 10, 10, 0.95); backdrop-filter: blur(10px); display: flex; z-index: 1000; border-radius: 25px; border: 1px solid #222; }
+        .nav-bar { position: fixed; bottom: 25px; left: 12px; right: 12px; height: 85px; background: rgba(10,10,10,0.95); backdrop-filter: blur(10px); display: flex; z-index: 1000; border-radius: 25px; border: 1px solid #222; }
         .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #444; font-size: 10px; font-weight: 800; }
         .nav-btn.active-nav { color: gold; }
-        .nav-icon { font-size: 24px; margin-bottom: 4px; }
+        .nav-icon { font-size: 22px; margin-bottom: 4px; }
 
-        /* --- 8. POPUP EFFECT (Line 125+) --- */
-        .tap-pop { position: absolute; color: #00d2ff; font-size: 48px; font-weight: 900; animation: floatUp 0.7s forwards; pointer-events: none; z-index: 2000; }
+        /* --- 6. POPUP EFFECT (Lines 152-160) --- */
+        .tap-pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: 900; animation: floatUp 0.7s forwards; pointer-events: none; z-index: 2000; }
         @keyframes floatUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-160px); opacity: 0; } }
     </style>
 </head>
@@ -75,9 +64,11 @@
     <div id="p-tap" class="page active">
         <div id="sc" class="score">0</div>
         <div id="level-label">BRONZE LEVEL</div>
+        <div class="p-hour">Profit per hour: +<span id="pph-val">0</span></div>
+        
         <div id="tap-area"></div>
         <div class="energy-box">
-            <div style="display:flex; justify-content:space-between; font-size:14px; color:#888; margin-bottom:8px">
+            <div style="display:flex; justify-content:space-between; font-size:13px; color:#888; margin-bottom:8px">
                 <span>⚡ ENERGY</span><span id="ev">2000 / 2000</span>
             </div>
             <div class="energy-bar-bg"><div id="energy-fill"></div></div>
@@ -85,38 +76,37 @@
     </div>
 
     <div id="p-tasks" class="page">
-        <h2 style="color:gold; font-size: 32px;">TASKS</h2>
+        <h2 style="color:gold;">TASKS</h2>
         <div class="card-list">
             <div class="card-item">
-                <div class="card-data"><div class="card-title">Join Channel</div><div class="card-sub">+10,000</div></div>
-                <a href="#" class="card-action" onclick="claim(this, 10000)">GO</a>
-            </div>
-            <div class="card-item">
-                <div class="card-data"><div class="card-title">Invite Friends</div><div class="card-sub">+20,000</div></div>
-                <a href="#" class="card-action" onclick="claim(this, 20000)">GO</a>
+                <div class="card-data"><div class="card-title">Subscribe</div><div class="card-sub">+10,000</div></div>
+                <div class="card-action" onclick="claim(this, 10000)">GO</div>
             </div>
         </div>
     </div>
 
     <div id="p-boost" class="page">
-        <h2 style="color:gold; font-size: 32px;">BOOSTS</h2>
+        <h2 style="color:gold;">BOOSTS</h2>
         <div class="card-list">
             <div class="card-item">
-                <div class="card-data"><div class="card-title">Multitap</div><div class="card-sub">Increase tap power</div></div>
-                <div class="card-action" onclick="buyBoost('mt')">UPGRADE</div>
+                <div class="card-data"><div class="card-title">Mining Hamster</div><div class="card-sub">+500/hour | Cost: 5k</div></div>
+                <div class="card-action" onclick="buyMining(5000, 500)">BUY</div>
             </div>
             <div class="card-item">
-                <div class="card-data"><div class="card-title">Energy Limit</div><div class="card-sub">Increase capacity</div></div>
-                <div class="card-action" onclick="buyBoost('el')">UPGRADE</div>
+                <div class="card-data"><div class="card-title">GPU Farm</div><div class="card-sub">+2,000/hour | Cost: 15k</div></div>
+                <div class="card-action" onclick="buyMining(15000, 2000)">BUY</div>
+            </div>
+            <div class="card-item">
+                <div class="card-data"><div class="card-title">Multitap</div><div class="card-sub">+1 per tap | Cost: 1k</div></div>
+                <div class="card-action" onclick="buyBoost('mt', 1000)">UPGRADE</div>
             </div>
         </div>
     </div>
 
     <div id="p-lead" class="page">
-        <h2 style="color:gold; font-size: 30px;">TOP PLAYERS</h2>
+        <h2 style="color:gold">TOP PLAYERS</h2>
         <div style="width:90%; background:#0a0a0a; padding:25px; border-radius:25px; border:1px solid #1a1a1a">
-            <div style="display:flex; justify-content:space-between; border-bottom:1px solid #111; padding:15px 0;"><span>1. AHMED</span><span style="color:gold">1,250,000</span></div>
-            <div style="display:flex; justify-content:space-between; padding:25px 0; font-weight:900; color:gold; font-size: 22px;"><span>YOU</span><span id="my-sc">0</span></div>
+            <div style="display:flex; justify-content:space-between; padding:20px; font-weight:bold; color:gold; font-size: 22px;"><span>YOU</span><span id="my-sc">0</span></div>
         </div>
     </div>
 
@@ -132,22 +122,16 @@
         let energy = parseFloat(localStorage.getItem('js_e')) || 2000;
         let tapValue = parseInt(localStorage.getItem('js_tv')) || 1;
         let maxEnergy = parseInt(localStorage.getItem('js_me')) || 2000;
+        let pph = parseInt(localStorage.getItem('js_pph')) || 0; // Profit Per Hour
 
-        // NEW: Levels Definition (Adding 5 levels beyond Legendary)
         const levels = [
-            { n: "Bronze", v: 0, c: "#00d2ff" },
-            { n: "Silver", v: 5000, c: "#C0C0C0" },
-            { n: "Gold", v: 25000, c: "#FFD700" },
-            { n: "Platinum", v: 100000, c: "#E5E4E2" },
-            { n: "Diamond", v: 500000, c: "#B9F2FF" },
-            { n: "Legendary", v: 1000000, c: "#FF4500" },
-            { n: "Master", v: 5000000, c: "#A020F0" },
-            { n: "Grandmaster", v: 10000000, c: "#39FF14" },
-            { n: "Jimi King", v: 50000000, c: "#FFD700" },
-            { n: "Universe Creator", v: 100000000, c: "#0000FF" }
+            { n: "Bronze", v: 0, c: "#00d2ff" }, { n: "Silver", v: 5000, c: "#C0C0C0" },
+            { n: "Gold", v: 25000, c: "#FFD700" }, { n: "Platinum", v: 100000, c: "#E5E4E2" },
+            { n: "Legendary", v: 1000000, c: "#FF4500" }
         ];
 
         function startApp() {
+            calculateOfflineEarnings(); // NEW: Calculate money while away
             let load = 0;
             let timer = setInterval(() => {
                 load += 5;
@@ -155,21 +139,38 @@
                 document.getElementById('pct').innerText = load + "%";
                 if(load >= 100) { clearInterval(timer); document.getElementById('loader').remove(); render(); }
             }, 30);
+            
+            // Auto-save & Auto-mine every 1 second
+            setInterval(() => {
+                if(pph > 0) {
+                    balance += (pph / 3600); // Add portion of hourly profit
+                    render();
+                }
+                save();
+            }, 1000);
         }
 
-        // NEW: Level Auto-Update Function
-        function updateLevel() {
-            let currentLevel = levels[0];
-            for (let i = levels.length - 1; i >= 0; i--) {
-                if (balance >= levels[i].v) {
-                    currentLevel = levels[i];
-                    break;
+        // NEW: Offline Earnings Function
+        function calculateOfflineEarnings() {
+            let lastVisit = localStorage.getItem('js_last');
+            if(lastVisit && pph > 0) {
+                let now = Date.now();
+                let secondsAway = Math.floor((now - lastVisit) / 1000);
+                let earned = Math.floor((secondsAway * (pph / 3600)));
+                if(earned > 0) {
+                    balance += earned;
+                    alert("While you were away, you earned: " + earned.toLocaleString() + " Jimi Coins!");
                 }
             }
-            const label = document.getElementById('level-label');
-            label.innerText = currentLevel.n + " LEVEL";
-            label.style.color = currentLevel.c;
-            label.style.textShadow = "0 0 10px " + currentLevel.c;
+        }
+
+        function buyMining(cost, addPph) {
+            if(balance >= cost) {
+                balance -= cost;
+                pph += addPph;
+                save(); render();
+                alert("Mining started! +" + addPph + "/hour");
+            } else { alert("Not enough coins!"); }
         }
 
         function switchPg(id, btn) {
@@ -180,27 +181,34 @@
         }
 
         function render() {
-            document.getElementById('sc').innerText = balance.toLocaleString();
-            document.getElementById('my-sc').innerText = balance.toLocaleString();
-            document.getElementById('ev').innerText = Math.floor(energy).toLocaleString() + " / " + maxEnergy;
+            document.getElementById('sc').innerText = Math.floor(balance).toLocaleString();
+            document.getElementById('my-sc').innerText = Math.floor(balance).toLocaleString();
+            document.getElementById('pph-val').innerText = pph.toLocaleString();
+            document.getElementById('ev').innerText = Math.floor(energy) + " / " + maxEnergy;
             document.getElementById('energy-fill').style.width = (energy / (maxEnergy/100)) + "%";
-            updateLevel(); // Call Level Update
+            updateLevel();
         }
 
-        function buyBoost(t) {
-            if(t==='mt' && balance>=1000){ balance-=1000; tapValue++; }
-            else if(t==='el' && balance>=2000){ balance-=2000; maxEnergy+=500; energy=maxEnergy; }
-            save(); render();
+        function updateLevel() {
+            let cl = levels[0];
+            for (let i = levels.length - 1; i >= 0; i--) { if (balance >= levels[i].v) { cl = levels[i]; break; } }
+            const l = document.getElementById('level-label');
+            l.innerText = cl.n + " LEVEL"; l.style.color = cl.c;
         }
 
-        function claim(btn, reward) {
-            balance += reward; btn.innerText = "DONE"; btn.classList.add('card-locked');
-            save(); render();
+        function buyBoost(type, cost) {
+            if(balance >= cost) { balance -= cost; if(type==='mt') tapValue++; save(); render(); }
         }
+
+        function claim(btn, r) { balance += r; btn.innerText = "DONE"; save(); render(); }
 
         function save() {
-            localStorage.setItem('js_s', balance); localStorage.setItem('js_e', energy);
-            localStorage.setItem('js_tv', tapValue); localStorage.setItem('js_me', maxEnergy);
+            localStorage.setItem('js_s', balance);
+            localStorage.setItem('js_e', energy);
+            localStorage.setItem('js_tv', tapValue);
+            localStorage.setItem('js_me', maxEnergy);
+            localStorage.setItem('js_pph', pph);
+            localStorage.setItem('js_last', Date.now()); // Save current time
         }
 
         const tapBox = document.getElementById('tap-area');
@@ -226,5 +234,4 @@
         setInterval(() => { if(energy < maxEnergy) { energy = Math.min(maxEnergy, energy + 1.5); render(); } }, 1000);
     </script>
 </body>
-                </html>
-    
+</html>
