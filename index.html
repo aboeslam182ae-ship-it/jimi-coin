@@ -154,15 +154,59 @@
             transition: width 0.2s;
         }
 
-        /* --- LEADERBOARD PAGE STYLES --- */
-        .leaderboard-title {
+        /* --- TASKS PAGE STYLES --- */
+        .page-title {
             font-size: 28px;
             font-weight: 800;
             color: #FFD700;
             margin-bottom: 25px;
-            text-align: center;
         }
 
+        .task-list {
+            width: 90%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .task-item {
+            background-color: #111;
+            padding: 15px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border: 1px solid #222;
+        }
+
+        .task-info {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .task-name {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .task-reward {
+            font-size: 13px;
+            color: #FFD700;
+            font-weight: bold;
+        }
+
+        .task-btn {
+            background-color: #FFD700;
+            color: #000;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        /* --- LEADERBOARD PAGE STYLES --- */
         .list-container {
             width: 90%;
             display: flex;
@@ -194,17 +238,6 @@
 
         .top-one {
             color: #FFD700;
-        }
-
-        .player-name {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .player-score {
-            font-weight: 800;
-            color: #FFD700;
-            font-size: 14px;
         }
 
         /* --- NAVIGATION BAR --- */
@@ -258,11 +291,9 @@
     <div id="tab-tap" class="page page-active">
         <div id="main-balance">0</div>
         <div class="level-text">BRONZE LEVEL</div>
-        
         <div id="coin-container">
             <div id="coin-click"></div>
         </div>
-
         <div class="energy-container">
             <div class="energy-header">
                 <span style="color: #aaa;">ENERGY</span>
@@ -275,15 +306,39 @@
     </div>
 
     <div id="tab-tasks" class="page">
-        <h1 style="margin-top:100px">TASKS LIST</h1>
+        <div class="page-title">TASKS</div>
+        <div class="task-list">
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Join Telegram</span>
+                    <span class="task-reward">+50,000 COINS</span>
+                </div>
+                <div class="task-btn" onclick="completeTask(50000, 'https://t.me/yourchannel')">GO</div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Follow X (Twitter)</span>
+                    <span class="task-reward">+20,000 COINS</span>
+                </div>
+                <div class="task-btn" onclick="completeTask(20000, 'https://twitter.com/yourprofile')">GO</div>
+            </div>
+            <div class="task-item">
+                <div class="task-info">
+                    <span class="task-name">Watch YouTube Video</span>
+                    <span class="task-reward">+30,000 COINS</span>
+                </div>
+                <div class="task-btn" onclick="completeTask(30000, 'https://youtube.com')">GO</div>
+            </div>
+        </div>
     </div>
 
     <div id="tab-boost" class="page">
-        <h1 style="margin-top:100px">BOOSTERS</h1>
+        <div class="page-title">BOOSTERS</div>
+        <h2 style="color:#555">Coming Soon</h2>
     </div>
 
     <div id="tab-top" class="page">
-        <div class="leaderboard-title">TOP PLAYERS</div>
+        <div class="page-title">TOP PLAYERS</div>
         <div class="list-container">
             <div class="player-card">
                 <div class="player-info">
@@ -298,13 +353,6 @@
                     <span class="player-name">Alex Pro</span>
                 </div>
                 <span class="player-score">1,800,000</span>
-            </div>
-            <div class="player-card">
-                <div class="player-info">
-                    <span class="rank-number">3</span>
-                    <span class="player-name">Jimi User</span>
-                </div>
-                <span class="player-score">1,200,000</span>
             </div>
         </div>
     </div>
@@ -368,16 +416,20 @@
             element.classList.add('nav-active');
         }
 
-        const coin = document.getElementById('coin-click');
-        const coinContainer = document.getElementById('coin-container');
+        function completeTask(reward, url) {
+            window.open(url, '_blank');
+            score += reward;
+            updateUI();
+            alert("Task completed! You earned " + reward + " coins.");
+        }
 
+        const coin = document.getElementById('coin-click');
         coin.addEventListener('touchstart', function(e) {
             e.preventDefault();
             if(energy >= 1) {
                 score++;
                 energy--;
                 updateUI();
-
                 this.style.transform = "scale(0.95)";
                 setTimeout(() => this.style.transform = "scale(1)", 50);
 
@@ -393,5 +445,4 @@
         });
     </script>
 </body>
-                    </html>
-    
+</html>
