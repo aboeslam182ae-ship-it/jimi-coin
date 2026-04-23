@@ -3,44 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Multi-Touch Pro</title>
+    <title>Jimi Multi-Touch Fixed</title>
     <style>
-        /* منع أي حركات افتراضية للمتصفح */
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            user-select: none; 
-            touch-action: none; /* هذا السطر يمنع المتصفح من التدخل تماماً */
-        }
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; user-select: none; touch-action: none; }
         body { background: #000; color: #fff; margin: 0; font-family: sans-serif; overflow: hidden; text-align: center; }
 
-        /* شاشة التحميل مصلحة العداد فوق الشريط */
-        #loader { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
+        /* التأكد من حذف شاشة التحميل تماماً بعد الانتهاء */
+        #loader { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 25%; }
         #loader-bg { position: absolute; inset: 0; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png') center/cover no-repeat; opacity: 0.8; z-index: -1; }
-        #pct { color: gold; font-size: 30px; font-weight: bold; margin-bottom: 10px; text-shadow: 2px 2px 5px #000; }
-        .bar-o { width: 220px; height: 12px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid gold; overflow: hidden; }
+        #pct { color: gold; font-size: 30px; font-weight: bold; margin-bottom: 10px; }
+        .bar-o { width: 220px; height: 12px; background: rgba(255,255,255,0.1); border-radius: 10px; border: 1px solid gold; overflow: hidden; }
         #bar-i { width: 0%; height: 100%; background: gold; }
 
         .page { display: none; height: 100vh; flex-direction: column; align-items: center; padding-top: 40px; }
         .active { display: flex !important; }
-        .score { font-size: 80px; color: gold; font-weight: bold; margin: 0; font-variant-numeric: tabular-nums; }
+        .score { font-size: 80px; color: gold; font-weight: bold; margin: 0; }
         
-        .coin-box { 
-            width: 280px; height: 280px; margin-top: 40px; border-radius: 50%; border: 4px solid gold; box-shadow: 0 0 25px gold;
+        /* جعل منطقة العملة هي الأعلى في الترتيب */
+        #tap-area { 
+            width: 280px; height: 280px; margin-top: 40px; border-radius: 50%; border: 4px solid gold;
             background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/112% no-repeat;
-            position: relative;
+            position: relative; z-index: 1000; /* رفعنا الترتيب هنا */
         }
 
         .en-ui { width: 85%; margin-top: 60px; }
         .en-bg { width: 100%; height: 14px; background: #1a1a1a; border-radius: 10px; border: 1px solid #333; overflow: hidden; }
         #en-f { width: 100%; height: 100%; background: #00d2ff; }
 
-        .nav { position: fixed; bottom: 35px; left: 15px; right: 15px; height: 80px; background: #0a0a0a; display: flex; z-index: 9999; border-radius: 20px; border: 1px solid #222; }
+        .nav { position: fixed; bottom: 35px; left: 15px; right: 15px; height: 80px; background: #0a0a0a; display: flex; z-index: 10001; border-radius: 20px; border: 1px solid #222; }
         .nav-i { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 12px; font-weight: bold; }
         .nav-i.on { color: gold; }
-        .nav-i i { font-size: 26px; margin-bottom: 2px; font-style: normal; }
 
-        .pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; animation: up 0.6s forwards; pointer-events: none; z-index: 1000; }
+        .pop { position: absolute; color: #00d2ff; font-size: 45px; font-weight: bold; animation: up 0.6s forwards; pointer-events: none; z-index: 10002; }
         @keyframes up { to { transform: translateY(-130px); opacity: 0; } }
     </style>
 </head>
@@ -55,7 +49,7 @@
     <div id="p-tap" class="page active">
         <div id="sc" class="score">0</div>
         <div style="color:#00d2ff; font-weight:bold">BRONZE LEVEL</div>
-        <div class="coin-box" id="tap-area"></div>
+        <div id="tap-area"></div>
         <div class="en-ui">
             <div style="display:flex; justify-content:space-between; font-size:13px; color:#aaa; margin-bottom:5px">
                 <span>⚡ ENERGY</span><span id="ev">2000 / 2000</span>
@@ -73,8 +67,8 @@
     </div>
 
     <div class="nav">
-        <div class="nav-i on" onclick="go('tap', this)"><i>💰</i>TAP</div>
-        <div class="nav-i" onclick="go('lead', this)"><i>🏆</i>LEADERS</div>
+        <div class="nav-i on" onclick="go('tap', this)">💰 TAP</div>
+        <div class="nav-i" onclick="go('lead', this)">🏆 LEADERS</div>
     </div>
 
     <script>
@@ -87,7 +81,14 @@
                 p += 5;
                 document.getElementById('bar-i').style.width = p + "%";
                 document.getElementById('pct').innerText = p + "%";
-                if(p >= 100) { clearInterval(itv); document.getElementById('loader').style.display='none'; upd(); }
+                if(p >= 100) { 
+                    clearInterval(itv); 
+                    // حذف العنصر تماماً من الـ HTML لضمان عدم حجب اللمس
+                    const ld = document.getElementById('loader');
+                    ld.style.opacity = '0';
+                    setTimeout(() => ld.remove(), 500); 
+                    upd(); 
+                }
             }, 30);
         }
 
@@ -107,30 +108,34 @@
 
         const area = document.getElementById('tap-area');
         
-        // الطريقة الأكثر صرامة لدعم اللمس المتعدد
-        area.addEventListener('touchstart', (event) => {
-            event.preventDefault(); // منع أي سلوك للمتصفح
+        // استخدام الطريقة الأكثر مباشرة لمعالجة كل لمسة
+        area.addEventListener('touchstart', (ev) => {
+            ev.preventDefault();
             
-            // معالجة كل الأصابع "الجديدة" التي لمست الشاشة الآن
-            Array.from(event.changedTouches).forEach(touch => {
-                if(e >= 1) {
-                    s++; e--;
-                    
-                    // تأثير +1 تحت كل إصبع
-                    let n = document.createElement('div');
-                    n.className = 'pop'; n.innerText = '+1';
-                    n.style.left = touch.pageX + 'px'; 
-                    n.style.top = touch.pageY + 'px';
-                    document.body.appendChild(n);
-                    setTimeout(() => n.remove(), 600);
-                }
-            });
+            // معالجة كل الأصابع التي لمست الشاشة في هذه اللحظة
+            for (let i = 0; i < ev.changedTouches.length; i++) {
+                if(e < 1) break;
+                s++; e--;
+                let touch = ev.changedTouches[i];
+                showPop(touch.pageX, touch.pageY);
+            }
             
             upd();
             localStorage.setItem('js_s', s);
             localStorage.setItem('js_e', e);
             if(navigator.vibrate) navigator.vibrate(10);
-        }, { passive: false }); // إجبار المتصفح على انتظار تنفيذ الكود قبل القيام بأي حركة
+            area.style.transform = "scale(0.95)";
+        }, { passive: false });
+
+        area.addEventListener('touchend', () => { area.style.transform = "scale(1)"; });
+
+        function showPop(x, y) {
+            let n = document.createElement('div');
+            n.className = 'pop'; n.innerText = '+1';
+            n.style.left = x + 'px'; n.style.top = y + 'px';
+            document.body.appendChild(n);
+            setTimeout(() => n.remove(), 600);
+        }
 
         setInterval(() => { if(e < 2000) { e = Math.min(2000, e + 1.5); upd(); } }, 1000);
     </script>
