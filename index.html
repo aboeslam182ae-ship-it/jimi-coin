@@ -3,353 +3,699 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin Ultimate Edition</title>
+    <title>
+        Jimi Coin Professional
+    </title>
     <style>
-        /* [SECTION 1: GLOBAL STYLES] */
-        * { 
-            box-sizing: border-box; 
-            -webkit-tap-highlight-color: transparent; 
-            user-select: none; 
-            margin: 0; 
-            padding: 0; 
+        /* GLOBAL SETTINGS */
+        * {
+            box-sizing: border-box;
+        }
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        * {
+            user-select: none;
+        }
+        * {
+            margin: 0;
+        }
+        * {
+            padding: 0;
         }
 
-        body { 
-            background-color: #000000; 
-            color: #ffffff; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            overflow: hidden; 
-            height: 100vh; 
+        body {
+            background-color: #000000;
+        }
+        body {
+            color: #ffffff;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            overflow: hidden;
+        }
+        body {
+            height: 100vh;
         }
 
-        /* [SECTION 2: LOADER SYSTEM] */
-        #loading-screen { 
-            position: fixed; 
-            inset: 0; 
-            background: #000; 
-            z-index: 10000; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
+        /* LOADING SCREEN SECTION */
+        #loading-screen {
+            position: fixed;
+        }
+        #loading-screen {
+            top: 0;
+        }
+        #loading-screen {
+            left: 0;
+        }
+        #loading-screen {
+            right: 0;
+        }
+        #loading-screen {
+            bottom: 0;
+        }
+        #loading-screen {
+            background-color: #000000;
+        }
+        #loading-screen {
+            z-index: 10000;
+        }
+        #loading-screen {
+            display: flex;
+        }
+        #loading-screen {
+            flex-direction: column;
+        }
+        #loading-screen {
+            align-items: center;
+        }
+        #loading-screen {
+            justify-content: flex-end;
+        }
+        #loading-screen {
+            padding-bottom: 100px;
         }
 
-        .loader-percentage { 
-            font-size: 50px; 
-            font-weight: 900; 
-            color: #FFD700; 
-            text-shadow: 0 0 20px rgba(255, 215, 0, 0.5); 
+        /* SPLASH BACKGROUND IMAGE */
+        #splash-image {
+            position: absolute;
+        }
+        #splash-image {
+            top: 0;
+        }
+        #splash-image {
+            left: 0;
+        }
+        #splash-image {
+            width: 100%;
+        }
+        #splash-image {
+            height: 100%;
+        }
+        #splash-image {
+            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/splash.png');
+        }
+        #splash-image {
+            background-size: cover;
+        }
+        #splash-image {
+            background-position: center;
+        }
+        #splash-image {
+            z-index: -1;
         }
 
-        .loader-bar-bg { 
-            width: 280px; 
-            height: 10px; 
-            background: #1a1a1a; 
-            border-radius: 10px; 
-            margin-top: 20px; 
-            border: 1px solid #333; 
-            overflow: hidden; 
+        /* LOADER TEXT & BAR */
+        .loader-text {
+            font-size: 55px;
+        }
+        .loader-text {
+            font-weight: 900;
+        }
+        .loader-text {
+            color: #FFD700;
+        }
+        .loader-text {
+            margin-bottom: 15px;
         }
 
-        #loader-bar-fill { 
-            width: 0%; 
-            height: 100%; 
-            background: linear-gradient(90deg, #FFD700, #FFA500); 
-            transition: width 0.1s; 
+        .loader-bar-container {
+            width: 260px;
+        }
+        .loader-bar-container {
+            height: 10px;
+        }
+        .loader-bar-container {
+            background-color: #1a1a1a;
+        }
+        .loader-bar-container {
+            border-radius: 20px;
+        }
+        .loader-bar-container {
+            border: 1px solid #333;
+        }
+        .loader-bar-container {
+            overflow: hidden;
         }
 
-        /* [SECTION 3: PAGE MANAGEMENT] */
-        .page-container { 
-            display: none; 
-            height: 100vh; 
-            flex-direction: column; 
-            align-items: center; 
-            padding: 60px 20px 120px 20px; 
-            overflow-y: auto; 
+        #loader-progress {
+            width: 0%;
+        }
+        #loader-progress {
+            height: 100%;
+        }
+        #loader-progress {
+            background-color: #FFD700;
+        }
+        #loader-progress {
+            transition: width 0.1s;
         }
 
-        .page-active { 
-            display: flex !important; 
+        /* PAGE MANAGEMENT */
+        .page {
+            display: none;
+        }
+        .page {
+            height: 100vh;
+        }
+        .page {
+            flex-direction: column;
+        }
+        .page {
+            align-items: center;
+        }
+        .page {
+            padding-top: 60px;
+        }
+        .page {
+            padding-bottom: 120px;
         }
 
-        /* [SECTION 4: MAIN TAP UI - FIXED IMAGE] */
-        .score-container { 
-            font-size: 65px; 
-            font-weight: 800; 
-            margin-bottom: 5px; 
+        .page-active {
+            display: flex !important;
         }
 
-        #rank-display { 
-            font-size: 16px; 
-            font-weight: bold; 
-            letter-spacing: 2px; 
-            margin-bottom: 10px; 
+        /* MAIN SCORE UI */
+        .user-balance {
+            font-size: 65px;
+        }
+        .user-balance {
+            font-weight: 800;
+        }
+        .user-balance {
+            color: #ffffff;
         }
 
-        .profit-header { 
-            color: #00ff00; 
-            font-size: 14px; 
-            font-weight: bold; 
-            margin-bottom: 30px; 
+        .level-text {
+            font-size: 16px;
+        }
+        .level-text {
+            font-weight: bold;
+        }
+        .level-text {
+            letter-spacing: 2px;
+        }
+        .level-text {
+            margin-top: 5px;
         }
 
-        #coin-trigger { 
-            width: 300px; 
-            height: 300px; 
-            border-radius: 50%; 
-            border: 8px solid #cd7f32; 
-            box-shadow: 0 0 60px rgba(205, 127, 50, 0.6);
+        .profit-info {
+            color: #00FF00;
+        }
+        .profit-info {
+            font-size: 14px;
+        }
+        .profit-info {
+            font-weight: bold;
+        }
+        .profit-info {
+            margin-top: 10px;
+        }
+        .profit-info {
+            margin-bottom: 40px;
+        }
+
+        /* MAIN COIN AREA - FIXED */
+        #main-coin {
+            width: 300px;
+        }
+        #main-coin {
+            height: 300px;
+        }
+        #main-coin {
+            border-radius: 50%;
+        }
+        #main-coin {
+            border: 8px solid #cd7f32;
+        }
+        #main-coin {
+            box-shadow: 0 0 60px rgba(205, 127, 50, 0.5);
+        }
+        #main-coin {
             background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
-            background-position: center; 
-            background-size: 82%; 
+        }
+        #main-coin {
+            background-size: 85%;
+        }
+        #main-coin {
+            background-position: center;
+        }
+        #main-coin {
             background-repeat: no-repeat;
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: relative; 
-            transition: transform 0.05s; 
-            cursor: pointer;
+        }
+        #main-coin {
+            position: relative;
+        }
+        #main-coin {
+            transition: transform 0.05s;
+        }
+        #main-coin {
+            display: flex;
+        }
+        #main-coin {
+            align-items: center;
+        }
+        #main-coin {
+            justify-content: center;
         }
 
-        /* [SECTION 5: ENERGY UI] */
-        .energy-wrapper { 
-            width: 90%; 
-            margin-top: 50px; 
+        /* ENERGY SYSTEM UI */
+        .energy-section {
+            width: 85%;
+        }
+        .energy-section {
+            margin-top: 50px;
         }
 
-        .energy-text-row { 
-            display: flex; 
-            justify-content: space-between; 
-            font-size: 13px; 
-            font-weight: bold; 
-            color: #ccc; 
-            margin-bottom: 8px; 
+        .energy-header {
+            display: flex;
+        }
+        .energy-header {
+            justify-content: space-between;
+        }
+        .energy-header {
+            margin-bottom: 10px;
         }
 
-        .energy-bar-outline { 
-            width: 100%; 
-            height: 16px; 
-            background: #111; 
-            border-radius: 20px; 
-            border: 1px solid #222; 
-            overflow: hidden; 
+        .energy-title {
+            font-size: 14px;
+        }
+        .energy-title {
+            color: #aaaaaa;
+        }
+        .energy-title {
+            font-weight: bold;
         }
 
-        #energy-progress { 
-            width: 100%; 
-            height: 100%; 
-            background: linear-gradient(90deg, #00c6ff, #0072ff); 
+        .energy-count {
+            font-size: 14px;
+        }
+        .energy-count {
+            color: #ffffff;
         }
 
-        /* [SECTION 6: TASKS PAGE UI - RESTORED] */
-        .task-list { width: 100%; margin-top: 20px; }
-        .task-item { 
-            background: #111; 
-            border-radius: 18px; 
-            padding: 20px; 
-            margin-bottom: 12px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            border: 1px solid #222; 
+        .energy-bar-bg {
+            width: 100%;
         }
-        .task-meta h4 { font-size: 16px; margin-bottom: 4px; }
-        .task-meta p { color: #FFD700; font-size: 14px; font-weight: bold; }
-        .task-action { 
-            background: #222; 
-            color: #888; 
-            padding: 10px 15px; 
-            border-radius: 10px; 
-            font-size: 12px; 
+        .energy-bar-bg {
+            height: 14px;
+        }
+        .energy-bar-bg {
+            background-color: #1a1a1a;
+        }
+        .energy-bar-bg {
+            border-radius: 20px;
+        }
+        .energy-bar-bg {
+            border: 1px solid #333;
+        }
+        .energy-bar-bg {
+            overflow: hidden;
         }
 
-        /* [SECTION 7: BOOST & TOP UI - RESTORED] */
-        .boost-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .boost-card { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; }
-        
-        .leaderboard-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        .leader-row { background: #111; border-bottom: 1px solid #222; }
-        .leader-row td { padding: 15px; font-size: 14px; }
-
-        /* [SECTION 8: BOTTOM NAVIGATION] */
-        .footer-nav { 
-            position: fixed; 
-            bottom: 25px; 
-            left: 20px; 
-            right: 20px; 
-            height: 85px; 
-            background: rgba(15, 15, 15, 0.98); 
-            display: flex; 
-            border-radius: 25px; 
-            border: 1px solid #222; 
-            box-shadow: 0 -10px 30px rgba(0,0,0,0.5); 
+        #energy-fill-status {
+            width: 100%;
+        }
+        #energy-fill-status {
+            height: 100%;
+        }
+        #energy-fill-status {
+            background: linear-gradient(90deg, #00d2ff, #3a7bd5);
         }
 
-        .nav-item { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            color: #666; 
-            transition: 0.3s; 
+        /* LIST ITEM STYLING (TASKS, TOP, BOOST) */
+        .card-item {
+            background-color: #111111;
+        }
+        .card-item {
+            width: 100%;
+        }
+        .card-item {
+            padding: 20px;
+        }
+        .card-item {
+            border-radius: 15px;
+        }
+        .card-item {
+            margin-bottom: 12px;
+        }
+        .card-item {
+            display: flex;
+        }
+        .card-item {
+            justify-content: space-between;
+        }
+        .card-item {
+            align-items: center;
+        }
+        .card-item {
+            border: 1px solid #222;
         }
 
-        .nav-item-active { color: #FFD700 !important; }
-        .nav-item i { font-size: 24px; margin-bottom: 4px; }
-        .nav-item span { font-size: 11px; font-weight: 800; }
+        .card-title {
+            font-size: 16px;
+        }
+        .card-title {
+            font-weight: bold;
+        }
+        .card-title {
+            margin-bottom: 4px;
+        }
 
-        /* Animations */
-        .plus-one { position: absolute; color: #FFD700; font-size: 45px; font-weight: 900; animation: rise 0.8s ease-out forwards; pointer-events: none; z-index: 50; }
-        @keyframes rise { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-200px); opacity: 0; } }
+        .card-reward {
+            font-size: 14px;
+        }
+        .card-reward {
+            color: #FFD700;
+        }
+        .card-reward {
+            font-weight: bold;
+        }
+
+        .card-button {
+            background-color: #222222;
+        }
+        .card-button {
+            padding: 10px 15px;
+        }
+        .card-button {
+            border-radius: 10px;
+        }
+        .card-button {
+            font-size: 12px;
+        }
+        .card-button {
+            color: #888888;
+        }
+
+        /* NAVIGATION BAR */
+        .bottom-nav {
+            position: fixed;
+        }
+        .bottom-nav {
+            bottom: 25px;
+        }
+        .bottom-nav {
+            left: 20px;
+        }
+        .bottom-nav {
+            right: 20px;
+        }
+        .bottom-nav {
+            height: 85px;
+        }
+        .bottom-nav {
+            background-color: #0f0f0f;
+        }
+        .bottom-nav {
+            display: flex;
+        }
+        .bottom-nav {
+            border-radius: 25px;
+        }
+        .bottom-nav {
+            border: 1px solid #222;
+        }
+        .bottom-nav {
+            z-index: 1000;
+        }
+
+        .nav-link {
+            flex: 1;
+        }
+        .nav-link {
+            display: flex;
+        }
+        .nav-link {
+            flex-direction: column;
+        }
+        .nav-link {
+            align-items: center;
+        }
+        .nav-link {
+            justify-content: center;
+        }
+        .nav-link {
+            color: #555555;
+        }
+
+        .nav-link-active {
+            color: #FFD700;
+        }
+
+        .nav-text {
+            font-size: 11px;
+        }
+        .nav-text {
+            font-weight: bold;
+        }
+        .nav-text {
+            margin-top: 4px;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+        }
+
+        /* TAP ANIMATION */
+        .tap-number {
+            position: absolute;
+        }
+        .tap-number {
+            color: #FFD700;
+        }
+        .tap-number {
+            font-size: 45px;
+        }
+        .tap-number {
+            font-weight: 900;
+        }
+        .tap-number {
+            pointer-events: none;
+        }
+        .tap-number {
+            animation: riseUp 0.8s ease-out forwards;
+        }
+
+        @keyframes riseUp {
+            0% {
+                transform: translateY(0);
+            }
+            0% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-180px);
+            }
+            100% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
-<body onload="bootSequence()">
+<body onload="initApp()">
 
     <div id="loading-screen">
-        <div class="loader-percentage" id="load-pct">0%</div>
-        <div class="loader-bar-bg"><div id="loader-bar-fill"></div></div>
+        <div id="splash-image"></div>
+        <div class="loader-text" id="percent-display">
+            0%
+        </div>
+        <div class="loader-bar-container">
+            <div id="loader-progress"></div>
+        </div>
     </div>
 
-    <div id="p-tap" class="page-container page-active">
-        <div class="score-container" id="total-balance">0</div>
-        <div id="rank-display">BRONZE LEVEL</div>
-        <div class="profit-header">Profit per hour: +500</div>
-        <div id="coin-trigger"></div>
-        <div class="energy-wrapper">
-            <div class="energy-text-row">
-                <span>⚡ ENERGY</span>
-                <span id="energy-status">2000 / 2000</span>
+    <div id="page-tap" class="page page-active">
+        <div class="user-balance" id="main-balance">
+            0
+        </div>
+        <div class="level-text" id="level-name">
+            BRONZE LEVEL
+        </div>
+        <div class="profit-info">
+            Profit per hour: +500
+        </div>
+        <div id="main-coin"></div>
+        <div class="energy-section">
+            <div class="energy-header">
+                <div class="energy-title">
+                    ⚡ ENERGY
+                </div>
+                <div class="energy-count" id="energy-status">
+                    2000 / 2000
+                </div>
             </div>
-            <div class="energy-bar-outline">
-                <div id="energy-progress"></div>
+            <div class="energy-bar-bg">
+                <div id="energy-fill-status"></div>
             </div>
         </div>
     </div>
 
-    <div id="p-tasks" class="page-container">
-        <h2 style="font-size: 28px; color: #FFD700; margin-bottom: 20px;">TASKS LIST</h2>
-        <div class="task-list">
-            <div class="task-item">
-                <div class="task-meta"><h4>Watch YouTube</h4><p>+25,000</p></div>
-                <div class="task-action">Wait 59m</div>
+    <div id="page-tasks" class="page">
+        <h2 style="margin-bottom: 30px; color: #FFD700;">
+            TASKS LIST
+        </h2>
+        <div class="card-item">
+            <div class="card-info">
+                <div class="card-title">Subscribe YouTube</div>
+                <div class="card-reward">+50,000</div>
             </div>
-            <div class="task-item">
-                <div class="task-meta"><h4>Join Channel</h4><p>+10,000</p></div>
-                <div class="task-action">CLAIM</div>
+            <div class="card-button">GO</div>
+        </div>
+        <div class="card-item">
+            <div class="card-info">
+                <div class="card-title">Join Telegram</div>
+                <div class="card-reward">+20,000</div>
             </div>
-            <div class="task-item">
-                <div class="task-meta"><h4>Follow X</h4><p>+5,000</p></div>
-                <div class="task-action">DONE</div>
-            </div>
+            <div class="card-button">CLAIM</div>
         </div>
     </div>
 
-    <div id="p-boost" class="page-container">
-        <h2 style="font-size: 28px; color: #00c6ff; margin-bottom: 20px;">BOOSTERS</h2>
-        <div class="boost-grid">
-            <div class="boost-card"><h3>Multi-Tap</h3><p>Level 1</p></div>
-            <div class="boost-card"><h3>Energy Limit</h3><p>Level 2</p></div>
-            <div class="boost-card"><h3>Recharge</h3><p>Level 1</p></div>
-            <div class="boost-card"><h3>Auto-Bot</h3><p>Locked</p></div>
+    <div id="page-boost" class="page">
+        <h2 style="margin-bottom: 30px; color: #00d2ff;">
+            BOOSTERS
+        </h2>
+        <div class="card-item">
+            <div class="card-info">
+                <div class="card-title">Multi-Tap</div>
+                <div class="card-reward">Level 1</div>
+            </div>
+            <div class="card-button">UPGRADE</div>
         </div>
     </div>
 
-    <div id="p-lead" class="page-container">
-        <h2 style="font-size: 28px; color: #FFA500; margin-bottom: 20px;">TOP PLAYERS</h2>
-        <table class="leaderboard-table">
-            <tr class="leader-row"><td>1. Muhammad</td><td>1,500,400</td></tr>
-            <tr class="leader-row"><td>2. Alex</td><td>1,200,000</td></tr>
-            <tr class="leader-row"><td>3. Sarah</td><td>900,500</td></tr>
-        </table>
+    <div id="page-top" class="page">
+        <h2 style="margin-bottom: 30px; color: #FFA500;">
+            TOP PLAYERS
+        </h2>
+        <div class="card-item">
+            <div class="card-title">1. Muhammad Koca</div>
+            <div class="card-reward">2,500,000</div>
+        </div>
+        <div class="card-item">
+            <div class="card-title">2. Alex Pro</div>
+            <div class="card-reward">1,800,000</div>
+        </div>
     </div>
 
-    <div class="footer-nav">
-        <div class="nav-item nav-item-active" onclick="navigateTo('tap', this)"><i>💰</i><span>TAP</span></div>
-        <div class="nav-item" onclick="navigateTo('tasks', this)"><i>📜</i><span>TASKS</span></div>
-        <div class="nav-item" onclick="navigateTo('boost', this)"><i>🚀</i><span>BOOST</span></div>
-        <div class="nav-item" onclick="navigateTo('lead', this)"><i>🏆</i><span>TOP</span></div>
+    <div class="bottom-nav">
+        <div class="nav-link nav-link-active" onclick="changeTab('tap', this)">
+            <div class="nav-icon">💰</div>
+            <div class="nav-text">TAP</div>
+        </div>
+        <div class="nav-link" onclick="changeTab('tasks', this)">
+            <div class="nav-icon">📜</div>
+            <div class="nav-text">TASKS</div>
+        </div>
+        <div class="nav-link" onclick="changeTab('boost', this)">
+            <div class="nav-icon">🚀</div>
+            <div class="nav-text">BOOST</div>
+        </div>
+        <div class="nav-link" onclick="changeTab('top', this)">
+            <div class="nav-icon">🏆</div>
+            <div class="nav-text">TOP</div>
+        </div>
     </div>
 
     <script>
-        /* [JS SECTION: CORE LOGIC] */
-        let bal = parseInt(localStorage.getItem('j_bal')) || 0;
-        let nrg = parseFloat(localStorage.getItem('j_nrg')) || 2000;
-        const max_nrg = 2000;
+        /* APP STATE VARIABLES */
+        let score = parseInt(localStorage.getItem('jimi_score')) || 0;
+        let power = parseFloat(localStorage.getItem('jimi_power')) || 2000;
+        const max_power = 2000;
 
-        const rank_tiers = [
-            { title: "BRONZE", min: 0, hex: "#cd7f32" },
-            { title: "SILVER", min: 5000, hex: "#C0C0C0" },
-            { title: "GOLD", min: 25000, hex: "#FFD700" }
+        /* LEVEL CONFIGURATION */
+        const rank_data = [
+            { id: "BRONZE", limit: 0, hex: "#cd7f32" },
+            { id: "SILVER", limit: 5000, hex: "#C0C0C0" },
+            { id: "GOLD", limit: 25000, hex: "#FFD700" }
         ];
 
-        function bootSequence() {
-            let p = 0;
-            let loader = setInterval(() => {
-                p += 2;
-                document.getElementById('loader-bar-fill').style.width = p + "%";
-                document.getElementById('load-pct').innerText = p + "%";
-                if(p >= 100) { 
-                    clearInterval(loader); 
-                    document.getElementById('loading-screen').style.display = 'none'; 
-                    refreshUI();
+        /* APP INITIALIZATION */
+        function initApp() {
+            let load_val = 0;
+            let load_timer = setInterval(function() {
+                load_val = load_val + 2;
+                document.getElementById('loader-progress').style.width = load_val + "%";
+                document.getElementById('percent-display').innerText = load_val + "%";
+                if (load_val >= 100) {
+                    clearInterval(load_timer);
+                    document.getElementById('loading-screen').style.display = 'none';
+                    refreshDisplay();
                 }
-            }, 35);
-            
-            // Auto-Save System
-            setInterval(() => {
-                localStorage.setItem('j_bal', bal);
-                localStorage.setItem('j_nrg', nrg);
-                if(nrg < max_nrg) nrg = Math.min(max_nrg, nrg + 1.5);
-                refreshUI();
+            }, 30);
+
+            /* DATA SYNC LOOP */
+            setInterval(function() {
+                localStorage.setItem('jimi_score', score);
+                localStorage.setItem('jimi_power', power);
+                if (power < max_power) {
+                    power = Math.min(max_power, power + 1.2);
+                }
+                refreshDisplay();
             }, 1000);
         }
 
-        function refreshUI() {
-            document.getElementById('total-balance').innerText = Math.floor(bal).toLocaleString();
-            document.getElementById('energy-status').innerText = Math.floor(nrg) + " / 2000";
-            document.getElementById('energy-progress').style.width = (nrg/20) + "%";
+        /* UI REFRESH LOGIC */
+        function refreshDisplay() {
+            document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
+            document.getElementById('energy-status').innerText = Math.floor(power) + " / 2000";
+            document.getElementById('energy-fill-status').style.width = (power / 20) + "%";
 
-            // Dynamic Rank & Visual System
-            let current = rank_tiers[0];
-            rank_tiers.forEach(r => { if(bal >= r.min) current = r; });
+            let active_rank = rank_data[0];
+            rank_data.forEach(function(r) {
+                if (score >= r.limit) {
+                    active_rank = r;
+                }
+            });
 
-            const rLabel = document.getElementById('rank-display');
-            const cArea = document.getElementById('coin-trigger');
-            
-            rLabel.innerText = current.title + " LEVEL";
-            rLabel.style.color = current.hex;
-            cArea.style.borderColor = current.hex;
-            cArea.style.boxShadow = "0 0 60px " + current.hex;
+            const lbl = document.getElementById('level-name');
+            const box = document.getElementById('main-coin');
+            lbl.innerText = active_rank.id + " LEVEL";
+            lbl.style.color = active_rank.hex;
+            box.style.borderColor = active_rank.hex;
+            box.style.boxShadow = "0 0 60px " + active_rank.hex;
         }
 
-        function navigateTo(id, el) {
-            document.querySelectorAll('.page-container').forEach(p => p.classList.remove('page-active'));
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-item-active'));
-            
-            document.getElementById('p-' + id).classList.add('page-active');
-            el.classList.add('nav-item-active');
+        /* TAB NAVIGATION SYSTEM */
+        function changeTab(tab_id, element) {
+            document.querySelectorAll('.page').forEach(function(p) {
+                p.classList.remove('page-active');
+            });
+            document.querySelectorAll('.nav-link').forEach(function(n) {
+                n.classList.remove('nav-link-active');
+            });
+            document.getElementById('page-' + tab_id).classList.add('page-active');
+            element.classList.add('nav-link-active');
         }
 
-        // Tapping Mechanism
-        document.getElementById('coin-trigger').addEventListener('touchstart', (e) => {
-            e.preventDefault();
-            if(nrg >= 1) {
-                bal += 1; nrg -= 1; refreshUI();
-                
-                let t = e.changedTouches[0];
-                let f = document.createElement('div');
-                f.className = 'plus-one';
-                f.innerText = '+1';
-                f.style.left = t.pageX + 'px';
-                f.style.top = t.pageY + 'px';
-                document.body.appendChild(f);
-                setTimeout(() => f.remove(), 700);
+        /* CLICK / TAP EVENT */
+        const coin_btn = document.getElementById('main-coin');
+        coin_btn.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            if (power >= 1) {
+                score = score + 1;
+                power = power - 1;
+                refreshDisplay();
+
+                let touch = event.touches[0];
+                let ghost = document.createElement('div');
+                ghost.className = 'tap-number';
+                ghost.innerText = '+1';
+                ghost.style.left = touch.pageX + 'px';
+                ghost.style.top = touch.pageY + 'px';
+                document.body.appendChild(ghost);
+                setTimeout(function() {
+                    ghost.remove();
+                }, 700);
             }
-            e.target.style.transform = "scale(0.94)";
-            setTimeout(() => e.target.style.transform = "scale(1)", 50);
-        }, {passive: false});
-
+            event.target.style.transform = "scale(0.94)";
+            setTimeout(function() {
+                event.target.style.transform = "scale(1)";
+            }, 50);
+        });
     </script>
 </body>
-</html>
+            </html>
+            
