@@ -22,7 +22,7 @@
             height: 100vh;
         }
 
-        /* --- LOADER --- */
+        /* --- LOADER SCREEN --- */
         #loader-screen {
             position: fixed;
             inset: 0;
@@ -80,10 +80,11 @@
             margin-top: 20px;
         }
 
-        .level-text {
-            color: #FFD700;
+        #level-label {
             font-size: 14px;
             margin-bottom: 40px;
+            font-weight: bold;
+            transition: color 0.3s;
         }
 
         #coin-container {
@@ -104,7 +105,7 @@
             background-size: cover;
             background-position: center;
             z-index: 5;
-            transition: transform 0.05s;
+            transition: transform 0.05s, border 0.5s;
         }
 
         .plus-one {
@@ -206,7 +207,7 @@
             cursor: pointer;
         }
 
-        /* --- LEADERBOARD PAGE STYLES --- */
+        /* --- TOP PLAYERS STYLES --- */
         .list-container {
             width: 90%;
             display: flex;
@@ -215,29 +216,12 @@
         }
 
         .player-card {
-            background-color: #111111;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            background-color: #111;
             padding: 15px;
             border-radius: 12px;
-            border: 1px solid #222;
-        }
-
-        .player-info {
             display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .rank-number {
-            font-weight: 900;
-            font-size: 18px;
-            color: #555;
-        }
-
-        .top-one {
-            color: #FFD700;
+            justify-content: space-between;
+            border: 1px solid #222;
         }
 
         /* --- NAVIGATION BAR --- */
@@ -290,7 +274,7 @@
 
     <div id="tab-tap" class="page page-active">
         <div id="main-balance">0</div>
-        <div class="level-text">BRONZE LEVEL</div>
+        <div id="level-label">BRONZE LEVEL</div>
         <div id="coin-container">
             <div id="coin-click"></div>
         </div>
@@ -317,42 +301,29 @@
             </div>
             <div class="task-item">
                 <div class="task-info">
-                    <span class="task-name">Follow X (Twitter)</span>
+                    <span class="task-name">Follow X</span>
                     <span class="task-reward">+20,000 COINS</span>
                 </div>
-                <div class="task-btn" onclick="completeTask(20000, 'https://twitter.com/yourprofile')">GO</div>
-            </div>
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-name">Watch YouTube Video</span>
-                    <span class="task-reward">+30,000 COINS</span>
-                </div>
-                <div class="task-btn" onclick="completeTask(30000, 'https://youtube.com')">GO</div>
+                <div class="task-btn" onclick="completeTask(20000, 'https://twitter.com/')">GO</div>
             </div>
         </div>
     </div>
 
     <div id="tab-boost" class="page">
         <div class="page-title">BOOSTERS</div>
-        <h2 style="color:#555">Coming Soon</h2>
+        <h2 style="color:#555; margin-top:50px;">Coming Soon</h2>
     </div>
 
     <div id="tab-top" class="page">
         <div class="page-title">TOP PLAYERS</div>
         <div class="list-container">
             <div class="player-card">
-                <div class="player-info">
-                    <span class="rank-number top-one">1</span>
-                    <span class="player-name">Muhammad Koca</span>
-                </div>
-                <span class="player-score">2,500,000</span>
+                <span>1. Muhammad Koca</span>
+                <span style="color:#FFD700">2,500,000</span>
             </div>
             <div class="player-card">
-                <div class="player-info">
-                    <span class="rank-number">2</span>
-                    <span class="player-name">Alex Pro</span>
-                </div>
-                <span class="player-score">1,800,000</span>
+                <span>2. Alex Pro</span>
+                <span style="color:#FFD700">1,800,000</span>
             </div>
         </div>
     </div>
@@ -391,7 +362,7 @@
                     document.getElementById('loader-screen').style.display = 'none';
                     updateUI();
                 }
-            }, 30);
+            }, 25);
 
             setInterval(() => {
                 if(energy < 2000) {
@@ -405,6 +376,28 @@
             document.getElementById('main-balance').innerText = score.toLocaleString();
             document.getElementById('energy-text').innerText = Math.floor(energy) + " / 2000";
             document.getElementById('energy-fill').style.width = (energy / 20) + "%";
+            
+            const levelLabel = document.getElementById('level-label');
+            const coinBtn = document.getElementById('coin-click');
+
+            if (score >= 1000000) {
+                levelLabel.innerText = "DIAMOND LEVEL";
+                levelLabel.style.color = "#b9f2ff";
+                coinBtn.style.borderColor = "#b9f2ff";
+            } else if (score >= 500000) {
+                levelLabel.innerText = "GOLD LEVEL";
+                levelLabel.style.color = "#FFD700";
+                coinBtn.style.borderColor = "#FFD700";
+            } else if (score >= 50000) {
+                levelLabel.innerText = "SILVER LEVEL";
+                levelLabel.style.color = "#C0C0C0";
+                coinBtn.style.borderColor = "#C0C0C0";
+            } else {
+                levelLabel.innerText = "BRONZE LEVEL";
+                levelLabel.style.color = "#cd7f32";
+                coinBtn.style.borderColor = "#cd7f32";
+            }
+
             localStorage.setItem('j_score', score);
             localStorage.setItem('j_energy', energy);
         }
@@ -420,7 +413,6 @@
             window.open(url, '_blank');
             score += reward;
             updateUI();
-            alert("Task completed! You earned " + reward + " coins.");
         }
 
         const coin = document.getElementById('coin-click');
