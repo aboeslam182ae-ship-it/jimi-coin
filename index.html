@@ -88,16 +88,7 @@
             text-transform: uppercase; 
         }
 
-        /* Click Area */
-        #tap-area { 
-            width: 280px; 
-            height: 280px; 
-            border-radius: 50%; 
-            border: 6px solid gold; 
-            box-shadow: 0 0 50px gold;
-            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/115% no-repeat;
-            position: relative; 
-            transition: transform 0.05s;
+        
         }
 
         /* Lists & Task Cards */
@@ -119,7 +110,22 @@
 
         .card-data { 
             text-align: left; 
+        #tap-area { 
+    width: 280px; 
+    height: 280px; 
+    border-radius: 50%; 
+    border: 6px solid #cd7f32; /* اللون البرونزي الافتراضي */
+    box-shadow: 0 0 50px #cd7f32;
+    background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+    background-position: center;
+    background-size: 110%;
+    background-repeat: no-repeat;
+    background-color: #111;
+    position: relative; 
+    transition: transform 0.05s, border-color 0.3s, box-shadow 0.3s;
         }
+        
+    }
 
         .card-title { 
             font-weight: bold; 
@@ -310,11 +316,11 @@
         const maxEnergy = 2000;
 
         const levelChart = [
-            { name: "Bronze", min: 0, color: "#00d2ff" },
-            { name: "Silver", min: 5000, color: "#C0C0C0" },
-            { name: "Gold", min: 25000, color: "#FFD700" },
-            { name: "Legendary", min: 1000000, color: "#FF4500" }
-        ];
+    { name: "Bronze", min: 0, color: "#cd7f32" },       /* برونزي */
+    { name: "Silver", min: 5000, color: "#C0C0C0" },    /* فضي */
+    { name: "Gold", min: 25000, color: "#FFD700" },     /* ذهبي */
+    { name: "Legendary", min: 1000000, color: "#FF4500" }
+];
 
         function initializeApp() {
             let loadPercent = 0;
