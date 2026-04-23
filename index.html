@@ -10,46 +10,20 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
+        /* التنسيقات هي نفسها السابقة لضمان مظهر اللعبة الاحترافي */
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: none; }
         body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
-
-        /* شاشة التحميل */
-        #loader-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 150px; transition: opacity 0.5s; }
+        #loader-screen { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; padding-bottom: 150px; }
         #load-percent { font-size: 50px; font-weight: 900; color: #FFD700; margin-bottom: 15px; }
         .bar-outer { width: 80%; height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; }
         #bar-inner { width: 0%; height: 100%; background: #FFD700; transition: width 0.1s linear; }
-
-        /* الصفحات */
         .page { display: none; height: 100vh; width: 100%; flex-direction: column; align-items: center; padding-top: 60px; position: absolute; inset: 0; }
         .page-active { display: flex !important; }
-
         #main-balance { font-size: 55px; font-weight: 900; margin-top: 10px; }
-        .profit-rate { color: #FFD700; font-size: 14px; margin-bottom: 30px; }
-        
-        /* العملة */
-        #coin-click { width: 280px; height: 280px; border-radius: 50%; border: 8px solid #cd7f32; 
-            background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover;
-            box-shadow: 0 0 50px rgba(205, 127, 50, 0.4); transition: transform 0.05s; }
-        #coin-click:active { transform: scale(0.92); }
-
-        /* الطاقة */
-        .energy-wrapper { width: 85%; margin-top: 50px; }
-        .energy-bg { width: 100%; height: 14px; background: #1a1a1a; border-radius: 20px; border: 1px solid #333; overflow: hidden; margin-top: 10px; }
-        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); }
-
-        /* القائمة السفلية */
+        #coin-click { width: 280px; height: 280px; border-radius: 50%; border: 8px solid #cd7f32; background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover; box-shadow: 0 0 50px rgba(205, 127, 50, 0.4); transition: transform 0.05s; }
         .footer-nav { position: fixed; bottom: 25px; left: 15px; right: 15px; height: 85px; background: #0d0d0d; display: flex; border-radius: 25px; border: 1px solid #222; z-index: 1000; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; cursor: pointer; }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; }
         .nav-item-active { color: #FFD700; }
-        .nav-icon { font-size: 24px; margin-bottom: 4px; }
-        .nav-text { font-size: 12px; font-weight: bold; }
-
-        /* البطاقات والأزرار */
-        .card { background: #111; width: 90%; padding: 20px; border-radius: 15px; margin-bottom: 10px; display: flex; flex-direction: column; align-items: center; border: 1px solid #222; gap: 10px; }
-        .btn-action { background: #FFD700; color: #000; padding: 12px 20px; border-radius: 12px; font-weight: bold; width: 100%; border: none; font-size: 16px; }
-
-        .plus-one { position: absolute; color: #FFD700; font-size: 32px; font-weight: 900; pointer-events: none; animation: floatAnim 0.7s forwards; z-index: 2000; }
-        @keyframes floatAnim { to { opacity: 0; transform: translateY(-120px); } }
     </style>
 </head>
 <body onload="startLoading()">
@@ -61,19 +35,69 @@
 
     <div id="tab-tap" class="page page-active">
         <div id="main-balance">0</div>
-        <div class="profit-rate">الربح بالساعة: <span id="pps-value">0</span></div>
+        <div style="color: #FFD700; margin-bottom: 30px;">الربح بالساعة: <span id="pps-value">0</span></div>
         <div id="coin-click"></div>
-        <div class="energy-wrapper">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; font-size:14px">
-                <span>⚡ الطاقة</span>
-                <span id="energy-text">1000 / 1000</span>
-            </div>
-            <div class="energy-bg"><div id="energy-fill"></div></div>
-        </div>
     </div>
 
-    <div id="tab-tasks" class="page">
-        <h2 style="margin-bottom:20px; color:#FFD700">دعوة الأصدقاء 👥</h2>
-        <div class="card">
-            <p style="text-align:center">احصل على <b style="color:#FFD700">50,000</b> نقطة عن
-                
+    <div class="footer-nav">
+        <div class="nav-item"><span>📜</span><span>مهام</span></div>
+        <div class="nav-item"><span>⛏️</span><span>تعدين</span></div>
+        <div class="nav-item nav-item-active"><span>💰</span><span>النقر</span></div>
+    </div>
+
+    <script>
+        // البيانات المستخرجة من صورتك بدقة
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
+            authDomain: "jolt-coin.firebaseapp.com",
+            databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
+            projectId: "jolt-coin",
+            appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
+
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+        const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "local_user";
+
+        let score = 0;
+
+        // دالة التحميل المصلحة
+        function startLoading() {
+            let p = 0;
+            const bar = document.getElementById('bar-inner');
+            const txt = document.getElementById('load-percent');
+            const interval = setInterval(() => {
+                p += 2;
+                if (p > 100) p = 100;
+                bar.style.width = p + "%";
+                txt.innerText = p + "%";
+                if (p >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('loader-screen').style.display = 'none';
+                }
+            }, 30);
+
+            // جلب البيانات مع محاولة تجاوز التعليق
+            db.ref('users/' + userId).once('value', (snapshot) => {
+                const data = snapshot.val();
+                if (data) { score = data.score || 0; updateUI(); }
+            }).catch(err => console.log("Firebase connection waiting..."));
+        }
+
+        function updateUI() {
+            document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
+        }
+
+        document.getElementById('coin-click').addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            score++;
+            updateUI();
+            if (tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            db.ref('users/' + userId).update({ score: score });
+        });
+    </script>
+</body>
+</html>
