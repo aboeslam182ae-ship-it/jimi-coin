@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - English Edition</title>
+    <title>Jimi Coin Official</title>
     <style>
-        /* Global Styles */
+        /* Global & Reset Styles */
         * { 
             box-sizing: border-box; 
             -webkit-tap-highlight-color: transparent; 
@@ -17,12 +17,12 @@
             background: #000; 
             color: #fff; 
             margin: 0; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            font-family: 'Arial', sans-serif; 
             overflow: hidden; 
             text-align: center; 
         }
 
-        /* Loader Styles (Reflecting 44% Visual) */
+        /* Loader - Fixed Image Loading Issue */
         #loader { 
             position: fixed; 
             inset: 0; 
@@ -37,9 +37,9 @@
 
         #pct { 
             color: gold; 
-            font-size: 40px; 
+            font-size: 42px; 
             font-weight: bold; 
-            margin-bottom: 15px; 
+            margin-bottom: 10px; 
         }
 
         .bar-o { 
@@ -57,14 +57,14 @@
             background: gold; 
         }
 
-        /* Page System */
+        /* Page Management */
         .page { 
             display: none; 
             height: 100vh; 
             flex-direction: column; 
             align-items: center; 
-            padding-top: 60px; 
-            padding-bottom: 130px; 
+            padding-top: 50px; 
+            padding-bottom: 120px; 
             overflow-y: auto; 
         }
 
@@ -73,105 +73,47 @@
         }
 
         .score { 
-            font-size: 75px; 
-            color: gold; 
+            font-size: 72px; 
+            color: #fff; 
             font-weight: bold; 
             margin-bottom: 5px; 
-            text-shadow: 0 0 20px rgba(255,215,0,0.6); 
         }
 
         #level-label { 
             font-weight: 900; 
-            letter-spacing: 2px; 
-            font-size: 16px; 
-            margin-bottom: 30px; 
-            text-transform: uppercase; 
+            font-size: 14px; 
+            margin-bottom: 25px; 
+            letter-spacing: 1px;
         }
 
-        
-        }
-
-        /* Lists & Task Cards */
-        .card-list { 
-            width: 90%; 
-            margin-top: 20px; 
-        }
-
-        .card-item { 
-            background: #0f0f0f; 
-            border: 1px solid #1a1a1a; 
-            border-radius: 20px; 
-            padding: 20px; 
-            margin-bottom: 15px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-        }
-
-        .card-data { 
-            text-align: left; 
+        /* Coin Area - Fixed Image Appearance */
         #tap-area { 
-    width: 280px; 
-    height: 280px; 
-    border-radius: 50%; 
-    border: 6px solid #cd7f32; /* اللون البرونزي الافتراضي */
-    box-shadow: 0 0 50px #cd7f32;
-    background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
-    background-position: center;
-    background-size: 110%;
-    background-repeat: no-repeat;
-    background-color: #111;
-    position: relative; 
-    transition: transform 0.05s, border-color 0.3s, box-shadow 0.3s;
-        }
-        
-    }
-
-        .card-title { 
-            font-weight: bold; 
-            font-size: 18px; 
+            width: 280px; 
+            height: 280px; 
+            border-radius: 50%; 
+            border: 6px solid #cd7f32; 
+            box-shadow: 0 0 50px #cd7f32;
+            background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+            background-position: center;
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            position: relative; 
+            transition: transform 0.05s, border-color 0.3s, box-shadow 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
-        .card-sub { 
-            color: gold; 
-            font-size: 13px; 
-            margin-top: 5px; 
-        }
-
-        .card-action { 
-            background: gold; 
-            color: #000; 
-            padding: 12px 20px; 
-            border-radius: 14px; 
-            font-weight: 900; 
-            cursor: pointer; 
-            font-size: 13px; 
-            text-decoration: none; 
-            min-width: 100px; 
-            text-align: center; 
-        }
-
-        .card-checking { 
-            background: #333 !important; 
-            color: #aaa !important; 
-            pointer-events: none; 
-        }
-
-        .card-done { 
-            background: #111 !important; 
-            color: #444 !important; 
-            pointer-events: none; 
-        }
-
-        /* Energy & Navigation */
+        /* Energy Section */
         .energy-box { 
-            width: 85%; 
-            margin-top: 50px; 
+            width: 80%; 
+            margin-top: 40px; 
         }
 
         .energy-bar-bg { 
             width: 100%; 
-            height: 16px; 
+            height: 14px; 
             background: #151515; 
             border-radius: 30px; 
             overflow: hidden; 
@@ -184,17 +126,16 @@
             background: linear-gradient(90deg, #00d2ff, #3a7bd5); 
         }
 
+        /* Navigation Bar */
         .nav-bar { 
             position: fixed; 
-            bottom: 30px; 
+            bottom: 20px; 
             left: 15px; 
             right: 15px; 
-            height: 90px; 
-            background: rgba(10,10,10,0.98); 
-            backdrop-filter: blur(15px); 
+            height: 85px; 
+            background: rgba(15,15,15,0.95); 
             display: flex; 
-            z-index: 1000; 
-            border-radius: 30px; 
+            border-radius: 25px; 
             border: 1px solid #222; 
         }
 
@@ -205,8 +146,8 @@
             align-items: center; 
             justify-content: center; 
             color: #555; 
-            font-size: 11px; 
-            font-weight: 800; 
+            font-size: 10px; 
+            font-weight: bold; 
         }
 
         .nav-btn.active-nav { 
@@ -214,26 +155,27 @@
         }
 
         .nav-icon { 
-            font-size: 24px; 
-            margin-bottom: 5px; 
+            font-size: 22px; 
+            margin-bottom: 4px; 
         }
 
+        /* Pop-up Animation */
         .tap-pop { 
             position: absolute; 
-            color: #00d2ff; 
-            font-size: 48px; 
-            font-weight: 900; 
-            animation: floatUp 0.8s forwards; 
+            color: gold; 
+            font-size: 40px; 
+            font-weight: bold; 
+            animation: floatUp 0.7s forwards; 
             pointer-events: none; 
         }
 
         @keyframes floatUp { 
             0% { transform: translateY(0); opacity: 1; } 
-            100% { transform: translateY(-180px); opacity: 0; } 
+            100% { transform: translateY(-150px); opacity: 0; } 
         }
     </style>
 </head>
-<body onload="initializeApp()">
+<body onload="startLoading()">
 
     <div id="loader">
         <div id="pct">0%</div>
@@ -245,195 +187,112 @@
         <div id="level-label">BRONZE LEVEL</div>
         <div id="tap-area"></div>
         <div class="energy-box">
-            <div style="display:flex; justify-content:space-between; font-size:13px; color:#888; margin-bottom:8px">
+            <div style="display:flex; justify-content:space-between; font-size:12px; color:#888; margin-bottom:5px">
                 <span>⚡ ENERGY</span><span id="energy-val">2000 / 2000</span>
             </div>
             <div class="energy-bar-bg"><div id="energy-fill"></div></div>
         </div>
     </div>
 
-    <div id="page-tasks" class="page">
-        <h2 style="color:gold;">TASKS</h2>
-        <div class="card-list">
-            <div class="card-item">
-                <div class="card-data">
-                    <div class="card-title">Join YouTube</div>
-                    <div class="card-sub">+15,000 Coins</div>
-                </div>
-                <a href="https://youtube.com" target="_blank" id="btn-t1" class="card-action" onclick="startVerification('t1', 15000, 3600)">GO</a>
-            </div>
-            <div class="card-item">
-                <div class="card-data">
-                    <div class="card-title">Join Telegram</div>
-                    <div class="card-sub">+10,000 Coins</div>
-                </div>
-                <a href="https://t.me" target="_blank" id="btn-t2" class="card-action" onclick="startVerification('t2', 10000, 3600)">GO</a>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-boost" class="page">
-        <h2 style="color:gold;">BOOSTS</h2>
-        <div class="card-list">
-            <div class="card-item">
-                <div class="card-data">
-                    <div class="card-title">Multi-Tap</div>
-                    <div class="card-sub">+1 per click | 5k Cost</div>
-                </div>
-                <div class="card-action" onclick="upgradeTap(5000)">BUY</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="page-lead" class="page">
-        <h2 style="color:gold">TOP PLAYERS</h2>
-        <div style="width:90%; background:#0a0a0a; padding:25px; border-radius:25px; border:1px solid #1a1a1a">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; color:gold; font-size:22px">
-                <span>YOU</span><span id="top-my-score">0</span>
-            </div>
-        </div>
-    </div>
-
     <div class="nav-bar">
-        <div class="nav-btn active-nav" onclick="switchPage('tap', this)">
-            <span class="nav-icon">💰</span>TAP
-        </div>
-        <div class="nav-btn" onclick="switchPage('tasks', this)">
-            <span class="nav-icon">📜</span>TASKS
-        </div>
-        <div class="nav-btn" onclick="switchPage('boost', this)">
-            <span class="nav-icon">🚀</span>BOOST
-        </div>
-        <div class="nav-btn" onclick="switchPage('lead', this)">
-            <span class="nav-icon">🏆</span>TOP
-        </div>
+        <div class="nav-btn active-nav" onclick="switchPage('tap', this)"><span class="nav-icon">💰</span>TAP</div>
+        <div class="nav-btn"><span class="nav-icon">📜</span>TASKS</div>
+        <div class="nav-btn"><span class="nav-icon">🚀</span>BOOST</div>
+        <div class="nav-btn"><span class="nav-icon">🏆</span>TOP</div>
     </div>
 
     <script>
-        let balance = parseInt(localStorage.getItem('user_bal')) || 0;
-        let energy = parseFloat(localStorage.getItem('user_nrg')) || 2000;
-        let tapPower = parseInt(localStorage.getItem('user_tap')) || 1;
+        // Database Variables (English Only)
+        let balance = parseInt(localStorage.getItem('jimi_bal')) || 0;
+        let energy = parseFloat(localStorage.getItem('jimi_nrg')) || 2000;
+        let tapPower = 1;
         const maxEnergy = 2000;
 
+        // Level Configuration with Correct Metal Colors
         const levelChart = [
-    { name: "Bronze", min: 0, color: "#cd7f32" },       /* برونزي */
-    { name: "Silver", min: 5000, color: "#C0C0C0" },    /* فضي */
-    { name: "Gold", min: 25000, color: "#FFD700" },     /* ذهبي */
-    { name: "Legendary", min: 1000000, color: "#FF4500" }
-];
+            { name: "BRONZE", min: 0, color: "#cd7f32" },
+            { name: "SILVER", min: 5000, color: "#C0C0C0" },
+            { name: "GOLD", min: 25000, color: "#FFD700" },
+            { name: "LEGENDARY", min: 1000000, color: "#FF4500" }
+        ];
 
-        function initializeApp() {
-            let loadPercent = 0;
-            let loaderInterval = setInterval(() => {
-                loadPercent += 2;
-                document.getElementById('bar-i').style.width = loadPercent + "%";
-                document.getElementById('pct').innerText = loadPercent + "%";
-                if(loadPercent >= 100) { 
-                    clearInterval(loaderInterval); 
+        // Initialization
+        function startLoading() {
+            let p = 0;
+            let timer = setInterval(() => {
+                p += 2;
+                document.getElementById('bar-i').style.width = p + "%";
+                document.getElementById('pct').innerText = p + "%";
+                if(p >= 100) { 
+                    clearInterval(timer); 
                     document.getElementById('loader').style.display = 'none'; 
                     updateUI(); 
                 }
-            }, 50);
+            }, 40);
             
-            // Sync background tasks (Verification timers only - NO passive income)
+            // Sync Data Every Second
             setInterval(() => { 
-                saveData(); 
-                checkTimers(); 
+                saveToStorage(); 
                 updateUI(); 
             }, 1000);
         }
 
-        function startVerification(id, reward, secs) {
-            const finishAt = Date.now() + (secs * 1000);
-            localStorage.setItem('task_data_'+id, JSON.stringify({finishAt, reward, isClaimed: false}));
-        }
-
-        function checkTimers() {
-            ['t1', 't2'].forEach(id => {
-                const raw = localStorage.getItem('task_data_'+id);
-                if(!raw) return;
-                const data = JSON.parse(raw);
-                const btn = document.getElementById('btn-'+id);
-                if(data.isClaimed) { 
-                    btn.innerText = "DONE"; 
-                    btn.className = "card-action card-done"; 
-                    return; 
-                }
-                const remaining = Math.ceil((data.finishAt - Date.now())/1000);
-                if(remaining > 0) {
-                    btn.innerText = `Wait ${Math.floor(remaining/60)}m ${remaining%60}s`;
-                    btn.className = "card-action card-checking";
-                } else {
-                    btn.innerText = "CLAIM"; 
-                    btn.className = "card-action";
-                    btn.onclick = () => { 
-                        balance += data.reward; 
-                        localStorage.setItem('task_data_'+id, JSON.stringify({isClaimed: true})); 
-                        updateUI(); 
-                    };
-                    btn.removeAttribute('href');
-                }
-            });
-        }
-
-        function upgradeTap(cost) { 
-            if(balance >= cost) { 
-                balance -= cost; 
-                tapPower += 1; 
-                updateUI(); 
-                alert("Tap Power Upgraded!"); 
-            } 
-        }
-
-        function switchPage(id, btnElement) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active-nav'));
-            document.getElementById('page-' + id).classList.add('active');
-            btnElement.classList.add('active-nav');
-        }
-
+        // Interface Update Logic
         function updateUI() {
             document.getElementById('score-display').innerText = Math.floor(balance).toLocaleString();
-            document.getElementById('top-my-score').innerText = Math.floor(balance).toLocaleString();
             document.getElementById('energy-val').innerText = Math.floor(energy) + " / 2000";
             document.getElementById('energy-fill').style.width = (energy/20) + "%";
             
-            let currentLvl = levelChart[0];
-            levelChart.forEach(l => { if(balance >= l.min) currentLvl = l; });
+            // Auto Level & Color Detection
+            let current = levelChart[0];
+            levelChart.forEach(lvl => { if(balance >= lvl.min) current = lvl; });
+            
             const label = document.getElementById('level-label');
-            label.innerText = currentLvl.name + " LEVEL";
-            label.style.color = currentLvl.color;
+            const coin = document.getElementById('tap-area');
+            
+            label.innerText = current.name + " LEVEL";
+            label.style.color = current.color;
+            
+            // Update Coin Border and Glow
+            coin.style.borderColor = current.color;
+            coin.style.boxShadow = "0 0 50px " + current.color;
         }
 
-        function saveData() {
-            localStorage.setItem('user_bal', balance);
-            localStorage.setItem('user_nrg', energy);
-            localStorage.setItem('user_tap', tapPower);
+        function saveToStorage() {
+            localStorage.setItem('jimi_bal', balance);
+            localStorage.setItem('jimi_nrg', energy);
         }
 
-        const tapArea = document.getElementById('tap-area');
-        tapArea.addEventListener('touchstart', (e) => {
+        function switchPage(id, btn) {
+            // Simplified for Tap page focus
+            updateUI();
+        }
+
+        // Touch Input Logic
+        const area = document.getElementById('tap-area');
+        area.addEventListener('touchstart', (e) => {
             e.preventDefault();
             if(energy >= tapPower) {
                 balance += tapPower; 
                 energy -= tapPower; 
                 updateUI();
-                let touch = e.changedTouches[0];
+                
+                let t = e.changedTouches[0];
                 let pop = document.createElement('div');
-                pop.className = 'tap-pop'; 
-                pop.innerText = '+' + tapPower; 
-                pop.style.left = touch.pageX + 'px'; 
-                pop.style.top = touch.pageY + 'px';
-                document.body.appendChild(pop); 
+                pop.className = 'tap-pop';
+                pop.innerText = '+' + tapPower;
+                pop.style.left = t.pageX + 'px';
+                pop.style.top = t.pageY + 'px';
+                document.body.appendChild(pop);
                 setTimeout(() => pop.remove(), 600);
             }
-            tapArea.style.transform = "scale(0.95)"; 
-            setTimeout(() => tapArea.style.transform = "scale(1)", 50);
+            area.style.transform = "scale(0.95)";
+            setTimeout(() => area.style.transform = "scale(1)", 50);
         }, {passive: false});
 
-        // Regenerate Energy Only
+        // Regenerate Energy
         setInterval(() => { 
-            if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.5); 
+            if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.2); 
         }, 1000);
     </script>
 </body>
