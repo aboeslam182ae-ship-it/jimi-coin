@@ -12,6 +12,7 @@
             padding: 0;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            touch-action: none; /* Disables browser gestures for smooth multi-touch */
         }
 
         body {
@@ -89,8 +90,8 @@
 
         #coin-container {
             position: relative;
-            width: 280px;
-            height: 280px;
+            width: 320px;
+            height: 320px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -111,18 +112,19 @@
         .plus-one {
             position: absolute;
             color: #ffffff;
-            font-size: 24px;
+            font-size: 28px;
             font-weight: bold;
-            animation: moveUp 0.8s ease-out forwards;
+            animation: moveUp 0.7s ease-out forwards;
             pointer-events: none;
-            z-index: 10;
+            z-index: 100;
         }
 
         @keyframes moveUp {
             0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-100px); }
+            100% { opacity: 0; transform: translateY(-120px); }
         }
 
+        /* --- ENERGY STYLES --- */
         .energy-container {
             width: 85%;
             margin-top: 40px;
@@ -152,7 +154,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, #00d2ff, #3a7bd5);
-            transition: width 0.2s;
+            transition: width 0.1s;
         }
 
         /* --- TASKS PAGE STYLES --- */
@@ -180,23 +182,6 @@
             border: 1px solid #222;
         }
 
-        .task-info {
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-        }
-
-        .task-name {
-            font-size: 16px;
-            font-weight: bold;
-        }
-
-        .task-reward {
-            font-size: 13px;
-            color: #FFD700;
-            font-weight: bold;
-        }
-
         .task-btn {
             background-color: #FFD700;
             color: #000;
@@ -204,10 +189,9 @@
             border-radius: 20px;
             font-size: 12px;
             font-weight: 800;
-            cursor: pointer;
         }
 
-        /* --- TOP PLAYERS STYLES --- */
+        /* --- LEADERBOARD STYLES --- */
         .list-container {
             width: 90%;
             display: flex;
@@ -230,211 +214,5 @@
             bottom: 25px;
             left: 20px;
             right: 20px;
-            height: 80px;
-            background-color: #0f0f0f;
-            display: flex;
-            border-radius: 20px;
-            border: 1px solid #222;
-            z-index: 1000;
-        }
-
-        .nav-btn {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #555;
-            cursor: pointer;
-        }
-
-        .nav-active {
-            color: #FFD700;
-        }
-
-        .nav-icon {
-            font-size: 22px;
-            margin-bottom: 4px;
-        }
-
-        .nav-label {
-            font-size: 10px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body onload="initApp()">
-
-    <div id="loader-screen">
-        <div id="load-percent">0%</div>
-        <div class="bar-outer">
-            <div id="bar-inner"></div>
-        </div>
-    </div>
-
-    <div id="tab-tap" class="page page-active">
-        <div id="main-balance">0</div>
-        <div id="level-label">BRONZE LEVEL</div>
-        <div id="coin-container">
-            <div id="coin-click"></div>
-        </div>
-        <div class="energy-container">
-            <div class="energy-header">
-                <span style="color: #aaa;">ENERGY</span>
-                <span id="energy-text">2000 / 2000</span>
-            </div>
-            <div class="energy-bar-bg">
-                <div id="energy-fill"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-tasks" class="page">
-        <div class="page-title">TASKS</div>
-        <div class="task-list">
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-name">Join Telegram</span>
-                    <span class="task-reward">+50,000 COINS</span>
-                </div>
-                <div class="task-btn" onclick="completeTask(50000, 'https://t.me/yourchannel')">GO</div>
-            </div>
-            <div class="task-item">
-                <div class="task-info">
-                    <span class="task-name">Follow X</span>
-                    <span class="task-reward">+20,000 COINS</span>
-                </div>
-                <div class="task-btn" onclick="completeTask(20000, 'https://twitter.com/')">GO</div>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-boost" class="page">
-        <div class="page-title">BOOSTERS</div>
-        <h2 style="color:#555; margin-top:50px;">Coming Soon</h2>
-    </div>
-
-    <div id="tab-top" class="page">
-        <div class="page-title">TOP PLAYERS</div>
-        <div class="list-container">
-            <div class="player-card">
-                <span>1. Muhammad Koca</span>
-                <span style="color:#FFD700">2,500,000</span>
-            </div>
-            <div class="player-card">
-                <span>2. Alex Pro</span>
-                <span style="color:#FFD700">1,800,000</span>
-            </div>
-        </div>
-    </div>
-
-    <div class="nav-bar">
-        <div class="nav-btn nav-active" onclick="switchTab('tap', this)">
-            <span class="nav-icon">💰</span>
-            <span class="nav-label">TAP</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('tasks', this)">
-            <span class="nav-icon">📜</span>
-            <span class="nav-label">TASKS</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('boost', this)">
-            <span class="nav-icon">🚀</span>
-            <span class="nav-label">BOOST</span>
-        </div>
-        <div class="nav-btn" onclick="switchTab('top', this)">
-            <span class="nav-icon">🏆</span>
-            <span class="nav-label">TOP</span>
-        </div>
-    </div>
-
-    <script>
-        let score = parseInt(localStorage.getItem('j_score')) || 0;
-        let energy = parseFloat(localStorage.getItem('j_energy')) || 2000;
-
-        function initApp() {
-            let p = 0;
-            let interval = setInterval(() => {
-                p++;
-                document.getElementById('bar-inner').style.width = p + "%";
-                document.getElementById('load-percent').innerText = p + "%";
-                if(p >= 100) {
-                    clearInterval(interval);
-                    document.getElementById('loader-screen').style.display = 'none';
-                    updateUI();
-                }
-            }, 25);
-
-            setInterval(() => {
-                if(energy < 2000) {
-                    energy = Math.min(2000, energy + 1);
-                    updateUI();
-                }
-            }, 1500);
-        }
-
-        function updateUI() {
-            document.getElementById('main-balance').innerText = score.toLocaleString();
-            document.getElementById('energy-text').innerText = Math.floor(energy) + " / 2000";
-            document.getElementById('energy-fill').style.width = (energy / 20) + "%";
-            
-            const levelLabel = document.getElementById('level-label');
-            const coinBtn = document.getElementById('coin-click');
-
-            if (score >= 1000000) {
-                levelLabel.innerText = "DIAMOND LEVEL";
-                levelLabel.style.color = "#b9f2ff";
-                coinBtn.style.borderColor = "#b9f2ff";
-            } else if (score >= 500000) {
-                levelLabel.innerText = "GOLD LEVEL";
-                levelLabel.style.color = "#FFD700";
-                coinBtn.style.borderColor = "#FFD700";
-            } else if (score >= 50000) {
-                levelLabel.innerText = "SILVER LEVEL";
-                levelLabel.style.color = "#C0C0C0";
-                coinBtn.style.borderColor = "#C0C0C0";
-            } else {
-                levelLabel.innerText = "BRONZE LEVEL";
-                levelLabel.style.color = "#cd7f32";
-                coinBtn.style.borderColor = "#cd7f32";
-            }
-
-            localStorage.setItem('j_score', score);
-            localStorage.setItem('j_energy', energy);
-        }
-
-        function switchTab(tabId, element) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
-            document.getElementById('tab-' + tabId).classList.add('page-active');
-            element.classList.add('nav-active');
-        }
-
-        function completeTask(reward, url) {
-            window.open(url, '_blank');
-            score += reward;
-            updateUI();
-        }
-
-        const coin = document.getElementById('coin-click');
-        coin.addEventListener('touchstart', function(e) {
-            e.preventDefault();
-            if(energy >= 1) {
-                score++;
-                energy--;
-                updateUI();
-                this.style.transform = "scale(0.95)";
-                setTimeout(() => this.style.transform = "scale(1)", 50);
-
-                const touch = e.touches[0];
-                const plusOne = document.createElement('div');
-                plusOne.innerText = "+1";
-                plusOne.className = 'plus-one';
-                plusOne.style.left = (touch.clientX - 20) + "px";
-                plusOne.style.top = (touch.clientY - 40) + "px";
-                document.body.appendChild(plusOne);
-                setTimeout(() => plusOne.remove(), 800);
-            }
-        });
-    </script>
-</body>
-</html>
+            height:
+                
