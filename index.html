@@ -3,70 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin Pro</title>
+    <title>Jimi Coin Pro Multi-Touch</title>
     <style>
         /* --- GLOBAL RESET --- */
         * {
             box-sizing: border-box;
+        }
+        * {
             margin: 0;
+        }
+        * {
             padding: 0;
+        }
+        * {
             user-select: none;
+        }
+        * {
             -webkit-tap-highlight-color: transparent;
-            touch-action: none; /* Disables browser gestures for smooth multi-touch */
+        }
+        * {
+            touch-action: none;
         }
 
         body {
             background-color: #000000;
+        }
+        body {
             color: #ffffff;
+        }
+        body {
             font-family: sans-serif;
+        }
+        body {
             overflow: hidden;
+        }
+        body {
             height: 100vh;
         }
 
         /* --- LOADER SCREEN --- */
         #loader-screen {
             position: fixed;
-            inset: 0;
+        }
+        #loader-screen {
+            top: 0;
+        }
+        #loader-screen {
+            left: 0;
+        }
+        #loader-screen {
+            right: 0;
+        }
+        #loader-screen {
+            bottom: 0;
+        }
+        #loader-screen {
             background-color: #000000;
+        }
+        #loader-screen {
             z-index: 10000;
+        }
+        #loader-screen {
             display: flex;
+        }
+        #loader-screen {
             flex-direction: column;
+        }
+        #loader-screen {
             align-items: center;
+        }
+        #loader-screen {
             justify-content: flex-end;
+        }
+        #loader-screen {
             padding-bottom: 100px;
         }
 
         #load-percent {
             font-size: 38px;
+        }
+        #load-percent {
             font-weight: 800;
+        }
+        #load-percent {
             color: #FFD700;
+        }
+        #load-percent {
             margin-bottom: 12px;
         }
 
         .bar-outer {
             width: 220px;
+        }
+        .bar-outer {
             height: 7px;
+        }
+        .bar-outer {
             background-color: rgba(255, 255, 255, 0.1);
+        }
+        .bar-outer {
             border-radius: 15px;
+        }
+        .bar-outer {
             overflow: hidden;
         }
 
         #bar-inner {
             width: 0%;
+        }
+        #bar-inner {
             height: 100%;
+        }
+        #bar-inner {
             background-color: #FFD700;
         }
 
         /* --- PAGE SYSTEM --- */
         .page {
             display: none;
+        }
+        .page {
             height: 100vh;
+        }
+        .page {
             width: 100%;
+        }
+        .page {
             flex-direction: column;
+        }
+        .page {
             align-items: center;
+        }
+        .page {
             padding-top: 50px;
+        }
+        .page {
             position: absolute;
+        }
+        .page {
             top: 0;
+        }
+        .page {
             left: 0;
         }
 
@@ -77,142 +154,492 @@
         /* --- TAP PAGE STYLES --- */
         #main-balance {
             font-size: 60px;
+        }
+        #main-balance {
             font-weight: 800;
+        }
+        #main-balance {
             margin-top: 20px;
         }
 
         #level-label {
             font-size: 14px;
+        }
+        #level-label {
             margin-bottom: 40px;
+        }
+        #level-label {
             font-weight: bold;
+        }
+        #level-label {
             transition: color 0.3s;
         }
 
         #coin-container {
             position: relative;
+        }
+        #coin-container {
             width: 320px;
+        }
+        #coin-container {
             height: 320px;
+        }
+        #coin-container {
             display: flex;
+        }
+        #coin-container {
             justify-content: center;
+        }
+        #coin-container {
             align-items: center;
         }
 
         #coin-click {
             width: 260px;
+        }
+        #coin-click {
             height: 260px;
+        }
+        #coin-click {
             border-radius: 50%;
+        }
+        #coin-click {
             border: 6px solid #cd7f32;
+        }
+        #coin-click {
             background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png');
+        }
+        #coin-click {
             background-size: cover;
+        }
+        #coin-click {
             background-position: center;
+        }
+        #coin-click {
             z-index: 5;
-            transition: transform 0.05s, border 0.5s;
+        }
+        #coin-click {
+            transition: transform 0.05s;
+        }
+        #coin-click {
+            transition: border 0.5s;
         }
 
         .plus-one {
             position: absolute;
+        }
+        .plus-one {
             color: #ffffff;
-            font-size: 28px;
-            font-weight: bold;
-            animation: moveUp 0.7s ease-out forwards;
+        }
+        .plus-one {
+            font-size: 32px;
+        }
+        .plus-one {
+            font-weight: 900;
+        }
+        .plus-one {
             pointer-events: none;
+        }
+        .plus-one {
             z-index: 100;
+        }
+        .plus-one {
+            animation-name: moveUp;
+        }
+        .plus-one {
+            animation-duration: 0.8s;
+        }
+        .plus-one {
+            animation-timing-function: ease-out;
+        }
+        .plus-one {
+            animation-fill-mode: forwards;
         }
 
         @keyframes moveUp {
-            0% { opacity: 1; transform: translateY(0); }
-            100% { opacity: 0; transform: translateY(-120px); }
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-150px);
+            }
         }
 
         /* --- ENERGY STYLES --- */
         .energy-container {
             width: 85%;
+        }
+        .energy-container {
             margin-top: 40px;
         }
 
         .energy-header {
             display: flex;
+        }
+        .energy-header {
             justify-content: space-between;
+        }
+        .energy-header {
             margin-bottom: 8px;
         }
 
         #energy-text {
             font-size: 14px;
+        }
+        #energy-text {
             font-weight: bold;
         }
 
         .energy-bar-bg {
             width: 100%;
+        }
+        .energy-bar-bg {
             height: 12px;
+        }
+        .energy-bar-bg {
             background-color: #1a1a1a;
+        }
+        .energy-bar-bg {
             border-radius: 10px;
+        }
+        .energy-bar-bg {
             border: 1px solid #333;
+        }
+        .energy-bar-bg {
             overflow: hidden;
         }
 
         #energy-fill {
             width: 100%;
+        }
+        #energy-fill {
             height: 100%;
+        }
+        #energy-fill {
             background: linear-gradient(90deg, #00d2ff, #3a7bd5);
+        }
+        #energy-fill {
             transition: width 0.1s;
         }
 
         /* --- TASKS PAGE STYLES --- */
         .page-title {
             font-size: 28px;
+        }
+        .page-title {
             font-weight: 800;
+        }
+        .page-title {
             color: #FFD700;
+        }
+        .page-title {
             margin-bottom: 25px;
         }
 
         .task-list {
             width: 90%;
+        }
+        .task-list {
             display: flex;
+        }
+        .task-list {
             flex-direction: column;
+        }
+        .task-list {
             gap: 15px;
         }
 
         .task-item {
             background-color: #111;
+        }
+        .task-item {
             padding: 15px;
+        }
+        .task-item {
             border-radius: 15px;
+        }
+        .task-item {
             display: flex;
+        }
+        .task-item {
             align-items: center;
+        }
+        .task-item {
             justify-content: space-between;
+        }
+        .task-item {
             border: 1px solid #222;
         }
 
         .task-btn {
             background-color: #FFD700;
+        }
+        .task-btn {
             color: #000;
-            padding: 8px 15px;
+        }
+        .task-btn {
+            padding-left: 15px;
+        }
+        .task-btn {
+            padding-right: 15px;
+        }
+        .task-btn {
+            padding-top: 8px;
+        }
+        .task-btn {
+            padding-bottom: 8px;
+        }
+        .task-btn {
             border-radius: 20px;
+        }
+        .task-btn {
             font-size: 12px;
+        }
+        .task-btn {
             font-weight: 800;
-        }
-
-        /* --- LEADERBOARD STYLES --- */
-        .list-container {
-            width: 90%;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .player-card {
-            background-color: #111;
-            padding: 15px;
-            border-radius: 12px;
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid #222;
         }
 
         /* --- NAVIGATION BAR --- */
         .nav-bar {
             position: fixed;
+        }
+        .nav-bar {
             bottom: 25px;
+        }
+        .nav-bar {
             left: 20px;
+        }
+        .nav-bar {
             right: 20px;
-            height:
-                
+        }
+        .nav-bar {
+            height: 80px;
+        }
+        .nav-bar {
+            background-color: #0f0f0f;
+        }
+        .nav-bar {
+            display: flex;
+        }
+        .nav-bar {
+            border-radius: 20px;
+        }
+        .nav-bar {
+            border: 1px solid #222;
+        }
+        .nav-bar {
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            flex: 1;
+        }
+        .nav-btn {
+            display: flex;
+        }
+        .nav-btn {
+            flex-direction: column;
+        }
+        .nav-btn {
+            align-items: center;
+        }
+        .nav-btn {
+            justify-content: center;
+        }
+        .nav-btn {
+            color: #555;
+        }
+
+        .nav-active {
+            color: #FFD700;
+        }
+
+        .nav-label {
+            font-size: 10px;
+        }
+        .nav-label {
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body onload="initApp()">
+
+    <div id="loader-screen">
+        <div id="load-percent">0%</div>
+        <div class="bar-outer">
+            <div id="bar-inner"></div>
+        </div>
+    </div>
+
+    <div id="tab-tap" class="page page-active">
+        <div id="main-balance">0</div>
+        <div id="level-label">BRONZE LEVEL</div>
+        <div id="coin-container">
+            <div id="coin-click"></div>
+        </div>
+        <div class="energy-container">
+            <div class="energy-header">
+                <span style="color: #aaa;">ENERGY</span>
+                <span id="energy-text">2000 / 2000</span>
+            </div>
+            <div class="energy-bar-bg">
+                <div id="energy-fill"></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-tasks" class="page">
+        <div class="page-title">TASKS</div>
+        <div class="task-list">
+            <div class="task-item" onclick="completeTask(50000, 'https://t.me/yourchannel')">
+                <div>
+                    <div style="font-weight:bold">Join Telegram</div>
+                    <div style="color:#FFD700; font-size:12px">+50,000 COINS</div>
+                </div>
+                <div class="task-btn">GO</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="tab-boost" class="page">
+        <div class="page-title">BOOST</div>
+    </div>
+
+    <div id="tab-top" class="page">
+        <div class="page-title">TOP</div>
+    </div>
+
+    <div class="nav-bar">
+        <div class="nav-btn nav-active" onclick="switchTab('tap', this)">
+            <span style="font-size:20px">💰</span>
+            <span class="nav-label">TAP</span>
+        </div>
+        <div class="nav-btn" onclick="switchTab('tasks', this)">
+            <span style="font-size:20px">📜</span>
+            <span class="nav-label">TASKS</span>
+        </div>
+        <div class="nav-btn" onclick="switchTab('boost', this)">
+            <span style="font-size:20px">🚀</span>
+            <span class="nav-label">BOOST</span>
+        </div>
+        <div class="nav-btn" onclick="switchTab('top', this)">
+            <span style="font-size:20px">🏆</span>
+            <span class="nav-label">TOP</span>
+        </div>
+    </div>
+
+    <script>
+        let score = parseInt(localStorage.getItem('j_score')) || 0;
+        let energy = parseFloat(localStorage.getItem('j_energy')) || 2000;
+
+        function initApp() {
+            let p = 0;
+            let interval = setInterval(() => {
+                p++;
+                document.getElementById('bar-inner').style.width = p + "%";
+                document.getElementById('load-percent').innerText = p + "%";
+                if(p >= 100) {
+                    clearInterval(interval);
+                    document.getElementById('loader-screen').style.display = 'none';
+                    updateUI();
+                }
+            }, 15);
+
+            setInterval(() => {
+                if(energy < 2000) {
+                    energy = Math.min(2000, energy + 1.2);
+                    updateUI();
+                }
+            }, 1000);
+        }
+
+        function updateUI() {
+            document.getElementById('main-balance').innerText = score.toLocaleString();
+            document.getElementById('energy-text').innerText = Math.floor(energy) + " / 2000";
+            document.getElementById('energy-fill').style.width = (energy / 20) + "%";
+            
+            const lvl = document.getElementById('level-label');
+            const coin = document.getElementById('coin-click');
+
+            if (score >= 1000000) {
+                lvl.innerText = "DIAMOND LEVEL";
+                lvl.style.color = "#b9f2ff";
+                coin.style.borderColor = "#b9f2ff";
+            } else if (score >= 500000) {
+                lvl.innerText = "GOLD LEVEL";
+                lvl.style.color = "#FFD700";
+                coin.style.borderColor = "#FFD700";
+            } else if (score >= 50000) {
+                lvl.innerText = "SILVER LEVEL";
+                lvl.style.color = "#C0C0C0";
+                coin.style.borderColor = "#C0C0C0";
+            } else {
+                lvl.innerText = "BRONZE LEVEL";
+                lvl.style.color = "#cd7f32";
+                coin.style.borderColor = "#cd7f32";
+            }
+
+            localStorage.setItem('j_score', score);
+            localStorage.setItem('j_energy', energy);
+        }
+
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+            document.getElementById('tab-' + tabId).classList.add('page-active');
+            element.classList.add('nav-active');
+        }
+
+        function completeTask(reward, url) {
+            window.open(url, '_blank');
+            score += reward;
+            updateUI();
+        }
+
+        // --- FIXED MULTI-TOUCH HANDLER ---
+        const coinBtn = document.getElementById('coin-click');
+        
+        coinBtn.addEventListener('touchstart', function(event) {
+            event.preventDefault();
+            
+            // Loop through all fingers currently touching the screen
+            const touches = event.changedTouches;
+            
+            for (let i = 0; i < touches.length; i++) {
+                if (energy >= 1) {
+                    score++;
+                    energy--;
+                    
+                    const touch = touches[i];
+                    
+                    // Create a unique +1 for every single finger touch
+                    const plusOne = document.createElement('div');
+                    plusOne.className = 'plus-one';
+                    plusOne.innerText = '+1';
+                    plusOne.style.left = (touch.clientX - 15) + 'px';
+                    plusOne.style.top = (touch.clientY - 30) + 'px';
+                    
+                    document.body.appendChild(plusOne);
+                    
+                    // Cleanup
+                    setTimeout(() => {
+                        plusOne.remove();
+                    }, 800);
+                }
+            }
+            
+            updateUI();
+            
+            // Visual feedback for the coin
+            this.style.transform = "scale(0.96)";
+            setTimeout(() => {
+                this.style.transform = "scale(1)";
+            }, 50);
+
+        }, { passive: false });
+
+    </script>
+</body>
+</html>
