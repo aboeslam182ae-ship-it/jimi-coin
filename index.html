@@ -275,5 +275,34 @@ document.getElementById('coin-click').addEventListener('touchstart', (e) => {
     if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
 });
 
-function createPlusOne(x,
-    
+function createPlusOne(x, y) {
+    const p = document.createElement('div');
+    p.className = 'plus-one';
+    p.innerText = '+1';
+    p.style.left = (x - 20) + 'px';
+    p.style.top = (y - 50) + 'px';
+    document.body.appendChild(p);
+    setTimeout(() => p.remove(), 800);
+}
+
+// وظيفة شراء الكروت
+function buyCard(cost, profitAdd) {
+    if(score >= cost) {
+        score -= cost;
+        pph += profitAdd;
+        alert("مبروك! تم شراء الكرت وزاد ربحك");
+        updateUI();
+    } else {
+        alert("رصيدك غير كافٍ!");
+    }
+}
+
+function switchTab(id, el) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+    document.getElementById('tab-' + id).classList.add('page-active');
+    el.classList.add('nav-active');
+}
+</script>
+</body>
+</html>
