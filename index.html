@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Hamster Mechanics</title>
+    <title>Jimi Coin - Final Fix</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -13,11 +13,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         body { background: #0c1a33; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
 
-        /* الخلفية (البرق) */
         .game-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #0c1a33 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/jolt-bg.png') center/cover no-repeat;
+            background: #0c1a33;
             z-index: -1;
         }
 
@@ -28,58 +27,55 @@
             height: 50vh; display: flex; justify-content: center; align-items: center; position: relative;
         }
 
-        /* وحدة الارتداد الميكانيكية */
-        .hamster-mechanic {
+        /* وحدة الحركة بنمط الهامستر */
+        .hamster-unit {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            /* توقيت الحركة ليكون مطاطياً وسريعاً */
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             will-change: transform;
         }
 
-        /* تأثير الانضغاط عند اللمس (مثل الفيديو) */
-        .hamster-mechanic:active {
+        .hamster-unit:active {
             transform: scale(0.92) translateY(12px);
         }
 
-        /* الجولتي - تأكد من اسم الملف Jolt_pockets.png */
+        /* تعديل الرابط ليتوافق مع Jolt_pockets-png الموجود في صورتك */
         .jolt-model {
             width: 280px;
-            height: 340px;
-            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center/contain no-repeat;
+            height: 350px;
+            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets-png') center/contain no-repeat;
             z-index: 5;
             margin-bottom: -50px;
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
         }
 
-        /* المنصة (التي ظهرت زرقاء في لقطاتك) */
-        .podium-base {
+        .podium {
             width: 240px;
             height: 65px;
             background: radial-gradient(circle, #00f2fe 0%, #004e92 100%);
             border-radius: 50%;
             border: 4px solid #4facfe;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(255,255,255,0.4);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
             z-index: 4;
         }
 
-        /* شريط الطاقة المصلح (تجنب الكسور الطويلة) */
+        /* شريط الطاقة المصلح */
         .energy-section { position: fixed; bottom: 110px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .energy-bar-container { width: 85%; height: 20px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid #4facfe; overflow: hidden; position: relative; }
+        .energy-bar { width: 85%; height: 20px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid #4facfe; overflow: hidden; position: relative; }
         #energy-fill { position: absolute; right: 0; height: 100%; background: #00f2fe; transition: width 0.2s; }
-        #energy-val { margin-top: 8px; font-weight: bold; font-size: 16px; color: #00f2fe; text-shadow: 1px 1px 2px #000; }
+        #energy-val { margin-top: 8px; font-weight: bold; color: #00f2fe; }
 
-        .navigation { position: fixed; bottom: 0; width: 100%; height: 85px; background: #07132e; display: flex; border-top: 1px solid #1e4a9e; }
-        .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
-        .nav-tab.active { opacity: 1; color: #FFD700; }
+        .nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: #07132e; display: flex; border-top: 1px solid #1e4a9e; }
+        .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
+        .tab.active { opacity: 1; color: #FFD700; }
 
-        .tap-anim { position: absolute; color: #fff; font-size: 42px; font-weight: 900; animation: hamsterPop 0.7s ease-out forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 10px #00f2fe; }
-        @keyframes hamsterPop { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-140px) scale(1.4); } }
+        .tap-effect { position: absolute; color: #fff; font-size: 40px; font-weight: 900; animation: popUp 0.7s forwards; pointer-events: none; z-index: 100; }
+        @keyframes popUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-130px); } }
     </style>
 </head>
-<body onload="start()">
+<body onload="init()">
 
     <div class="game-bg"></div>
 
@@ -88,23 +84,23 @@
     </div>
 
     <div class="play-area">
-        <div class="hamster-mechanic" id="click-target">
+        <div class="hamster-unit" id="clicker">
             <div class="jolt-model"></div>
-            <div class="podium-base"></div>
+            <div class="podium"></div>
         </div>
     </div>
 
     <div class="energy-section">
-        <div class="energy-bar-container">
+        <div class="energy-bar">
             <div id="energy-fill"></div>
         </div>
         <div id="energy-val">1000 / 1000</div>
     </div>
 
-    <nav class="navigation">
-        <div class="nav-tab"><i>⛏️</i>تعدين</div>
-        <div class="nav-tab active"><i>💰</i>نقر</div>
-        <div class="nav-tab"><i>⚙️
+    <nav class="nav">
+        <div class="tab"><i>⛏️</i>تعدين</div>
+        <div class="tab active"><i>💰</i>نقر</div>
+        <div class="tab"><i>🏢</i>مكتب</div>
     </nav>
 
 <script>
@@ -121,30 +117,30 @@
 
     let balance = 0; let energy = 1000;
 
-    function start() {
+    function init() {
         db.ref('users/' + userId).once('value', (s) => {
             if(s.val()) { balance = s.val().score || 0; energy = s.val().energy || 1000; }
-            ui();
+            updateUI();
         });
-        setInterval(() => { if(energy < 1000) { energy += 1.2; ui(); } }, 1000);
+        setInterval(() => { if(energy < 1000) { energy += 1.5; updateUI(); } }, 1000);
         setInterval(() => db.ref('users/' + userId).update({ score: balance, energy: Math.floor(energy) }), 4000);
     }
 
-    function ui() {
+    function updateUI() {
         document.getElementById('main-balance').innerText = Math.floor(balance).toLocaleString();
         document.getElementById('energy-val').innerText = `${Math.floor(energy)} / 1000`;
         document.getElementById('energy-fill').style.width = (energy/10) + "%";
     }
 
-    document.getElementById('click-target').addEventListener('touchstart', (e) => {
+    document.getElementById('clicker').addEventListener('touchstart', (e) => {
         e.preventDefault();
         if(energy >= 1) {
             balance++; energy--;
-            ui();
-            const t = e.touches[0];
+            updateUI();
+            const touch = e.touches[0];
             const p = document.createElement('div');
-            p.className = 'tap-anim'; p.innerText = '+1';
-            p.style.left = t.pageX + 'px'; p.style.top = t.pageY + 'px';
+            p.className = 'tap-effect'; p.innerText = '+1';
+            p.style.left = touch.pageX + 'px'; p.style.top = touch.pageY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 700);
             if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
