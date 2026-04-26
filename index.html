@@ -31,18 +31,17 @@
         }
         #coin-click:active { transform: scale(0.92); }
 
-        /* --- تعديل رفع شريط الطاقة عن الأزرار السفلية --- */
         .energy-wrapper { 
             width: 85%; 
             margin-top: auto; 
-            margin-bottom: 100px; /* تم رفع المسافة من 60px إلى 100px ليرتفع عن الأزرار */
+            margin-bottom: 110px; /* تم رفعه قليلاً إضافياً ليتناسق مع الصورة */
         }
 
         .energy-bar-container { 
             width: 100%; 
-            height: 22px; /* شريط أرفع كما طلبت */
+            height: 20px; /* شريط نحيف واحترافي */
             background: rgba(0,0,0,0.6); 
-            border-radius: 11px; 
+            border-radius: 10px; 
             position: relative; 
             border: 1px solid rgba(255,255,255,0.15); 
             overflow: hidden; 
@@ -53,7 +52,7 @@
         #energy-fill { position: absolute; right: 0; height: 100%; background: linear-gradient(90deg, #4da3ff, #2159ff); width: 100%; transition: width 0.3s; }
         
         .battery-icon-box { width: 30px; height: 100%; background: #4da3ff; z-index: 5; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; }
-        .bolt { color: #FFFF00; font-weight: bold; font-size: 14px; text-shadow: 0 0 5px #000; }
+        .bolt { color: #FFFF00; font-weight: bold; font-size: 13px; text-shadow: 0 0 5px #000; }
         #energy-num { position: absolute; width: 100%; text-align: center; font-weight: bold; font-size: 11px; z-index: 10; text-shadow: 1px 1px 2px #000; }
 
         .plus-one { position: absolute; color: #FFD700; font-size: 38px; font-weight: 900; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 1000; text-shadow: 0 2px 10px #000; }
@@ -84,12 +83,12 @@
         </div>
     </div>
 
-    <div id="tab-office" class="page"><div style="margin-top:100px;">صفحة المكتب قيد التجهيز...</div></div>
-    <div id="tab-mine" class="page"><div style="margin-top:100px;">صفحة التعدين قيد التجهيز...</div></div>
+    <div id="tab-office" class="page"><div style="margin-top:100px; font-weight:bold;">صفحة المكتب قيد التجهيز...</div></div>
+    <div id="tab-mine" class="page"><div style="margin-top:100px; font-weight:bold;">صفحة التعدين قيد التجهيز...</div></div>
 
     <nav class="footer-nav">
         <div class="nav-item" onclick="switchTab('mine', this)"><span>⛏️</span><span>تعدين</span></div>
-        <div class="nav-item" onclick="switchTab('office', this)"><span> Couch </span><span>مكتب</span></div>
+        <div class="nav-item" onclick="switchTab('office', this)"><span>🛋️</span><span>مكتب</span></div>
         <div class="nav-item nav-active" onclick="switchTab('tap', this)"><span>💰</span><span>نقر</span></div>
     </nav>
 
@@ -104,7 +103,7 @@
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
     const tg = window.Telegram.WebApp;
-    const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user";
+    const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user_muhammed";
 
     let score = 0; let pph = 0; let energy = 1000; const maxEnergy = 1000;
 
@@ -160,5 +159,4 @@
     }
 </script>
 </body>
-    </html>
-    
+</html>
