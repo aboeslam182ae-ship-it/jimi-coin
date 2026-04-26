@@ -44,6 +44,7 @@ height: calc(100vh - 180px);
 width: 100%; 
 flex-direction: column; 
 align-items: center; 
+overflow-y: auto; 
 }
 .page-active { 
 display: flex !important; 
@@ -57,6 +58,7 @@ background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/ji
 box-shadow: 0 0 40px rgba(205, 127, 50, 0.4); 
 margin-top: 40px; 
 z-index: 10; 
+flex-shrink: 0;
 }
 .energy-wrapper { 
 width: 85%; 
@@ -118,6 +120,53 @@ z-index: 10;
 pointer-events: none; 
 text-shadow: 1px 1px 2px #000; 
 }
+/* تنسيق صفحة المكتب والكروت */
+.cards-grid { 
+display: grid; 
+grid-template-columns: 1fr 1fr; 
+gap: 12px; 
+padding: 15px; 
+width: 100%; 
+}
+.card-item { 
+background: #111; 
+border: 1px solid #333; 
+border-radius: 12px; 
+padding: 12px; 
+display: flex; 
+flex-direction: column; 
+align-items: center; 
+position: relative; 
+}
+.card-title { 
+font-size: 14px; 
+font-weight: bold; 
+margin-bottom: 5px; 
+color: #fff; 
+}
+.card-stars { 
+color: #FFD700; 
+font-size: 10px; 
+margin-bottom: 8px; 
+}
+.card-img { 
+width: 70px; 
+height: 70px; 
+background: #222; 
+border-radius: 10px; 
+margin-bottom: 10px; 
+}
+.card-stats { 
+width: 100%; 
+display: flex; 
+justify-content: space-between; 
+font-size: 11px; 
+border-top: 1px solid #222; 
+padding-top: 8px; 
+}
+.lvl-text { color: #aaa; }
+.profit-text { color: #FFD700; font-weight: bold; }
+
 .plus-one { 
 position: absolute; 
 color: #FFD700; 
@@ -138,6 +187,7 @@ height: 90px;
 background: #080808; 
 display: flex; 
 border-top: 1px solid #222; 
+z-index: 1000;
 }
 .nav-item { 
 flex: 1; 
@@ -159,6 +209,7 @@ color: #FFD700;
 <div id="main-balance">0</div>
 <div class="profit-info">💰 +<span id="pph-value">0</span>/ساعة</div>
 </div>
+
 <div id="tab-tap" class="page page-active">
 <div id="coin-click"></div>
 <div class="energy-wrapper">
@@ -174,19 +225,49 @@ color: #FFD700;
 </div>
 </div>
 </div>
-<div id="tab-mine" class="page">
-<h2 style="margin-top:50px">قريباً...</h2>
+
+<div id="tab-office" class="page">
+<div class="cards-grid">
+    <div class="card-item">
+        <div class="card-title">جولتي المبتدئ</div>
+        <div class="card-stars">⭐⭐⭐⭐⭐</div>
+        <div class="card-img"></div>
+        <div class="card-stats">
+            <span class="lvl-text">Lvl 1</span>
+            <span class="profit-text">+100</span>
+        </div>
+    </div>
+    <div class="card-item">
+        <div class="card-title">جولتي المهندس</div>
+        <div class="card-stars">⭐⭐⭐⭐⭐</div>
+        <div class="card-img"></div>
+        <div class="card-stats">
+            <span class="lvl-text">Lvl 0</span>
+            <span class="profit-text">+500</span>
+        </div>
+    </div>
 </div>
+</div>
+
+<div id="tab-mine" class="page">
+<h2 style="margin-top:50px">سوق التعدين</h2>
+</div>
+
 <nav class="footer-nav">
 <div class="nav-item" onclick="switchTab('mine', this)">
 <span>⛏️</span>
 <span>تعدين</span>
+</div>
+<div class="nav-item" onclick="switchTab('office', this)">
+<span>🛋️</span>
+<span>مكتب</span>
 </div>
 <div class="nav-item nav-item-active" onclick="switchTab('tap', this)">
 <span>💰</span>
 <span>نقر</span>
 </div>
 </nav>
+
 <script>
 const firebaseConfig = {
 apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
@@ -203,6 +284,7 @@ let score = 0;
 let pph = 0;
 let energy = 1000;
 const maxEnergy = 1000;
+
 function initApp() {
 db.ref('users/' + userId).once('value', (s) => {
 const d = s.val();
@@ -214,12 +296,14 @@ if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.2);
 updateUI();
 }, 1000);
 }
+
 function updateUI() {
 document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
 document.getElementById('pph-value').innerText = Math.floor(pph).toLocaleString();
 document.getElementById('energy-num').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
 document.getElementById('energy-fill').style.width = ((energy / maxEnergy) * 85) + "%";
 }
+
 document.getElementById('coin-click').addEventListener('touchstart', (e) => {
 e.preventDefault();
 const touches = e.changedTouches;
@@ -239,6 +323,7 @@ setTimeout(() => p.remove(), 800);
 updateUI();
 if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
 });
+
 function switchTab(id, el) {
 document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
 document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-item-active'));
