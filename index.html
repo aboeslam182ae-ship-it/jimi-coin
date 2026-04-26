@@ -1,144 +1,64 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Jimi Coin</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-<style>
-* { 
-box-sizing: border-box; 
-margin: 0; 
-padding: 0; 
-user-select: none; 
--webkit-tap-highlight-color: transparent; 
-}
-body { 
-/* وضعنا لون داكن كاحتياط في حال لم تتحمل الصورة */
-background: #020111; 
-background-image: url('image_10.png'); 
-background-size: cover; 
-background-position: center; 
-background-attachment: fixed;
-color: #fff; 
-font-family: sans-serif; 
-overflow: hidden; 
-height: 100vh; 
-}
-/* إزالة أي خطوط أفقية في الأعلى */
-.header { 
-text-align: center; 
-padding: 30px 15px 10px 15px; 
-border: none !important; /* التأكيد على إلغاء الخط */
-}
-#main-balance { 
-font-size: 55px; 
-font-weight: 900; 
-text-shadow: 0 0 15px rgba(255,255,255,0.4);
-}
-.profit-info { 
-color: #FFD700; 
-font-size: 14px; 
-margin-top: -5px;
-}
-.page { 
-display: none; 
-height: calc(100vh - 180px); 
-width: 100%; 
-flex-direction: column; 
-align-items: center; 
-}
-.page-active { 
-display: flex !important; 
-}
-/* الليرة وتأثير النبض */
-#coin-click { 
-width: 270px; 
-height: 270px; 
-border-radius: 50%; 
-border: 6px solid #cd7f32; 
-background: rgba(0,0,0,0.4) url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover; 
-box-shadow: 0 0 40px rgba(205, 127, 50, 0.6); 
-margin-top: 40px; 
-transition: transform 0.05s;
-}
-#coin-click:active { 
-transform: scale(0.92); 
-}
-/* شريط الطاقة النحيف والمحسن */
-.energy-wrapper { 
-width: 80%; 
-margin-top: auto; 
-margin-bottom: 40px;
-}
-.energy-bar-container { 
-width: 100%; 
-height: 24px; 
-background: rgba(0,0,0,0.6); 
-border-radius: 12px; 
-position: relative; 
-border: 1px solid rgba(255,255,255,0.1); 
-overflow: hidden; 
-display: flex; 
-align-items: center; 
-}
-#energy-fill { 
-position: absolute; 
-right: 0; 
-height: 100%; 
-background: linear-gradient(90deg, #5bc0de, #2e6da4); 
-width: 100%; 
-transition: width 0.3s; 
-}
-#energy-num { 
-position: absolute; 
-width: 100%; 
-text-align: center; 
-font-weight: bold; 
-font-size: 12px; 
-z-index: 10; 
-}
-/* تأثير +1 */
-.plus-one { 
-position: absolute; 
-color: #FFD700; 
-font-size: 32px; 
-font-weight: 900; 
-pointer-events: none; 
-animation: floatUp 0.8s ease-out forwards; 
-z-index: 1000;
-}
-@keyframes floatUp { 
-0% { opacity: 1; transform: translateY(0); } 
-100% { opacity: 0; transform: translateY(-120px); } 
-}
-/* القائمة السفلية */
-.footer-nav { 
-position: fixed; 
-bottom: 0; 
-width: 100%; 
-height: 80px; 
-background: rgba(0,0,0,0.8); 
-backdrop-filter: blur(10px);
-display: flex; 
-border-top: 1px solid rgba(255,255,255,0.05); 
-}
-.nav-item { 
-flex: 1; 
-display: flex; 
-flex-direction: column; 
-align-items: center; 
-justify-content: center; 
-opacity: 0.4; 
-font-size: 12px;
-}
-.nav-active { 
-opacity: 1; 
-color: #FFD700; 
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Jimi Coin Pro</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
+        
+        /* محاكاة ألوان خلفية هامستر كومبات بالضبط */
+        body { 
+            background: radial-gradient(circle at center, #1e4a9e 0%, #0a1a3d 100%) no-repeat fixed; 
+            color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; 
+        }
+
+        .header { text-align: center; padding: 40px 15px 10px 15px; border: none !important; }
+        #main-balance { font-size: 55px; font-weight: 900; text-shadow: 0 4px 10px rgba(0,0,0,0.5); }
+        .profit-info { color: #FFD700; font-size: 15px; margin-top: -5px; font-weight: bold; }
+
+        .page { display: none; height: calc(100vh - 180px); width: 100%; flex-direction: column; align-items: center; }
+        .page-active { display: flex !important; }
+
+        /* منطقة العملة */
+        #coin-click { 
+            width: 280px; height: 280px; border-radius: 50%; border: 6px solid #cd7f32; 
+            background: rgba(0,0,0,0.2) url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover; 
+            box-shadow: 0 0 50px rgba(0,0,0,0.4); margin-top: 30px; transition: transform 0.05s; 
+        }
+        #coin-click:active { transform: scale(0.95); }
+
+        /* شريط الطاقة مع أيقونة الصاعقة */
+        .energy-wrapper { width: 85%; margin-top: auto; margin-bottom: 50px; }
+        .energy-bar-container { 
+            width: 100%; height: 28px; background: rgba(0,0,0,0.5); border-radius: 14px; 
+            position: relative; border: 1px solid rgba(255,255,255,0.1); overflow: hidden; display: flex; align-items: center; 
+        }
+        #energy-fill { position: absolute; right: 0; height: 100%; background: linear-gradient(90deg, #4da3ff, #2159ff); width: 100%; transition: width 0.3s; }
+        
+        /* صندوق أيقونة الصاعقة */
+        .battery-icon-box { 
+            width: 35px; height: 100%; background: #4da3ff; z-index: 5; 
+            display: flex; align-items: center; justify-content: center; position: absolute; right: 0;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+        }
+        .bolt { color: #FFFF00; font-weight: bold; font-size: 16px; text-shadow: 0 0 5px #000; }
+        #energy-num { position: absolute; width: 100%; text-align: center; font-weight: bold; font-size: 13px; z-index: 10; text-shadow: 1px 1px 2px #000; }
+
+        /* تأثير +1 */
+        .plus-one { position: absolute; color: #FFD700; font-size: 35px; font-weight: 900; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 1000; text-shadow: 0 2px 4px #000; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-130px); } }
+
+        /* الفوتر (القائمة السفلية) */
+        .footer-nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: rgba(10, 26, 61, 0.95); display: flex; border-top: 1px solid rgba(255,255,255,0.1); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.4; color: #fff; text-decoration: none; }
+        .nav-active { opacity: 1; color: #FFD700; }
+        .nav-item span:first-child { font-size: 24px; margin-bottom: 4px; }
+        .nav-item span:last-child { font-size: 12px; }
+    </style>
 </head>
 <body onload="initApp()">
 
@@ -152,13 +72,10 @@ color: #FFD700;
     <div class="energy-wrapper">
         <div class="energy-bar-container">
             <div id="energy-num">1000 / 1000</div>
+            <div class="battery-icon-box"><span class="bolt">⚡</span></div>
             <div id="energy-fill"></div>
         </div>
     </div>
-</div>
-
-<div id="tab-office" class="page">
-    <div style="margin-top:50px">صفحة المكتب قيد التحديث...</div>
 </div>
 
 <nav class="footer-nav">
@@ -168,55 +85,94 @@ color: #FFD700;
 </nav>
 
 <script>
-// --- نفس منطق البرمجة السابق (Firebase) لضمان عدم ضياع البيانات ---
-let score = 0;
-let pph = 0;
-let energy = 1000;
-const maxEnergy = 1000;
+    // إعدادات Firebase لضمان حفظ البيانات وعدم تصفيرها
+    const firebaseConfig = {
+        apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
+        authDomain: "jolt-coin.firebaseapp.com",
+        databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
+        projectId: "jolt-coin",
+        appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+    const tg = window.Telegram.WebApp;
+    const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user";
 
-function initApp() {
-    // استعادة البيانات من الذاكرة أو قاعدة البيانات هنا
-    updateUI();
-    setInterval(() => {
-        if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1);
-        updateUI();
-    }, 1000);
-}
+    let score = 0;
+    let pph = 0;
+    let energy = 1000;
+    const maxEnergy = 1000;
 
-function updateUI() {
-    document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
-    document.getElementById('energy-num').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
-    document.getElementById('energy-fill').style.width = (energy / maxEnergy * 100) + "%";
-}
+    function initApp() {
+        // جلب البيانات من Firebase فور تشغيل التطبيق
+        db.ref('users/' + userId).once('value', (s) => {
+            const d = s.val();
+            if(d) {
+                score = d.score || 0;
+                pph = d.pph || 0;
+                // استرجاع الطاقة بناءً على الوقت الذي قضاه المستخدم بعيداً
+                const lastTime = d.lastUpdate || Date.now();
+                const secondsPassed = Math.floor((Date.now() - lastTime) / 1000);
+                energy = Math.min(maxEnergy, (d.energy || 1000) + (secondsPassed * 1.5));
+            }
+            updateUI();
+        });
 
-document.getElementById('coin-click').addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    for(let i=0; i<e.changedTouches.length; i++) {
-        if(energy >= 1) {
-            score++;
-            energy--;
-            showPlusOne(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
-        }
+        // حلقة التحديث المستمر
+        setInterval(() => {
+            if(pph > 0) score += (pph / 3600);
+            if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.5);
+            updateUI();
+        }, 1000);
+
+        // حفظ دوري كل 5 ثوانٍ لضمان عدم ضياع أي نقرة
+        setInterval(saveData, 5000);
     }
-    updateUI();
-});
 
-function showPlusOne(x, y) {
-    const p = document.createElement('div');
-    p.className = 'plus-one';
-    p.innerText = '+1';
-    p.style.left = x + 'px';
-    p.style.top = (y - 40) + 'px';
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 800);
-}
+    function saveData() {
+        db.ref('users/' + userId).update({
+            score: score,
+            pph: pph,
+            energy: energy,
+            lastUpdate: Date.now()
+        });
+    }
 
-function switchTab(id, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
-    document.getElementById('tab-' + id).classList.add('page-active');
-    el.classList.add('nav-active');
-}
+    function updateUI() {
+        document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
+        document.getElementById('pph-display').innerText = Math.floor(pph).toLocaleString();
+        document.getElementById('energy-num').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
+        document.getElementById('energy-fill').style.width = (energy / maxEnergy * 100) + "%";
+    }
+
+    document.getElementById('coin-click').addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        for(let i=0; i<e.changedTouches.length; i++) {
+            if(energy >= 1) {
+                score++;
+                energy--;
+                showPlusOne(e.changedTouches[i].pageX, e.changedTouches[i].pageY);
+            }
+        }
+        updateUI();
+    });
+
+    function showPlusOne(x, y) {
+        const p = document.createElement('div');
+        p.className = 'plus-one';
+        p.innerText = '+1';
+        p.style.left = x + 'px';
+        p.style.top = (y - 50) + 'px';
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 800);
+    }
+
+    function switchTab(id, el) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
+        document.getElementById('tab-' + id).classList.add('page-active');
+        el.classList.add('nav-active');
+    }
 </script>
 </body>
 </html>
