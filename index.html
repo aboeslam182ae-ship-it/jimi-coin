@@ -10,180 +10,45 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
-        /* إعدادات الشاشة الأساسية */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            user-select: none; 
-            -webkit-tap-highlight-color: transparent; 
-            touch-action: manipulation; 
-        }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
 
-        /* الخلفية الزرقاء المتدرجة (نفس ألوان الصورة التي أرسلتها) */
         body { 
             background: radial-gradient(circle at center, #1e4a9e 0%, #0a1a3d 100%) no-repeat fixed; 
-            color: #fff; 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            overflow: hidden; 
-            height: 100vh; 
+            color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; 
         }
 
-        /* الهيدر: إزالة الخطوط تماماً */
-        .header { 
-            text-align: center; 
-            padding: 45px 15px 10px 15px; 
-            border: none !important; 
-        }
+        .header { text-align: center; padding: 45px 15px 10px 15px; border: none; }
+        #main-balance { font-size: 60px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.6); }
+        .profit-info { color: #FFD700; font-size: 16px; font-weight: bold; margin-top: -5px; }
 
-        #main-balance { 
-            font-size: 60px; 
-            font-weight: 900; 
-            text-shadow: 0 5px 15px rgba(0,0,0,0.6); 
-        }
+        .page { display: none; height: calc(100vh - 180px); width: 100%; flex-direction: column; align-items: center; justify-content: center; }
+        .page-active { display: flex !important; }
 
-        .profit-info { 
-            color: #FFD700; 
-            font-size: 16px; 
-            font-weight: bold; 
-            margin-top: -5px; 
-        }
-
-        /* نظام الصفحات */
-        .page { 
-            display: none; 
-            height: calc(100vh - 180px); 
-            width: 100%; 
-            flex-direction: column; 
-            align-items: center; 
-        }
-
-        .page-active { 
-            display: flex !important; 
-        }
-
-        /* تصميم الليرة (العملة) */
         #coin-click { 
-            width: 280px; 
-            height: 280px; 
-            border-radius: 50%; 
-            border: 8px solid #cd7f32; 
+            width: 280px; height: 280px; border-radius: 50%; border: 8px solid #cd7f32; 
             background: rgba(0,0,0,0.2) url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover; 
-            box-shadow: 0 10px 50px rgba(0,0,0,0.5); 
-            margin-top: 40px; 
-            transition: transform 0.05s; 
-            cursor: pointer;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.5); transition: transform 0.05s; cursor: pointer;
         }
+        #coin-click:active { transform: scale(0.92); }
 
-        #coin-click:active { 
-            transform: scale(0.92); 
-        }
-
-        /* شريط الطاقة المحسن مع أيقونة الصاعقة */
-        .energy-wrapper { 
-            width: 85%; 
-            margin-top: auto; 
-            margin-bottom: 60px; 
-        }
-
+        .energy-wrapper { width: 85%; margin-top: 40px; margin-bottom: 20px; }
         .energy-bar-container { 
-            width: 100%; 
-            height: 30px; 
-            background: rgba(0,0,0,0.6); 
-            border-radius: 15px; 
-            position: relative; 
-            border: 1px solid rgba(255,255,255,0.15); 
-            overflow: hidden; 
-            display: flex; 
-            align-items: center; 
+            width: 100%; height: 30px; background: rgba(0,0,0,0.6); border-radius: 15px; 
+            position: relative; border: 1px solid rgba(255,255,255,0.15); overflow: hidden; display: flex; align-items: center; 
         }
+        #energy-fill { position: absolute; right: 0; height: 100%; background: linear-gradient(90deg, #4da3ff, #2159ff); width: 100%; transition: width 0.3s; }
+        
+        .battery-icon-box { width: 38px; height: 100%; background: #4da3ff; z-index: 5; display: flex; align-items: center; justify-content: center; position: absolute; right: 0; }
+        .bolt { color: #FFFF00; font-weight: bold; font-size: 18px; text-shadow: 0 0 5px #000; }
+        #energy-num { position: absolute; width: 100%; text-align: center; font-weight: bold; font-size: 14px; z-index: 10; text-shadow: 1px 1px 2px #000; }
 
-        #energy-fill { 
-            position: absolute; 
-            right: 0; 
-            height: 100%; 
-            background: linear-gradient(90deg, #4da3ff, #2159ff); 
-            width: 100%; 
-            transition: width 0.3s ease; 
-        }
+        .plus-one { position: absolute; color: #FFD700; font-size: 38px; font-weight: 900; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 1000; text-shadow: 0 2px 10px #000; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-140px); } }
 
-        .battery-icon-box { 
-            width: 38px; 
-            height: 100%; 
-            background: #4da3ff; 
-            z-index: 5; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            position: absolute; 
-            right: 0;
-            box-shadow: -2px 0 10px rgba(0,0,0,0.3);
-        }
-
-        .bolt { 
-            color: #FFFF00; 
-            font-weight: bold; 
-            font-size: 18px; 
-            text-shadow: 0 0 5px #000; 
-        }
-
-        #energy-num { 
-            position: absolute; 
-            width: 100%; 
-            text-align: center; 
-            font-weight: bold; 
-            font-size: 14px; 
-            z-index: 10; 
-            text-shadow: 1px 1px 2px #000; 
-        }
-
-        /* تأثير +1 المتطاير */
-        .plus-one { 
-            position: absolute; 
-            color: #FFD700; 
-            font-size: 38px; 
-            font-weight: 900; 
-            pointer-events: none; 
-            animation: floatUp 0.8s ease-out forwards; 
-            z-index: 1000; 
-            text-shadow: 0 2px 10px #000; 
-        }
-
-        @keyframes floatUp { 
-            0% { opacity: 1; transform: translateY(0); } 
-            100% { opacity: 0; transform: translateY(-140px); } 
-        }
-
-        /* القائمة السفلية (الفوتر) */
-        .footer-nav { 
-            position: fixed; 
-            bottom: 0; 
-            width: 100%; 
-            height: 90px; 
-            background: rgba(10, 26, 61, 0.98); 
-            display: flex; 
-            border-top: 1px solid rgba(255,255,255,0.1); 
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-
-        .nav-item { 
-            flex: 1; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            justify-content: center; 
-            opacity: 0.4; 
-            color: #fff; 
-            transition: 0.3s;
-        }
-
-        .nav-active { 
-            opacity: 1; 
-            color: #FFD700; 
-        }
-
+        .footer-nav { position: fixed; bottom: 0; width: 100%; height: 90px; background: rgba(10, 26, 61, 0.98); display: flex; border-top: 1px solid rgba(255,255,255,0.1); }
+        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.4; color: #fff; transition: 0.3s; cursor: pointer; }
+        .nav-active { opacity: 1; color: #FFD700; }
         .nav-item span:first-child { font-size: 26px; margin-bottom: 4px; }
-        .nav-item span:last-child { font-size: 13px; font-weight: bold; }
     </style>
 </head>
 <body onload="initApp()">
@@ -205,10 +70,11 @@
     </div>
 
     <div id="tab-office" class="page">
-        <div style="margin-top:100px; font-weight:bold;">صفحة المكتب قيد التجهيز...</div>
+        <div style="font-size: 20px;">صفحة المكتب قيد التجهيز...</div>
     </div>
+
     <div id="tab-mine" class="page">
-        <div style="margin-top:100px; font-weight:bold;">صفحة التعدين قيد التجهيز...</div>
+        <div style="font-size: 20px;">صفحة التعدين قيد التجهيز...</div>
     </div>
 
     <nav class="footer-nav">
@@ -218,7 +84,6 @@
     </nav>
 
 <script>
-    // --- إعدادات قاعدة البيانات (Firebase) ---
     const firebaseConfig = {
         apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
         authDomain: "jolt-coin.firebaseapp.com",
@@ -228,52 +93,33 @@
     };
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    
-    // تعريف المستخدم (تلقائي من تلجرام أو مستخدم تجريبي)
     const tg = window.Telegram.WebApp;
-    const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user_muhammed";
+    const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user";
 
-    let score = 0;
-    let pph = 0;
-    let energy = 1000;
-    const maxEnergy = 1000;
+    let score = 0; let pph = 0; let energy = 1000; const maxEnergy = 1000;
 
     function initApp() {
-        // 1. جلب البيانات من السيرفر لضمان عدم التصفير
         db.ref('users/' + userId).once('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
-                score = data.score || 0;
-                pph = data.pph || 0;
-                
-                // حساب استرجاع الطاقة بناءً على الوقت الضائع
+                score = data.score || 0; pph = data.pph || 0;
                 const lastUpdate = data.lastUpdate || Date.now();
                 const secondsPassed = Math.floor((Date.now() - lastUpdate) / 1000);
                 energy = Math.min(maxEnergy, (data.energy || 1000) + (secondsPassed * 1.5));
             }
             updateUI();
         });
-
-        // 2. حلقة التحديث المستمرة (كل ثانية)
         setInterval(() => {
             if(pph > 0) score += (pph / 3600);
             if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.5);
             updateUI();
         }, 1000);
-
-        // 3. حفظ التقدم تلقائياً كل 7 ثوانٍ
         setInterval(autoSave, 7000);
-        
-        tg.expand(); // توسيع الشاشة في تلجرام
+        tg.expand();
     }
 
     function autoSave() {
-        db.ref('users/' + userId).update({
-            score: score,
-            pph: pph,
-            energy: energy,
-            lastUpdate: Date.now()
-        });
+        db.ref('users/' + userId).update({ score, pph, energy, lastUpdate: Date.now() });
     }
 
     function updateUI() {
@@ -283,29 +129,19 @@
         document.getElementById('energy-fill').style.width = (energy / maxEnergy * 100) + "%";
     }
 
-    // منطق النقر (دعم تعدد الأصابع)
     document.getElementById('coin-click').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        const touches = e.changedTouches;
-        for(let i=0; i<touches.length; i++) {
-            if(energy >= 1) {
-                score++;
-                energy--;
-                createTapAnimation(touches[i].pageX, touches[i].pageY);
-            }
+        for(let i=0; i<e.changedTouches.length; i++) {
+            if(energy >= 1) { score++; energy--; createTapAnimation(e.changedTouches[i].pageX, e.changedTouches[i].pageY); }
         }
         updateUI();
         if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
     });
 
     function createTapAnimation(x, y) {
-        const el = document.createElement('div');
-        el.className = 'plus-one';
-        el.innerText = '+1';
-        el.style.left = x + 'px';
-        el.style.top = (y - 50) + 'px';
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 800);
+        const el = document.createElement('div'); el.className = 'plus-one'; el.innerText = '+1';
+        el.style.left = x + 'px'; el.style.top = (y - 50) + 'px';
+        document.body.appendChild(el); setTimeout(() => el.remove(), 800);
     }
 
     function switchTab(id, element) {
