@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Seamless Jolt</title>
+    <title>Jimi Coin - Flat Ground Version</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -13,11 +13,10 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         body { background: #0c1a33; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
 
-        /* الخلفية الأصلية (البرق) المرفوعة على جيت هاب */
+        /* الخلفية المدمجة (صورة البرق) */
         .game-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            /* تأكد من أن ملف الخلفية jolt-bg.png مرفوع على جيت هاب */
             background: #0c1a33 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/jolt-bg.png') center/cover no-repeat;
             z-index: -1;
         }
@@ -26,67 +25,61 @@
         #main-balance { font-size: 55px; font-weight: 900; text-shadow: 2px 2px 10px #000; }
 
         .play-area {
-            height: 50vh; display: flex; justify-content: center; align-items: center; position: relative;
+            height: 55vh; display: flex; justify-content: center; align-items: center; position: relative;
         }
 
-        /* وحدة الارتداد الميكانيكية */
-        .hamster-unit {
+        /* حاوية النقر بنمط الهامستر */
+        .click-container {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             will-change: transform;
-            /* إزالة أي إطارات أو خلفيات إضافية هنا ليكون الجولتي مدمجاً تماماً */
-            background: transparent;
-            padding: 0;
-            border: none;
+            background: transparent; /* لضمان عدم وجود مستطيلات خلفية */
         }
 
-        .hamster-unit:active {
-            transform: scale(0.92) translateY(12px);
+        .click-container:active {
+            transform: scale(0.92) translateY(10px);
         }
 
-        /* الجولتي - رابط مؤكد من صورتك الأخيرة Jolt_pockets-png */
-        .jolt-model {
+        /* الجولتي - بدون أي إطار خلفي */
+        .jolt-character {
             width: 280px;
             height: 350px;
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets-png') center/contain no-repeat;
             z-index: 5;
-            margin-bottom: -50px; /* لدمج الأقدام مع القاعدة */
-            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
+            margin-bottom: -55px; /* دمج الأرجل مع القاعدة */
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.6));
         }
 
-        /* المنصة الزرقاء المضمنة في الأرض المسطحة */
-        .podium-flat {
-            width: 240px;
-            height: 60px;
-            /* تأثير دمج القاعدة المسطحة */
-            background: radial-gradient(circle, rgba(0,242,254,1) 0%, rgba(0,78,146,0.8) 100%);
+        /* القاعدة المسطحة والمدمجة في الأرض */
+        .flat-podium {
+            width: 260px;
+            height: 50px;
+            background: radial-gradient(circle, rgba(0,242,254,1) 0%, rgba(0,78,146,0.6) 100%);
             border-radius: 50%;
-            border: 4px solid rgba(79,172,254,0.8);
-            /* تأثير ظل للدمج مع الأرضية */
-            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.3);
+            border: 3px solid rgba(79,172,254,0.5);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.7), inset 0 0 15px rgba(255,255,255,0.2);
             z-index: 4;
-            /* موقع القاعدة المسطحة */
-            margin-top: -10px;
+            transform: perspective(500px) rotateX(20deg); /* جعلها تبدو مسطحة تماماً على الأرض */
         }
 
-        /* شريط الطاقة المصلح */
-        .energy-section { position: fixed; bottom: 110px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .energy-bar { width: 85%; height: 20px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid #4facfe; overflow: hidden; position: relative; }
-        #energy-fill { position: absolute; right: 0; height: 100%; background: #00f2fe; transition: width 0.2s; }
-        #energy-val { margin-top: 8px; font-weight: bold; color: #00f2fe; }
+        /* شريط الطاقة المطور */
+        .energy-wrap { position: fixed; bottom: 100px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .energy-bar-bg { width: 85%; height: 18px; background: rgba(0,0,0,0.6); border-radius: 10px; border: 1px solid #4facfe; overflow: hidden; position: relative; }
+        #energy-fill { position: absolute; right: 0; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.3s ease; }
+        #energy-text { margin-top: 8px; font-weight: bold; font-size: 16px; color: #00f2fe; text-shadow: 1px 1px 2px #000; }
 
-        .nav { position: fixed; bottom: 0; width: 100%; height: 85px; background: #07132e; display: flex; border-top: 1px solid #1e4a9e; }
-        .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
-        .tab.active { opacity: 1; color: #FFD700; }
+        .footer { position: fixed; bottom: 0; width: 100%; height: 80px; background: #07132e; display: flex; border-top: 1px solid #1e4a9e; }
+        .nav-button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.6; color: #fff; font-size: 12px; }
+        .nav-button.active { opacity: 1; color: #FFD700; }
 
-        .tap-effect { position: absolute; color: #fff; font-size: 40px; font-weight: 900; animation: popUp 0.7s forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 10px #00f2fe; }
-        @keyframes popUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-130px); } }
+        .tap-number { position: absolute; color: #fff; font-size: 45px; font-weight: 900; animation: floatUp 0.8s ease-out forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 10px #00f2fe; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-160px) scale(1.3); } }
     </style>
 </head>
-<body onload="init()">
+<body onload="initGame()">
 
     <div class="game-bg"></div>
 
@@ -95,23 +88,23 @@
     </div>
 
     <div class="play-area">
-        <div class="hamster-unit" id="clicker">
-            <div class="jolt-model"></div>
-            <div class="podium-flat"></div>
+        <div class="click-container" id="tap-zone">
+            <div class="jolt-character"></div>
+            <div class="flat-podium"></div>
         </div>
     </div>
 
-    <div class="energy-section">
-        <div class="energy-bar">
+    <div class="energy-wrap">
+        <div class="energy-bar-bg">
             <div id="energy-fill"></div>
         </div>
-        <div id="energy-val">1000 / 1000</div>
+        <div id="energy-text">1000 / 1000</div>
     </div>
 
-    <nav class="nav">
-        <div class="tab"><i>⛏️</i>تعدين</div>
-        <div class="tab active"><i>💰</i>نقر</div>
-        <div class="tab"><i>🏢</i>مكتب</div>
+    <nav class="footer">
+        <div class="nav-button"><i>🏠</i>مكتب</div>
+        <div class="nav-button active"><i>💰</i>نقر</div>
+        <div class="nav-button"><i>⛏️</i>تعدين</div>
     </nav>
 
 <script>
@@ -126,35 +119,42 @@
     const db = firebase.database();
     const userId = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "dev_user";
 
-    let balance = 0; let energy = 1000;
+    let score = 0; let energy = 1000;
 
-    function init() {
-        db.ref('users/' + userId).once('value', (s) => {
-            if(s.val()) { balance = s.val().score || 0; energy = s.val().energy || 1000; }
-            updateUI();
+    function initGame() {
+        db.ref('users/' + userId).once('value', (snapshot) => {
+            if(snapshot.val()) {
+                score = snapshot.val().score || 0;
+                energy = snapshot.val().energy || 1000;
+            }
+            refreshUI();
         });
-        setInterval(() => { if(energy < 1000) { energy += 1.5; updateUI(); } }, 1000);
-        setInterval(() => db.ref('users/' + userId).update({ score: balance, energy: Math.floor(energy) }), 4000);
+        setInterval(() => { if(energy < 1000) { energy += 1.5; refreshUI(); } }, 1000);
+        setInterval(() => db.ref('users/' + userId).update({ score: score, energy: Math.floor(energy) }), 4000);
     }
 
-    function updateUI() {
-        document.getElementById('main-balance').innerText = Math.floor(balance).toLocaleString();
-        document.getElementById('energy-val').innerText = `${Math.floor(energy)} / 1000`;
+    function refreshUI() {
+        document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
+        document.getElementById('energy-text').innerText = `${Math.floor(energy)} / 1000`;
         document.getElementById('energy-fill').style.width = (energy/10) + "%";
     }
 
-    document.getElementById('clicker').addEventListener('touchstart', (e) => {
+    document.getElementById('tap-zone').addEventListener('touchstart', (e) => {
         e.preventDefault();
         if(energy >= 1) {
-            balance++; energy--;
-            updateUI();
+            score++; energy--;
+            refreshUI();
+            
             const touch = e.touches[0];
             const p = document.createElement('div');
-            p.className = 'tap-effect'; p.innerText = '+1';
+            p.className = 'tap-number'; p.innerText = '+1';
             p.style.left = touch.pageX + 'px'; p.style.top = touch.pageY + 'px';
             document.body.appendChild(p);
-            setTimeout(() => p.remove(), 700);
-            if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            setTimeout(() => p.remove(), 800);
+
+            if(window.Telegram.WebApp.HapticFeedback) {
+                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+            }
         }
     });
 </script>
