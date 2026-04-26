@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Hamster Style</title>
+    <title>Jimi Coin - Hamster Mechanics</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -13,6 +13,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         body { background: #0c1a33; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
 
+        /* الخلفية (البرق) */
         .game-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -20,67 +21,65 @@
             z-index: -1;
         }
 
-        .header { text-align: center; padding: 50px 15px 10px; position: relative; z-index: 10; }
-        #main-balance { font-size: 55px; font-weight: 900; text-shadow: 2px 2px 10px #000; color: #fff; }
+        .header { text-align: center; padding: 60px 15px 10px; position: relative; z-index: 10; }
+        #main-balance { font-size: 55px; font-weight: 900; text-shadow: 2px 2px 10px #000; }
 
-        /* منطقة اللعب */
-        .play-section {
-            height: 55vh; display: flex; justify-content: center; align-items: center; position: relative;
+        .play-area {
+            height: 50vh; display: flex; justify-content: center; align-items: center; position: relative;
         }
 
-        /* حاوية الحركة المرتدة (نمط الهامستر) */
-        .hamster-container {
+        /* وحدة الارتداد الميكانيكية */
+        .hamster-mechanic {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
+            /* توقيت الحركة ليكون مطاطياً وسريعاً */
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             will-change: transform;
         }
 
-        /* تأثير الانضغاط عند اللمس */
-        .hamster-container:active {
-            transform: scale(0.92) translateY(10px);
+        /* تأثير الانضغاط عند اللمس (مثل الفيديو) */
+        .hamster-mechanic:active {
+            transform: scale(0.92) translateY(12px);
         }
 
-        /* صورة الجولتي */
-        .jolt-character {
+        /* الجولتي - تأكد من اسم الملف Jolt_pockets.png */
+        .jolt-model {
             width: 280px;
-            height: 350px;
+            height: 340px;
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center/contain no-repeat;
             z-index: 5;
-            margin-bottom: -50px; /* لدمج الأقدام مع المنصة */
-            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5));
+            margin-bottom: -50px;
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
         }
 
-        /* المنصة الدائرية (مثل الفيديو) */
-        .podium {
-            width: 250px;
-            height: 70px;
+        /* المنصة (التي ظهرت زرقاء في لقطاتك) */
+        .podium-base {
+            width: 240px;
+            height: 65px;
             background: radial-gradient(circle, #00f2fe 0%, #004e92 100%);
             border-radius: 50%;
-            border: 5px solid #4facfe;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7), inset 0 0 20px rgba(255,255,255,0.5);
+            border: 4px solid #4facfe;
+            box-shadow: 0 15px 30px rgba(0,0,0,0.8), inset 0 0 15px rgba(255,255,255,0.4);
             z-index: 4;
         }
 
-        /* شريط الطاقة المصلح */
-        .energy-wrapper { position: fixed; bottom: 100px; width: 100%; display: flex; flex-direction: column; align-items: center; }
-        .energy-bar-bg { width: 85%; height: 20px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid #4facfe; overflow: hidden; position: relative; }
-        #energy-fill { position: absolute; right: 0; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.3s ease; }
-        #energy-info { margin-top: 8px; font-weight: bold; font-size: 16px; color: #00f2fe; }
+        /* شريط الطاقة المصلح (تجنب الكسور الطويلة) */
+        .energy-section { position: fixed; bottom: 110px; width: 100%; display: flex; flex-direction: column; align-items: center; }
+        .energy-bar-container { width: 85%; height: 20px; background: rgba(0,0,0,0.5); border-radius: 10px; border: 1px solid #4facfe; overflow: hidden; position: relative; }
+        #energy-fill { position: absolute; right: 0; height: 100%; background: #00f2fe; transition: width 0.2s; }
+        #energy-val { margin-top: 8px; font-weight: bold; font-size: 16px; color: #00f2fe; text-shadow: 1px 1px 2px #000; }
 
-        .footer-nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #07132e; display: flex; border-top: 1px solid #1e4a9e; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
-        .nav-item.active { opacity: 1; color: #FFD700; }
-        .nav-item i { font-size: 24px; margin-bottom: 4px; }
+        .navigation { position: fixed; bottom: 0; width: 100%; height: 85px; background: #07132e; display: flex; border-top: 1px solid #1e4a9e; }
+        .nav-tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
+        .nav-tab.active { opacity: 1; color: #FFD700; }
 
-        /* تأثير رقم الـ +1 */
-        .plus-one { position: absolute; color: #fff; font-size: 40px; font-weight: 900; animation: hamsterPop 0.7s ease-out forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 10px #00f2fe; }
-        @keyframes hamsterPop { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-150px) scale(1.5); } }
+        .tap-anim { position: absolute; color: #fff; font-size: 42px; font-weight: 900; animation: hamsterPop 0.7s ease-out forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 10px #00f2fe; }
+        @keyframes hamsterPop { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-140px) scale(1.4); } }
     </style>
 </head>
-<body onload="initGame()">
+<body onload="start()">
 
     <div class="game-bg"></div>
 
@@ -88,24 +87,24 @@
         <div id="main-balance">0</div>
     </div>
 
-    <div class="play-section">
-        <div class="hamster-container" id="tap-target">
-            <div class="jolt-character"></div>
-            <div class="podium"></div>
+    <div class="play-area">
+        <div class="hamster-mechanic" id="click-target">
+            <div class="jolt-model"></div>
+            <div class="podium-base"></div>
         </div>
     </div>
 
-    <div class="energy-wrapper">
-        <div class="energy-bar-bg">
+    <div class="energy-section">
+        <div class="energy-bar-container">
             <div id="energy-fill"></div>
         </div>
-        <div id="energy-info">1000 / 1000</div>
+        <div id="energy-val">1000 / 1000</div>
     </div>
 
-    <nav class="footer-nav">
-        <div class="nav-item"><i>⛏️</i>تعدين</div>
-        <div class="nav-item active"><i>💰</i>نقر</div>
-        <div class="nav-item"><i>🏠</i>مكتب</div>
+    <nav class="navigation">
+        <div class="nav-tab"><i>⛏️</i>تعدين</div>
+        <div class="nav-tab active"><i>💰</i>نقر</div>
+        <div class="nav-tab"><i>⚙️
     </nav>
 
 <script>
@@ -120,41 +119,35 @@
     const db = firebase.database();
     const userId = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "dev_user";
 
-    let score = 0; let energy = 1000;
+    let balance = 0; let energy = 1000;
 
-    function initGame() {
+    function start() {
         db.ref('users/' + userId).once('value', (s) => {
-            if(s.val()) { score = s.val().score || 0; energy = s.val().energy || 1000; }
-            syncUI();
+            if(s.val()) { balance = s.val().score || 0; energy = s.val().energy || 1000; }
+            ui();
         });
-        setInterval(() => { if(energy < 1000) { energy += 1.5; syncUI(); } }, 1000);
-        setInterval(() => db.ref('users/' + userId).update({ score: score, energy: Math.floor(energy) }), 4000);
+        setInterval(() => { if(energy < 1000) { energy += 1.2; ui(); } }, 1000);
+        setInterval(() => db.ref('users/' + userId).update({ score: balance, energy: Math.floor(energy) }), 4000);
     }
 
-    function syncUI() {
-        document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
-        document.getElementById('energy-info').innerText = `${Math.floor(energy)} / 1000`;
+    function ui() {
+        document.getElementById('main-balance').innerText = Math.floor(balance).toLocaleString();
+        document.getElementById('energy-val').innerText = `${Math.floor(energy)} / 1000`;
         document.getElementById('energy-fill').style.width = (energy/10) + "%";
     }
 
-    document.getElementById('tap-target').addEventListener('touchstart', (e) => {
+    document.getElementById('click-target').addEventListener('touchstart', (e) => {
         e.preventDefault();
         if(energy >= 1) {
-            score++; energy--;
-            syncUI();
-            
-            // إضافة تأثير الرقم
-            const touch = e.touches[0];
+            balance++; energy--;
+            ui();
+            const t = e.touches[0];
             const p = document.createElement('div');
-            p.className = 'plus-one'; p.innerText = '+1';
-            p.style.left = touch.pageX + 'px'; p.style.top = touch.pageY + 'px';
+            p.className = 'tap-anim'; p.innerText = '+1';
+            p.style.left = t.pageX + 'px'; p.style.top = t.pageY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 700);
-
-            // اهتزاز الموبايل
-            if(window.Telegram.WebApp.HapticFeedback) {
-                window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-            }
+            if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     });
 </script>
