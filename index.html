@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Premium</title>
+    <title>Jimi Coin - Professional Layering</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -12,113 +12,125 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
         
         body { 
-            background: radial-gradient(circle at center, #1e3a5f 0%, #07132e 100%); 
+            background: radial-gradient(circle at center, #1b3d5e 0%, #050b18 100%); 
             color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; 
             display: flex; flex-direction: column;
         }
 
-        .header { text-align: center; padding: 50px 0 10px; }
-        #balance { font-size: 55px; font-weight: 900; text-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .header { text-align: center; padding: 40px 0 10px; }
+        #balance { font-size: 50px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
 
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
 
-        .tap-container {
+        .character-wrapper {
             position: relative; display: flex; flex-direction: column; align-items: center;
             transition: transform 0.1s ease;
         }
-        .tap-container:active { transform: scale(0.94); }
+        .character-wrapper:active { transform: scale(0.95); }
 
-        /* استخدام الرابط المباشر مع ميزة مسح السواد لضمان الشفافية */
-        .char-img {
-            width: 330px; height: 330px;
-            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png?v=10') center bottom/contain no-repeat;
-            z-index: 5;
-            margin-bottom: -45px;
-            mix-blend-mode: screen; /* يمسح السواد برمجياً لضمان ظهور القاعدة */
+        /* طبقة الشخصية الشفافة - الأرجل ستكون واضحة هنا */
+        .jolt-character {
+            width: 320px; height: 420px;
+            /* استبدل الرابط أدناه برابط صورتك الشفافة الجديد بعد رفعه */
+            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png?v=20') center bottom/contain no-repeat;
+            z-index: 10; /* فوق القاعدة */
+            margin-bottom: -30px; /* لدمج الأقدام مع المنصة */
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
         }
 
-        .podium {
-            width: 270px; height: 50px;
-            background: radial-gradient(circle, #00f2fe 0%, #004e92 100%);
-            border-radius: 50%; border: 2px solid #4facfe;
-            box-shadow: 0 15px 40px rgba(0,0,0,0.8);
-            transform: perspective(600px) rotateX(40deg);
-            z-index: 4;
+        /* المنصة البرمجية التي ستقف عليها الشخصية */
+        .digital-base {
+            width: 260px; height: 50px;
+            background: radial-gradient(circle, #00f2fe 10%, #004e92 100%);
+            border-radius: 50%; 
+            border: 3px solid #4facfe;
+            box-shadow: 0 10px 40px rgba(0,242,254,0.5), inset 0 0 20px rgba(255,255,255,0.4);
+            transform: perspective(600px) rotateX(50deg);
+            z-index: 5; /* تحت الأرجل */
+            position: relative;
         }
 
-        .energy-box { width: 100%; padding-bottom: 110px; text-align: center; }
-        .bar-outer { width: 85%; height: 20px; background: rgba(0,0,0,0.6); border-radius: 10px; margin: 0 auto; overflow: hidden; border: 1px solid #4facfe; }
-        #bar-inner { height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); width: 100%; transition: width 0.3s; }
-        #energy-num { margin-top: 8px; color: #00f2fe; font-weight: bold; }
+        /* توهج إضافي تحت المنصة */
+        .digital-base::after {
+            content: ''; position: absolute; top: 50%; left: 50%;
+            width: 110%; height: 110%; transform: translate(-50%, -50%);
+            background: rgba(0, 242, 254, 0.2); filter: blur(20px); border-radius: 50%; z-index: -1;
+        }
 
-        .nav { position: fixed; bottom: 0; width: 100%; height: 80px; background: #050d1f; display: flex; border-top: 1px solid #1e4a9e; }
-        .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.6; color: #fff; font-size: 12px; }
-        .nav-item.active { opacity: 1; color: #FFD700; }
+        .energy-bar-area { width: 100%; padding-bottom: 100px; text-align: center; }
+        .bar-container { width: 80%; height: 18px; background: rgba(0,0,0,0.5); border-radius: 20px; margin: 0 auto; overflow: hidden; border: 1px solid #4facfe; }
+        #fill { height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); width: 100%; transition: width 0.3s; }
+        #nrg-text { margin-top: 10px; font-weight: bold; color: #00f2fe; }
 
-        .plus { position: absolute; font-size: 48px; font-weight: 900; animation: floatUp 0.8s forwards; pointer-events: none; text-shadow: 0 0 10px #00f2fe; color: #fff; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-170px); } }
+        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 80px; background: #030816; display: flex; border-top: 1px solid #1a3366; }
+        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
+        .menu-item.active { opacity: 1; color: #ffd700; }
+
+        .tap-effect { position: absolute; font-size: 45px; font-weight: 900; color: #fff; animation: floatUp 0.8s ease-out forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 15px #00f2fe; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-150px); } }
     </style>
 </head>
-<body onload="initGame()">
+<body onload="startApp()">
 
     <div class="header"><div id="balance">0</div></div>
 
     <div class="game-zone">
-        <div class="tap-container" id="tap-target">
-            <div class="char-img"></div>
-            <div class="podium"></div>
+        <div class="character-wrapper" id="main-tap">
+            <div class="jolt-character"></div>
+            <div class="digital-base"></div>
         </div>
     </div>
 
-    <div class="energy-box">
-        <div class="bar-outer"><div id="bar-inner"></div></div>
-        <div id="energy-num">1000 / 1000</div>
+    <div class="energy-bar-area">
+        <div class="bar-container"><div id="fill"></div></div>
+        <div id="nrg-text">1000 / 1000</div>
     </div>
 
-    <nav class="nav">
-        <div class="nav-item"><i>🏠</i>مكتب</div>
-        <div class="nav-item active"><i>💰</i>نقر</div>
-        <div class="nav-item"><i>⛏️</i>تعدين</div>
+    <nav class="menu-footer">
+        <div class="menu-item"><i>🏠</i>مكتب</div>
+        <div class="menu-item active"><i>💰</i>نقر</div>
+        <div class="menu-item"><i>⛏️</i>تعدين</div>
     </nav>
 
 <script>
-    const fb = {
+    // إعدادات Firebase الخاصة بك
+    const firebaseConfig = {
         apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
         authDomain: "jolt-coin.firebaseapp.com",
         databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
         projectId: "jolt-coin",
         appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
     };
-    firebase.initializeApp(fb);
-    const db = firebase.database();
-    const uid = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "dev";
-    let coins = 0, nrg = 1000;
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const user_id = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "user_1";
+    let score = 0, energy = 1000;
 
-    function initGame() {
-        db.ref('users/' + uid).once('value', (s) => {
-            if(s.val()) { coins = s.val().score || 0; nrg = s.val().energy || 1000; }
-            refreshUI();
+    function startApp() {
+        database.ref('users/' + user_id).once('value', (snapshot) => {
+            if(snapshot.val()) { score = snapshot.val().score || 0; energy = snapshot.val().energy || 1000; }
+            syncUI();
         });
-        setInterval(() => { if(nrg < 1000) { nrg += 1.5; refreshUI(); } }, 1000);
-        setInterval(() => db.ref('users/' + uid).update({ score: coins, energy: Math.floor(nrg) }), 4000);
+        setInterval(() => { if(energy < 1000) { energy += 1.5; syncUI(); } }, 1000);
+        setInterval(() => database.ref('users/' + user_id).update({ score, energy: Math.floor(energy) }), 5000);
     }
 
-    function refreshUI() {
-        document.getElementById('balance').innerText = Math.floor(coins).toLocaleString();
-        document.getElementById('energy-num').innerText = `${Math.floor(nrg)} / 1000`;
-        document.getElementById('bar-inner').style.width = (nrg / 10) + "%";
+    function syncUI() {
+        document.getElementById('balance').innerText = Math.floor(score).toLocaleString();
+        document.getElementById('nrg-text').innerText = `${Math.floor(energy)} / 1000`;
+        document.getElementById('fill').style.width = (energy / 10) + "%";
     }
 
-    document.getElementById('tap-target').addEventListener('touchstart', (e) => {
+    document.getElementById('main-tap').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if(nrg >= 1) {
-            coins++; nrg--; refreshUI();
+        if(energy >= 1) {
+            score++; energy--; syncUI();
             const touch = e.touches[0];
-            const p = document.createElement('div');
-            p.className = 'plus'; p.innerText = '+1';
-            p.style.left = touch.pageX + 'px'; p.style.top = touch.pageY + 'px';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 800);
+            const effect = document.createElement('div');
+            effect.className = 'tap-effect'; effect.innerText = '+1';
+            effect.style.left = touch.pageX + 'px'; effect.style.top = touch.pageY + 'px';
+            document.body.appendChild(effect);
+            setTimeout(() => effect.remove(), 800);
             if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
         }
     });
