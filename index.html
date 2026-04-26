@@ -11,9 +11,9 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         
-        /* خلفية الهامستر الاحترافية */
+        /* تدرج خلفية الهامستر لتركيز الضوء في المنتصف */
         body { 
-            background: radial-gradient(circle at center, #1c3d5e 0%, #081125 100%); 
+            background: radial-gradient(circle at center, #1e3a5f 0%, #07132e 100%); 
             color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; 
             display: flex; flex-direction: column;
         }
@@ -23,47 +23,45 @@
 
         .game-area { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
 
-        /* منطقة الشخصية */
-        .character-box {
+        .character-container {
             position: relative; display: flex; flex-direction: column; align-items: center;
             transition: transform 0.1s ease; will-change: transform;
         }
-        .character-box:active { transform: scale(0.94); }
+        .character-container:active { transform: scale(0.92); }
 
-        /* تعديل احترافي للصورة لدمج الحواف الزرقاء مع الخلفية */
-        .main-char {
-            width: 280px; height: 400px;
-            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center bottom/cover no-repeat;
+        /* تعديل حاسم: جعل الصورة دائرية وموهة الحواف لتختفي الخلفية الزرقاء للمستطيل */
+        .main-image {
+            width: 280px; height: 280px; /* جعل العرض والطول متساويين للقص الدائري */
+            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center top no-repeat;
+            background-size: 100%;
             z-index: 5;
-            mask-image: linear-gradient(to bottom, black 80%, transparent 100%); /* تنعيم الحواف السفلية */
-            -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
-            border-radius: 20px;
-            margin-bottom: -60px;
+            border-radius: 50%; /* قص الصورة بشكل دائري لإخفاء زوايا المستطيل الأزرق */
+            box-shadow: 0 0 20px rgba(0,242,254,0.3);
+            margin-bottom: -30px;
+            border: 4px solid rgba(0, 242, 254, 0.2);
         }
 
-        /* منصة دائرية مدمجة */
-        .podium {
-            width: 250px; height: 45px;
+        /* المنصة تحت الشخصية مباشرة */
+        .base-platform {
+            width: 220px; height: 40px;
             background: radial-gradient(circle, #00f2fe 0%, #004e92 100%);
             border-radius: 50%; border: 2px solid #4facfe;
-            box-shadow: 0 0 30px rgba(0,242,254,0.4);
-            transform: perspective(500px) rotateX(30deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            transform: perspective(500px) rotateX(35deg);
             z-index: 4;
         }
 
-        /* شريط الطاقة */
-        .nrg-container { width: 100%; padding-bottom: 110px; text-align: center; }
-        .nrg-bar { width: 85%; height: 16px; background: rgba(0,0,0,0.4); border-radius: 10px; margin: 0 auto; overflow: hidden; border: 1px solid #4facfe; }
-        #nrg-fill { height: 100%; background: #00f2fe; width: 100%; transition: width 0.3s; }
-        #nrg-label { margin-top: 8px; color: #00f2fe; font-weight: bold; }
+        .energy-wrap { width: 100%; padding-bottom: 110px; text-align: center; }
+        .energy-bar { width: 85%; height: 16px; background: rgba(0,0,0,0.4); border-radius: 10px; margin: 0 auto; overflow: hidden; border: 1px solid #4facfe; }
+        #energy-fill { height: 100%; background: #00f2fe; width: 100%; transition: width 0.3s; }
+        #energy-label { margin-top: 8px; color: #00f2fe; font-weight: bold; }
 
-        /* القائمة السفلية */
         .footer { position: fixed; bottom: 0; width: 100%; height: 80px; background: #050d1f; display: flex; border-top: 1px solid #1e4a9e; }
-        .btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
-        .btn.active { opacity: 1; color: #FFD700; }
+        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
+        .nav-btn.active { opacity: 1; color: #FFD700; }
 
-        .coin-plus { position: absolute; font-size: 45px; font-weight: 900; animation: up 0.8s forwards; pointer-events: none; text-shadow: 0 0 10px #00f2fe; }
-        @keyframes up { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-150px); } }
+        .tap-effect { position: absolute; font-size: 45px; font-weight: 900; animation: fadeUp 0.8s forwards; pointer-events: none; text-shadow: 0 0 10px #00f2fe; }
+        @keyframes fadeUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-150px); } }
     </style>
 </head>
 <body onload="init()">
@@ -71,59 +69,59 @@
     <div class="header"><div id="balance">0</div></div>
 
     <div class="game-area">
-        <div class="character-box" id="tap-area">
-            <div class="main-char"></div>
-            <div class="podium"></div>
+        <div class="character-container" id="tap-node">
+            <div class="main-image"></div>
+            <div class="base-platform"></div>
         </div>
     </div>
 
-    <div class="nrg-container">
-        <div class="nrg-bar"><div id="nrg-fill"></div></div>
-        <div id="nrg-label">1000 / 1000</div>
+    <div class="energy-wrap">
+        <div class="energy-bar"><div id="energy-fill"></div></div>
+        <div id="energy-label">1000 / 1000</div>
     </div>
 
     <nav class="footer">
-        <div class="btn"><i>🏠</i>مكتب</div>
-        <div class="btn active"><i>💰</i>نقر</div>
-        <div class="btn"><i>⛏️</i>تعدين</div>
+        <div class="nav-btn"><i>🏠</i>مكتب</div>
+        <div class="nav-btn active"><i>💰</i>نقر</div>
+        <div class="nav-btn"><i>⛏️</i>تعدين</div>
     </nav>
 
 <script>
-    const config = {
+    const firebaseConfig = {
         apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
         authDomain: "jolt-coin.firebaseapp.com",
         databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
         projectId: "jolt-coin",
         appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
     };
-    firebase.initializeApp(config);
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
-    const user = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "dev";
+    const uid = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "user_1";
     let score = 0, nrg = 1000;
 
     function init() {
-        db.ref('users/' + user).once('value', (s) => {
+        db.ref('users/' + uid).once('value', (s) => {
             if(s.val()) { score = s.val().score || 0; nrg = s.val().energy || 1000; }
-            upd();
+            updateUI();
         });
-        setInterval(() => { if(nrg < 1000) { nrg += 1; upd(); } }, 1000);
-        setInterval(() => db.ref('users/' + user).update({ score, energy: Math.floor(nrg) }), 4000);
+        setInterval(() => { if(nrg < 1000) { nrg += 1; updateUI(); } }, 1000);
+        setInterval(() => db.ref('users/' + uid).update({ score, energy: Math.floor(nrg) }), 4000);
     }
 
-    function upd() {
+    function updateUI() {
         document.getElementById('balance').innerText = Math.floor(score).toLocaleString();
-        document.getElementById('nrg-label').innerText = `${Math.floor(nrg)} / 1000`;
-        document.getElementById('nrg-fill').style.width = (nrg / 10) + "%";
+        document.getElementById('energy-label').innerText = `${Math.floor(nrg)} / 1000`;
+        document.getElementById('energy-fill').style.width = (nrg / 10) + "%";
     }
 
-    document.getElementById('tap-area').addEventListener('touchstart', (e) => {
+    document.getElementById('tap-node').addEventListener('touchstart', (e) => {
         e.preventDefault();
         if(nrg >= 1) {
-            score++; nrg--; upd();
-            const t = e.touches[0];
+            score++; nrg--; updateUI();
+            const touch = e.touches[0];
             const p = document.createElement('div');
-            p.className = 'coin-plus'; p.innerText = '+1';
-            p.style.left = t.pageX + 'px'; p.style.top = t.pageY + 'px';
+            p.className = 'tap-effect'; p.innerText = '+1';
+            p.style.left = touch.pageX + 'px'; p.style.top = touch.pageY + 'px';
             document.body.appendChild(p);
             setTimeout(() => p.remove(), 800);
             if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
