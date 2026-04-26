@@ -3,52 +3,47 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jolt Coin - Power Edition</title>
+    <title>Jolt Coin - Multi-Touch Edition</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        body { background-color: #000; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; position: relative; }
         
-        /* الهيدر */
         .header { text-align: center; padding: 15px; background: #0a0a0a; border-bottom: 1px solid #222; }
         #main-balance { font-size: 40px; font-weight: 900; }
         .profit-info { color: #FFD700; font-size: 13px; }
 
-        /* الصفحات */
         .page { display: none; height: calc(100vh - 180px); width: 100%; overflow-y: auto; padding: 20px; flex-direction: column; align-items: center; }
         .page-active { display: flex !important; }
 
-        /* صفحة النقر والعملة */
         #coin-click { width: 260px; height: 260px; border-radius: 50%; border: 8px solid #cd7f32; 
             background: #111 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover;
-            box-shadow: 0 0 40px rgba(205, 127, 50, 0.4); margin-top: 40px; transition: transform 0.05s; }
-        #coin-click:active { transform: scale(0.95); }
+            box-shadow: 0 0 40px rgba(205, 127, 50, 0.4); margin-top: 40px; transition: transform 0.05s; z-index: 10; }
 
-        /* شريط الطاقة والبطارية */
-        .energy-container { width: 85%; margin-top: 40px; }
-        .energy-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; font-weight: bold; font-size: 18px; }
+        /* شريط الطاقة المطور مع البطارية في القلب */
+        .energy-wrapper { width: 85%; margin-top: 50px; position: relative; }
+        .energy-label { display: flex; justify-content: space-between; font-weight: bold; font-size: 14px; margin-bottom: 8px; }
         
-        /* تصميم البطارية الصغير */
-        .battery-icon { width: 30px; height: 16px; border: 2px solid #fff; border-radius: 3px; position: relative; display: flex; align-items: center; padding: 1px; }
-        .battery-icon::after { content: ''; position: absolute; right: -5px; top: 4px; width: 3px; height: 6px; background: #fff; border-radius: 0 1px 1px 0; }
-        .battery-bolt { color: #FFD700; font-size: 12px; position: absolute; left: 50%; transform: translateX(-50%); font-weight: bold; }
+        .energy-bar-container { width: 100%; height: 28px; background: #1a1a1a; border-radius: 15px; position: relative; border: 1px solid #333; overflow: hidden; display: flex; align-items: center; }
+        #energy-fill { position: absolute; left: 0; top: 0; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); width: 100%; transition: width 0.3s ease-out; z-index: 1; }
         
-        .energy-bar-bg { width: 100%; height: 12px; background: #222; border-radius: 10px; overflow: hidden; border: 1px solid #333; }
-        #energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #FFD700, #FFA500); transition: width 0.2s; }
+        /* البطارية داخل الشريط */
+        .battery-in-bar { position: absolute; left: 10px; z-index: 5; display: flex; align-items: center; gap: 5px; color: #fff; font-weight: bold; font-size: 14px; text-shadow: 1px 1px 2px #000; }
+        .battery-shape { width: 20px; height: 11px; border: 1.5px solid #fff; border-radius: 2px; position: relative; }
+        .battery-shape::after { content: ''; position: absolute; right: -4px; top: 2px; width: 2px; height: 4px; background: #fff; }
+        .bolt { color: #FFD700; font-size: 10px; position: absolute; left: 50%; transform: translateX(-50%); }
 
-        /* القائمة السفلية */
-        .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: #050505; display: flex; border-top: 1px solid #222; }
+        /* تأثير +1 */
+        .plus-one { position: absolute; color: #FFD700; font-size: 30px; font-weight: 900; pointer-events: none; animation: floatUp 0.8s ease-out forwards; z-index: 100; text-shadow: 0 0 10px #000; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-150px); } }
+
+        .footer-nav { position: fixed; bottom: 0; left: 0; right: 0; height: 80px; background: #050505; display: flex; border-top: 1px solid #222; z-index: 50; }
         .nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: #555; font-size: 12px; }
         .nav-item-active { color: #FFD700; }
         .nav-item span:first-child { font-size: 24px; }
-
-        /* الكروت */
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; width: 100%; }
-        .card { background: #111; border-radius: 15px; padding: 15px; border: 1px solid #222; text-align: center; }
-        .btn-buy { background: #FFD700; color: #000; border: none; padding: 8px 12px; border-radius: 10px; font-weight: bold; width: 100%; margin-top: 10px; }
     </style>
 </head>
 <body onload="initApp()">
@@ -61,34 +56,23 @@
     <div id="tab-tap" class="page page-active">
         <div id="coin-click"></div>
         
-        <div class="energy-container">
-            <div class="energy-header">
-                <div class="battery-icon">
-                    <span class="battery-bolt">⚡</span>
-                </div>
-                <span id="energy-text">1000 / 1000</span>
+        <div class="energy-wrapper">
+            <div class="energy-label">
+                <span>الطاقة</span>
+                <span id="energy-num">1000/1000</span>
             </div>
-            <div class="energy-bar-bg">
+            <div class="energy-bar-container">
                 <div id="energy-fill"></div>
-            </div>
-        </div>
-    </div>
-
-    <div id="tab-mine" class="page">
-        <h3 style="margin-bottom: 20px;">التطوير ⛏️</h3>
-        <div class="grid">
-            <div class="card">
-                <div style="font-size:30px">📟</div>
-                <div style="font-weight:bold; font-size:14px">كرت GPU</div>
-                <div style="color:#FFD700; font-size:11px">+500/ساعة</div>
-                <button class="btn-buy" onclick="buyItem('GPU', 5000, 500)">💰 5,000</button>
+                <div class="battery-in-bar">
+                    <div class="battery-shape"><span class="bolt">⚡</span></div>
+                </div>
             </div>
         </div>
     </div>
 
     <nav class="footer-nav">
-        <div class="nav-item" onclick="switchTab('mine', this)"><span>⛏️</span><span>تعدين</span></div>
-        <div class="nav-item nav-item-active" onclick="switchTab('tap', this)"><span>💰</span><span>نقر</span></div>
+        <div class="nav-item"><span>⛏️</span><span>تعدين</span></div>
+        <div class="nav-item nav-item-active"><span>💰</span><span>نقر</span></div>
     </nav>
 
     <script>
@@ -102,7 +86,7 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
         const tg = window.Telegram.WebApp;
-        const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user";
+        const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "user_123";
 
         let score = 0;
         let pph = 0;
@@ -112,57 +96,51 @@
         function initApp() {
             db.ref('users/' + userId).once('value', (s) => {
                 const d = s.val();
-                if(d) { 
-                    score = d.score || 0; 
-                    pph = d.pph || 0; 
-                    updateUI(); 
-                }
+                if(d) { score = d.score || 0; pph = d.pph || 0; updateUI(); }
             });
-            
-            // الربح التلقائي + شحن الطاقة
             setInterval(() => {
                 if(pph > 0) score += (pph / 3600);
-                if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.5);
+                if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.2);
                 updateUI();
             }, 1000);
-
             setInterval(() => db.ref('users/' + userId).update({ score: score, pph: pph }), 10000);
         }
 
         function updateUI() {
             document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
             document.getElementById('pph-value').innerText = Math.floor(pph).toLocaleString();
-            document.getElementById('energy-text').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
+            document.getElementById('energy-num').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
             document.getElementById('energy-fill').style.width = (energy / maxEnergy * 100) + "%";
         }
 
+        // دعم اللمس المتعدد Multi-touch وتأثير +1
         document.getElementById('coin-click').addEventListener('touchstart', (e) => {
             e.preventDefault();
-            if(energy >= 1) {
-                score++;
-                energy--;
-                updateUI();
-                if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-            } else {
-                if(tg.HapticFeedback) tg.HapticFeedback.notificationOccurred('error');
+            const touches = e.changedTouches;
+            
+            for(let i = 0; i < touches.length; i++) {
+                if(energy >= 1) {
+                    score++;
+                    energy--;
+                    
+                    // إنشاء رقم +1 في مكان اللمس بالضبط
+                    const plusOne = document.createElement('div');
+                    plusOne.className = 'plus-one';
+                    plusOne.innerText = '+1';
+                    plusOne.style.left = touches[i].pageX + 'px';
+                    plusOne.style.top = touches[i].pageY + 'px';
+                    document.body.appendChild(plusOne);
+                    
+                    setTimeout(() => plusOne.remove(), 800);
+                }
             }
+            updateUI();
+            if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
+            
+            // تأثير بصري للعملة
+            document.getElementById('coin-click').style.transform = 'scale(0.95)';
+            setTimeout(() => { document.getElementById('coin-click').style.transform = 'scale(1)'; }, 50);
         });
-
-        function switchTab(id, el) {
-            document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('nav-item-active'));
-            document.getElementById('tab-' + id).classList.add('page-active');
-            el.classList.add('nav-item-active');
-        }
-
-        function buyItem(name, cost, profit) {
-            if(score >= cost) {
-                score -= cost; pph += profit; updateUI();
-                tg.showAlert(`تم شراء ${name}`);
-            } else {
-                tg.showAlert("نقاطك غير كافية!");
-            }
-        }
     </script>
 </body>
 </html>
