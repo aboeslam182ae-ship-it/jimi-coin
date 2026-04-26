@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Premium</title>
+    <title>Jimi Coin - Fixed</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -11,10 +11,8 @@
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
-
         body { background: #0a1a3d; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
 
-        /* الخلفية الثابتة (البرق) */
         .game-background {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -22,63 +20,58 @@
             z-index: -1;
         }
 
-        .header { text-align: center; padding: 50px 15px 10px; position: relative; z-index: 20; }
-        #main-balance { font-size: 60px; font-weight: 900; text-shadow: 2px 2px 8px #000; }
+        .header { text-align: center; padding: 40px 15px 10px; position: relative; z-index: 20; }
+        #main-balance { font-size: 55px; font-weight: 900; text-shadow: 2px 2px 8px #000; }
 
-        /* منطقة اللعب المركزية */
         .play-area {
             flex: 1; width: 100%; display: flex; justify-content: center; align-items: center;
-            position: relative; height: 60vh;
+            position: relative; height: 55vh;
         }
 
-        /* الحاوية التي تجمع الجولتي والمنصة معاً لتحريكهما */
+        /* الحاوية التي تجمع الجولتي والقاعدة لضمان ترتيبهما */
         .click-wrapper {
             position: relative;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: transform 0.1s ease-out; /* سرعة الحركة */
+            transition: transform 0.1s ease-out;
             cursor: pointer;
             will-change: transform;
+            margin-top: 50px;
         }
 
-        /* حركة النزول عند الضغط (كأنك تضغط على المنصة) */
-        .click-wrapper:active {
-            transform: translateY(15px) scale(0.97);
-        }
+        .click-wrapper:active { transform: translateY(12px) scale(0.98); }
 
-        /* صورة الجولتي (يجب أن تكون شفافة PNG) */
+        /* تصغير حجم الجولتي ليتناسب مع القاعدة */
         .jolt-character {
-            width: 260px;
-            height: 260px;
+            width: 180px; /* تم التصغير من 260 */
+            height: 180px;
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/jolt_pockets.png') center/contain no-repeat;
             z-index: 10;
-            margin-bottom: -40px; /* لجعله يبدو واقفاً داخل المنصة */
+            margin-bottom: -35px; /* تداخل بسيط مع القاعدة ليظهر واقفاً عليها */
         }
 
-        /* المنصة (التي أشرت إليها بالأحمر) */
+        /* تعديل شكل القاعدة لتشبه الصورة التي طلبتها */
         .base-platform {
-            width: 240px;
-            height: 60px;
-            background: radial-gradient(ellipse at center, #00f2fe 0%, #1e4a9e 70%);
+            width: 200px;
+            height: 50px;
+            background: radial-gradient(ellipse at center, #00f2fe 0%, #1e4a9e 80%);
             border-radius: 50%;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.6), inset 0 0 20px rgba(255,255,255,0.3);
-            border: 4px solid #4facfe;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.6), inset 0 0 15px rgba(255,255,255,0.4);
+            border: 3px solid #4facfe;
             z-index: 5;
         }
 
-        /* شريط الطاقة */
         .energy-container { position: fixed; bottom: 100px; width: 100%; display: flex; justify-content: center; }
-        .energy-bar { width: 80%; height: 20px; background: rgba(0,0,0,0.5); border-radius: 10px; overflow: hidden; border: 1px solid #4facfe; position: relative; }
-        #energy-fill { position: absolute; right: 0; height: 100%; background: #00f2fe; width: 100%; transition: width 0.2s; }
-        #energy-text { position: absolute; width: 100%; text-align: center; font-size: 12px; font-weight: bold; line-height: 20px; }
+        .energy-bar { width: 85%; height: 22px; background: rgba(0,0,0,0.6); border-radius: 11px; overflow: hidden; border: 1px solid #4facfe; position: relative; }
+        #energy-fill { position: absolute; right: 0; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.2s; }
+        #energy-text { position: absolute; width: 100%; text-align: center; font-size: 13px; font-weight: bold; line-height: 22px; z-index: 5; text-shadow: 1px 1px 2px #000; }
 
-        /* الأزرار السفلية */
-        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 80px; background: #07132e; display: flex; border-top: 2px solid #1e4a9e; }
-        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.6; }
+        .nav-bar { position: fixed; bottom: 0; width: 100%; height: 85px; background: #07132e; display: flex; border-top: 2px solid #1e4a9e; }
+        .nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.6; color: #fff; text-decoration: none; }
         .nav-active { opacity: 1; color: #FFD700; }
 
-        .pop-score { position: absolute; color: #FFD700; font-size: 40px; font-weight: bold; animation: flyUp 0.8s forwards; pointer-events: none; }
+        .pop-score { position: absolute; color: #FFD700; font-size: 35px; font-weight: bold; animation: flyUp 0.8s forwards; pointer-events: none; z-index: 100; }
         @keyframes flyUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
     </style>
 </head>
@@ -108,11 +101,11 @@
 
     <nav class="nav-bar">
         <div class="nav-btn"><span>⛏️</span><span>تعدين</span></div>
+        <div class="nav-btn"><span>🛋️</span><span>مكتب</span></div>
         <div class="nav-btn nav-active"><span>💰</span><span>نقر</span></div>
     </nav>
 
 <script>
-    // Firebase و Telegram WebApp
     const firebaseConfig = {
         apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
         authDomain: "jolt-coin.firebaseapp.com",
@@ -131,19 +124,20 @@
             if(s.val()) { balance = s.val().score || 0; energy = s.val().energy || 1000; }
             update();
         });
-        setInterval(() => { if(energy < 1000) { energy++; update(); } }, 1500);
-        setInterval(() => db.ref('users/' + userId).update({ score: balance, energy }), 5000);
+        setInterval(() => { if(energy < 1000) { energy = Math.min(1000, energy + 1); update(); } }, 1500);
+        setInterval(() => db.ref('users/' + userId).update({ score: balance, energy: Math.floor(energy) }), 5000);
     }
 
     function update() {
         document.getElementById('main-balance').innerText = Math.floor(balance).toLocaleString();
-        document.getElementById('energy-text').innerText = `${energy} / 1000`;
-        document.getElementById('energy-fill').style.width = (energy/10) + "%";
+        // استخدام Math.floor لمنع الأرقام العشرية الطويلة
+        document.getElementById('energy-text').innerText = `${Math.floor(energy)} / 1000`;
+        document.getElementById('energy-fill').style.width = (Math.floor(energy)/10) + "%";
     }
 
     document.getElementById('tap-target').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if(energy > 0) {
+        if(energy >= 1) {
             balance++; energy--;
             update();
             const t = e.touches[0];
