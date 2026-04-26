@@ -1,322 +1,318 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-<title>Jolt Coin Pro</title>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
-<style>
-* { 
-box-sizing: border-box; 
-margin: 0; 
-padding: 0; 
-user-select: none; 
--webkit-tap-highlight-color: transparent; 
-touch-action: manipulation; 
-}
-/* الخلفية الجديدة: تدرج نيون متحرك */
-body { 
-background: linear-gradient(-45deg, #020111, #09082a, #020111, #130a44); 
-background-size: 400% 400%; 
-animation: gradientAnimation 15s ease infinite; 
-color: #fff; 
-font-family: sans-serif; 
-overflow: hidden; 
-height: 100vh; 
-}
-@keyframes gradientAnimation { 
-0% { background-position: 0% 50%; } 
-50% { background-position: 100% 50%; } 
-100% { background-position: 0% 50%; } 
-}
-.header { 
-text-align: center; 
-padding: 15px; 
-border-bottom: 1px solid rgba(255, 255, 255, 0.1); 
-}
-#main-balance { 
-font-size: 45px; 
-font-weight: 900; 
-text-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
-}
-.profit-info { 
-color: #FFD700; 
-font-size: 13px; 
-}
-.page { 
-display: none; 
-height: calc(100vh - 180px); 
-width: 100%; 
-flex-direction: column; 
-align-items: center; 
-overflow-y: auto; 
-}
-.page-active { 
-display: flex !important; 
-}
-#coin-click { 
-width: 260px; 
-height: 260px; 
-border-radius: 50%; 
-border: 8px solid #cd7f32; 
-background: rgba(17, 17, 17, 0.8) url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/coin.png') center/cover; 
-box-shadow: 0 0 50px rgba(205, 127, 50, 0.5); 
-margin-top: 50px; 
-flex-shrink: 0; 
-transition: transform 0.05s;
-}
-#coin-click:active { 
-transform: scale(0.95); 
-}
-.energy-wrapper { 
-width: 85%; 
-margin-top: 40px; 
-}
-.energy-bar-container { 
-width: 100%; 
-height: 26px; 
-background: rgba(0, 0, 0, 0.5); 
-border-radius: 6px; 
-position: relative; 
-border: 1px solid #3d2b1f; 
-overflow: hidden; 
-display: flex; 
-align-items: center; 
-padding: 2px; 
-}
-#energy-fill { 
-position: absolute; 
-right: 30px; 
-height: calc(100% - 4px); 
-background: #5bc0de; 
-width: 100%; 
-z-index: 1; 
-transition: width 0.3s ease; 
-}
-.battery-box { 
-width: 26px; 
-height: 100%; 
-background: linear-gradient(to bottom, #5bc0de, #2e6da4); 
-border-radius: 3px; 
-display: flex; 
-align-items: center; 
-justify-content: center; 
-z-index: 5; 
-}
-.bolt-icon { 
-color: #FFFF00; 
-font-size: 14px; 
-}
-#energy-num { 
-position: absolute; 
-width: 100%; 
-text-align: center; 
-left: 0; 
-font-weight: bold; 
-font-size: 13px; 
-z-index: 10; 
-text-shadow: 1px 1px 2px #000; 
-}
-.plus-one { 
-position: absolute; 
-color: #FFD700; 
-font-size: 35px; 
-font-weight: 900; 
-pointer-events: none; 
-animation: floatUp 0.8s ease-out forwards; 
-z-index: 1000;
-}
-@keyframes floatUp { 
-0% { opacity: 1; transform: translateY(0); } 
-100% { opacity: 0; transform: translateY(-150px); } 
-}
-.cards-grid { 
-display: grid; 
-grid-template-columns: 1fr 1fr; 
-gap: 12px; 
-padding: 15px; 
-width: 100%; 
-}
-.card-item { 
-background: rgba(21, 21, 21, 0.9); 
-border: 1px solid rgba(255, 255, 255, 0.1); 
-border-radius: 12px; 
-overflow: hidden; 
-height: 240px; 
-}
-.card-img { 
-width: 100%; 
-height: 140px; 
-background-size: cover; 
-background-position: center; 
-}
-.buy-btn { 
-background: #FFD700; 
-color: #000; 
-border: none; 
-width: 90%; 
-margin: 5px auto; 
-border-radius: 4px; 
-font-weight: bold; 
-padding: 5px 0; 
-}
-.footer-nav { 
-position: fixed; 
-bottom: 0; 
-width: 100%; 
-height: 85px; 
-background: rgba(8, 8, 8, 0.95); 
-display: flex; 
-border-top: 1px solid rgba(255, 255, 255, 0.1); 
-}
-.nav-item { 
-flex: 1; 
-display: flex; 
-flex-direction: column; 
-align-items: center; 
-justify-content: center; 
-opacity: 0.5; 
-}
-.nav-active { 
-opacity: 1; 
-color: #FFD700; 
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jimi Coin Game</title>
+    <style>
+        /* التنسيقات العامة */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        /* الخلفية الجديدة مع صورة image_10.png وتأثير نيون متحرك */
+        body {
+            background-image: url('image_10.png'); /* رابط الصورة المباشر */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            overflow: hidden;
+            
+            /* تأثير حركة النيون في الخلفية */
+            animation: neonGlow 10s ease-in-out infinite alternate;
+        }
+
+        /* تعريف حركة النيون */
+        @keyframes neonGlow {
+            0% {
+                filter: hue-rotate(0deg);
+            }
+            100% {
+                filter: hue-rotate(360deg);
+            }
+        }
+
+        /* رأس الصفحة (التسلسل الهرمي للمعلومات) */
+        header {
+            padding: 20px;
+            text-align: center;
+            border-bottom: none; /* إزالة الخط السفلي تماماً */
+        }
+
+        /* عدد النقاط الحالي */
+        #points {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 5px;
+            
+            /* تأثير توهج نيون على النص */
+            text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0ff, 0 0 40px #0ff;
+        }
+
+        /* معدل الكسب للساعة مع أيقونة */
+        #income-rate {
+            color: #ccc;
+            font-size: 1.2em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* أيقونة النقود */
+        #income-icon {
+            margin-right: 8px;
+            color: gold;
+        }
+
+        /* الليرة الذهبية (زر النقر) */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* حاوية الليرة */
+        #coin-container {
+            width: 80%;
+            max-width: 300px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        /* الليرة الذهبية */
+        #coin {
+            width: 100%;
+            height: auto;
+            border-radius: 50%;
+            
+            /* تأثير توهج نيون على الليرة */
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.5), 0 0 40px rgba(0, 255, 255, 0.3), 0 0 60px rgba(0, 255, 255, 0.1);
+            
+            /* حركة نبض بسيطة لليرة */
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* تعريف حركة النبض */
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* تأثير +1 عند النقر */
+        .tap-effect {
+            position: absolute;
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #fff;
+            
+            /* تأثير توهج نيون على تأثير +1 */
+            text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0ff;
+            
+            /* حركة تصاعدية وتلاشي للرمز */
+            animation: floatAndFade 1s forwards;
+            pointer-events: none; /* لمنع التأثير من اعتراض النقرات */
+        }
+
+        /* تعريف حركة التصاعد والتلاشي */
+        @keyframes floatAndFade {
+            0% {
+                transform: translateY(0);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+        }
+
+        /* شريط الطاقة المدمج */
+        #energy-bar-container {
+            position: absolute;
+            bottom: 20px;
+            left: 10%;
+            width: 80%;
+            height: 20px;
+            background-color: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid #555;
+            display: flex;
+            align-items: center;
+        }
+
+        /* الجزء المعبأ من شريط الطاقة */
+        #energy-bar-fill {
+            height: 100%;
+            background-color: #0ff; /* لون نيون للطاقة */
+            width: 100%; /* يبدأ ممتلئاً */
+            border-radius: 10px 0 0 10px;
+            transition: width 0.5s ease-out; /* حركة ناعمة */
+        }
+
+        /* شريط تعبئة إضافي لتأثير البطارية */
+        #energy-bar-fill-secondary {
+            height: 100%;
+            background-color: gold;
+            width: 99.6%; /* يبدأ ممتلئاً بنسبة 99.6% */
+            transition: width 0.5s ease-out; /* حركة ناعمة */
+        }
+
+        /* النص فوق شريط الطاقة */
+        #energy-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+            
+            /* تأثير توهج نيون على نص الطاقة */
+            text-shadow: 0 0 5px #000;
+            z-index: 1;
+        }
+
+        /* أيقونة البطارية */
+        #battery-icon {
+            width: 24px;
+            height: auto;
+            margin-right: 5px;
+            z-index: 1;
+        }
+
+        /* تذييل الصفحة (أيقونات التنقل) */
+        footer {
+            padding: 10px;
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* أيقونة التنقل */
+        .nav-icon {
+            text-align: center;
+            color: #ccc;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        /* أيقونة التنقل النشطة */
+        .nav-icon.active {
+            color: gold;
+        }
+
+        /* أيقونة التنقل مع تأثير التوهج عند التمرير */
+        .nav-icon:hover {
+            color: #fff;
+            text-shadow: 0 0 10px #fff, 0 0 20px #0ff;
+        }
+
+        /* الرمز داخل أيقونة التنقل */
+        .nav-icon i {
+            font-size: 1.5em;
+            display: block;
+            margin-bottom: 3px;
+        }
+
+        /* النص داخل أيقونة التنقل */
+        .nav-icon span {
+            font-size: 0.8em;
+        }
+        
+        /* إخفاء القائمة المنسدلة */
+        select {
+            display: none;
+        }
+        
+    </style>
 </head>
-<body onload="initApp()">
-
-<div class="header">
-<div id="main-balance">0</div>
-<div class="profit-info">💰 +<span id="pph-display">0</span>/ساعة</div>
-</div>
-
-<div id="tab-tap" class="page page-active">
-<div id="coin-click"></div>
-<div class="energy-wrapper">
-<div class="energy-bar-container">
-<div id="energy-num">1000 / 1000</div>
-<div class="battery-box"><span class="bolt-icon">⚡</span></div>
-<div id="energy-fill"></div>
-</div>
-</div>
-</div>
-
-<div id="tab-office" class="page">
-<div class="cards-grid">
-    <div class="card-item">
-        <div class="card-img" style="background-image: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/jolti_king.png');"></div>
-        <div style="text-align:center; padding:5px;">
-            <div style="font-weight:bold; font-size:14px;">ملك الطاقة</div>
-            <div style="color:#FFD700; font-size:11px;">+500/ساعة</div>
-            <button class="buy-btn" onclick="buyCard(2500, 500)">شراء: 2,500</button>
+<body>
+    <header>
+        <select>
+            <option>Option 1</option>
+            <option>Option 2</option>
+            <option>Option 3</option>
+        </select>
+        
+        <div id="points">979</div>
+        <div id="income-rate">
+            <span id="income-icon">💰</span> 0+/ساعة
         </div>
-    </div>
-</div>
-</div>
-
-<nav class="footer-nav">
-<div class="nav-item" onclick="switchTab('mine', this)"><span>⛏️</span><span>تعدين</span></div>
-<div class="nav-item" onclick="switchTab('office', this)"><span>🛋️</span><span>مكتب</span></div>
-<div class="nav-item nav-active" onclick="switchTab('tap', this)"><span>💰</span><span>نقر</span></div>
-</nav>
-
-<script>
-const firebaseConfig = {
-apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
-authDomain: "jolt-coin.firebaseapp.com",
-databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
-projectId: "jolt-coin",
-appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.database();
-const tg = window.Telegram.WebApp;
-const userId = tg.initDataUnsafe.user ? tg.initDataUnsafe.user.id : "dev_user";
-
-let score = 0;
-let pph = 0;
-let energy = 1000;
-const maxEnergy = 1000;
-
-function initApp() {
-    db.ref('users/' + userId).once('value', (s) => {
-        const d = s.val();
-        if(d) {
-            score = d.score || 0;
-            pph = d.pph || 0;
-            const lastTime = d.lastUpdate || Date.now();
-            const secondsPassed = Math.floor((Date.now() - lastTime) / 1000);
-            const recoveredEnergy = secondsPassed * 1.5; 
-            energy = Math.min(maxEnergy, (d.energy || 1000) + recoveredEnergy);
-        }
-        updateUI();
-    });
-
-    setInterval(() => {
-        if(pph > 0) score += (pph / 3600);
-        if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1.5);
-        updateUI();
-    }, 1000);
-
-    setInterval(saveData, 7000);
-}
-
-function saveData() {
-    db.ref('users/' + userId).update({
-        score: score,
-        pph: pph,
-        energy: energy,
-        lastUpdate: Date.now()
-    });
-}
-
-function updateUI() {
-    document.getElementById('main-balance').innerText = Math.floor(score).toLocaleString();
-    document.getElementById('pph-display').innerText = Math.floor(pph).toLocaleString();
-    document.getElementById('energy-num').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
-    document.getElementById('energy-fill').style.width = (energy / maxEnergy * 100) + "%";
-}
-
-document.getElementById('coin-click').addEventListener('touchstart', (e) => {
-    e.preventDefault();
-    for(let i = 0; i < e.changedTouches.length; i++) {
-        if(energy >= 1) {
-            score++;
-            energy--;
-            const p = document.createElement('div');
-            p.className = 'plus-one';
-            p.innerText = '+1';
-            p.style.left = e.changedTouches[i].pageX + 'px';
-            p.style.top = (e.changedTouches[i].pageY - 30) + 'px';
-            document.body.appendChild(p);
-            setTimeout(() => p.remove(), 800);
-        }
-    }
-    updateUI();
-    if(tg.HapticFeedback) tg.HapticFeedback.impactOccurred('medium');
-});
-
-function buyCard(cost, profitAdd) {
-    if(score >= cost) {
-        score -= cost;
-        pph += profitAdd;
-        saveData();
-        updateUI();
-        alert("تم الشراء بنجاح!");
-    } else {
-        alert("الرصيد غير كافٍ!");
-    }
-}
-
-function switchTab(id, el) {
-    document.querySelectorAll('.page').forEach(p => p.classList.remove('page-active'));
-    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('nav-active'));
-    document.getElementById('tab-' + id).classList.add('page-active');
-    el.classList.add('nav-active');
-}
-</script>
-</body>
-    </html>
+    </header>
     
+    <main>
+        <div id="coin-container" onclick="handleTap(event)">
+            <img src="image_9.png" alt="Jimi Coin" id="coin">
+        </div>
+        
+        <div id="energy-bar-container">
+            <img src="image_9.png" alt="Battery" id="battery-icon">
+            <div id="energy-bar-fill"></div>
+            <div id="energy-bar-fill-secondary"></div>
+            <div id="energy-text">1000 / 996</div>
+        </div>
+    </main>
+    
+    <footer>
+        <div class="nav-icon active" onclick="navigate('tap')">
+            <i>💰</i>
+            <span>نقر</span>
+        </div>
+        <div class="nav-icon" onclick="navigate('office')">
+            <i>🛋️</i>
+            <span>مكتب</span>
+        </div>
+        <div class="nav-icon" onclick="navigate('mining')">
+            <i>⛏️</i>
+            <span>تعدين</span>
+        </div>
+    </footer>
+    
+    <script>
+        let currentPoints = 979;
+        
+        // التعامل مع النقرات على الليرة
+        function handleTap(event) {
+            // إضافة نقاط
+            currentPoints++;
+            document.getElementById('points').innerText = currentPoints;
+            
+            // إضافة تأثير +1
+            const mainBalanceContainer = document.getElementById('coin-container');
+            const tapEffect = document.createElement('div');
+            tapEffect.classList.add('tap-effect');
+            tapEffect.innerText = '+1';
+            
+            // تحديد موقع التأثير بشكل عشوائي قليلاً حول مكان النقر
+            const tapX = event.clientX;
+            const tapY = event.clientY;
+            const containerRect = mainBalanceContainer.getBoundingClientRect();
+            tapEffect.style.left = (tapX - containerRect.left + (Math.random() - 0.5) * 50) + 'px';
+            tapEffect.style.top = (tapY - containerRect.top + (Math.random() - 0.5) * 50) + 'px';
+            
+            mainBalanceContainer.appendChild(tapEffect);
+            
+            // إزالة التأثير بعد اكتمال الحركة
+            setTimeout(() => {
+                mainBalanceContainer.removeChild(tapEffect);
+            }, 1000);
+        }
+        
+        // التعامل مع التنقل (مثال للتحويل بين الصفحات)
+        function navigate
+        
