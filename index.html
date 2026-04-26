@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Final Fix</title>
+    <title>Jimi Coin - Seamless Jolt</title>
     
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
@@ -13,10 +13,12 @@
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
         body { background: #0c1a33; color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; }
 
+        /* الخلفية الأصلية (البرق) المرفوعة على جيت هاب */
         .game-bg {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: #0c1a33;
+            /* تأكد من أن ملف الخلفية jolt-bg.png مرفوع على جيت هاب */
+            background: #0c1a33 url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/jolt-bg.png') center/cover no-repeat;
             z-index: -1;
         }
 
@@ -27,7 +29,7 @@
             height: 50vh; display: flex; justify-content: center; align-items: center; position: relative;
         }
 
-        /* وحدة الحركة بنمط الهامستر */
+        /* وحدة الارتداد الميكانيكية */
         .hamster-unit {
             position: relative;
             display: flex;
@@ -35,30 +37,39 @@
             align-items: center;
             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             will-change: transform;
+            /* إزالة أي إطارات أو خلفيات إضافية هنا ليكون الجولتي مدمجاً تماماً */
+            background: transparent;
+            padding: 0;
+            border: none;
         }
 
         .hamster-unit:active {
             transform: scale(0.92) translateY(12px);
         }
 
-        /* تعديل الرابط ليتوافق مع Jolt_pockets-png الموجود في صورتك */
+        /* الجولتي - رابط مؤكد من صورتك الأخيرة Jolt_pockets-png */
         .jolt-model {
             width: 280px;
             height: 350px;
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets-png') center/contain no-repeat;
             z-index: 5;
-            margin-bottom: -50px;
+            margin-bottom: -50px; /* لدمج الأقدام مع القاعدة */
             filter: drop-shadow(0 15px 25px rgba(0,0,0,0.5));
         }
 
-        .podium {
+        /* المنصة الزرقاء المضمنة في الأرض المسطحة */
+        .podium-flat {
             width: 240px;
-            height: 65px;
-            background: radial-gradient(circle, #00f2fe 0%, #004e92 100%);
+            height: 60px;
+            /* تأثير دمج القاعدة المسطحة */
+            background: radial-gradient(circle, rgba(0,242,254,1) 0%, rgba(0,78,146,0.8) 100%);
             border-radius: 50%;
-            border: 4px solid #4facfe;
-            box-shadow: 0 15px 30px rgba(0,0,0,0.8);
+            border: 4px solid rgba(79,172,254,0.8);
+            /* تأثير ظل للدمج مع الأرضية */
+            box-shadow: 0 5px 15px rgba(0,0,0,0.6), inset 0 0 10px rgba(255,255,255,0.3);
             z-index: 4;
+            /* موقع القاعدة المسطحة */
+            margin-top: -10px;
         }
 
         /* شريط الطاقة المصلح */
@@ -71,7 +82,7 @@
         .tab { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
         .tab.active { opacity: 1; color: #FFD700; }
 
-        .tap-effect { position: absolute; color: #fff; font-size: 40px; font-weight: 900; animation: popUp 0.7s forwards; pointer-events: none; z-index: 100; }
+        .tap-effect { position: absolute; color: #fff; font-size: 40px; font-weight: 900; animation: popUp 0.7s forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 10px #00f2fe; }
         @keyframes popUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-130px); } }
     </style>
 </head>
@@ -86,7 +97,7 @@
     <div class="play-area">
         <div class="hamster-unit" id="clicker">
             <div class="jolt-model"></div>
-            <div class="podium"></div>
+            <div class="podium-flat"></div>
         </div>
     </div>
 
