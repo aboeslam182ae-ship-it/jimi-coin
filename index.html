@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Multi-Page</title>
+    <title>Jimi Coin - Clean Podium</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -17,39 +17,70 @@
             display: flex; flex-direction: column;
         }
 
-        /* حاوية الصفحات */
         .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 20px; text-align: center; overflow-y: auto; }
         .page.active { display: flex; }
 
-        /* الهيدر ثابت لكل الصفحات */
         .header { text-align: center; padding: 30px 0 10px; }
         #balance { font-size: 45px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.5); color: #ffd700; }
         .auto-income { font-size: 14px; color: #00f2fe; }
 
-        /* تنسيق صفحة النقر */
+        /* منطقة اللعب المحسنة بدون الدوائر الخلفية */
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .character-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; transition: transform 0.05s; touch-action: none; }
+        
+        .character-wrapper { 
+            position: relative; 
+            display: flex; 
+            flex-direction: column; 
+            align-items: center; 
+            transition: transform 0.05s; 
+            touch-action: none; 
+            z-index: 10;
+        }
+        
         .character-wrapper:active { transform: scale(0.92); }
-        .jolt-character { width: 260px; height: 350px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png?v=30') center bottom/contain no-repeat; z-index: 10; margin-bottom: -90px; filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); }
-        .dual-podium { position: relative; display: flex; flex-direction: column; align-items: center; z-index: 5; }
-        .platform-top { width: 200px; height: 25px; background: radial-gradient(circle, #00f2fe, #00a8cc); border-radius: 50%; border: 2px solid #fff; transform: perspective(600px) rotateX(55deg); margin-bottom: -12px; }
-        .platform-bottom { width: 240px; height: 40px; background: linear-gradient(180deg, #005f73, #002e3b); border-radius: 50%; border: 3px solid #00f2fe; transform: perspective(600px) rotateX(60deg); }
 
-        /* أزرار التطوير */
-        .upgrade-btn { background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 15px; margin: 10px auto; width: 90%; border: 1px solid rgba(0, 242, 254, 0.3); display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .jolt-character { 
+            width: 260px; height: 350px; 
+            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png?v=30') center bottom/contain no-repeat; 
+            z-index: 20; 
+            margin-bottom: -90px; 
+            filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6)); 
+        }
 
-        /* شريط الطاقة */
+        .dual-podium { position: relative; display: flex; flex-direction: column; align-items: center; z-index: 15; }
+        
+        /* المنصة العلوية */
+        .platform-top { 
+            width: 200px; height: 25px; 
+            background: radial-gradient(circle, #00f2fe, #00a8cc); 
+            border-radius: 50%; border: 2px solid #fff; 
+            transform: perspective(600px) rotateX(55deg); 
+            margin-bottom: -12px;
+            box-shadow: 0 0 15px rgba(0, 242, 254, 0.5);
+        }
+
+        /* المنصة السفلية الداعمة */
+        .platform-bottom { 
+            width: 240px; height: 40px; 
+            background: linear-gradient(180deg, #005f73, #002e3b); 
+            border-radius: 50%; border: 3px solid #00f2fe; 
+            transform: perspective(600px) rotateX(60deg);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+        }
+
+        /* تم إزالة جميع كود الدوائر الخلفية (background effects) */
+
+        .upgrade-btn { background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 15px; margin: 10px auto; width: 90%; border: 1px solid rgba(0, 242, 254, 0.3); display: flex; justify-content: space-between; align-items: center; }
+
         .energy-section { width: 100%; padding-bottom: 90px; }
         .bar-container { width: 85%; height: 12px; background: rgba(0,0,0,0.5); border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #4facfe; }
         #fill { height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); width: 100%; transition: width 0.2s; }
 
-        /* القائمة السفلية */
         .menu-footer { position: fixed; bottom: 0; width: 100%; height: 75px; background: #030816; display: flex; border-top: 1px solid #1a3366; z-index: 1000; }
         .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.4; transition: 0.3s; color: #fff; font-size: 12px; cursor: pointer; }
         .menu-item.active { opacity: 1; color: #ffd700; }
         .menu-item i { font-style: normal; font-size: 20px; margin-bottom: 5px; }
 
-        /* تأثيرات النقرة */
         .tap-effect { position: absolute; font-size: 32px; font-weight: 900; color: #fff; animation: floatUp 0.6s ease-out forwards; pointer-events: none; z-index: 1000; text-shadow: 0 0 10px #00f2fe; }
         @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
     </style>
@@ -83,7 +114,6 @@
 
     <div id="mining-page" class="page">
         <h2>⛏️ قسم التعدين</h2>
-        <p style="margin: 20px; color: #aaa;">قم بشراء آلات لتعدين العملات تلقائياً</p>
         <div class="upgrade-btn" onclick="buyMiner()">
             <span>🤖 شراء روبوت (Lvl <span id="miner-lvl">0</span>)</span>
             <b id="miner-cost">500 💰</b>
@@ -91,17 +121,11 @@
     </div>
 
     <div id="friends-page" class="page">
-        <h2>👥 دعوة الأصدقاء</h2>
-        <div style="background: rgba(255,255,255,0.05); padding: 20px; border-radius: 20px; margin-top: 20px;">
-            <p>تحصل على 5000 عملة عن كل صديق تدعوه!</p>
-            <button onclick="copyInvite()" style="margin-top: 15px; padding: 10px 20px; border-radius: 10px; border: none; background: #00f2fe; font-weight: bold;">نسخ رابط الدعوة</button>
-        </div>
+        <h2>👥 الأصدقاء</h2>
+        <button onclick="copyInvite()" style="padding:15px; border-radius:10px; background:#00f2fe; border:none; margin-top:20px;">نسخ رابط الدعوة</button>
     </div>
 
-    <div id="office-page" class="page">
-        <h2>🏠 المكتب</h2>
-        <p>الإحصائيات قريباً...</p>
-    </div>
+    <div id="office-page" class="page"><h2>🏠 المكتب</h2></div>
 
     <nav class="menu-footer">
         <div class="menu-item" onclick="showPage('office', this)"><i>🏠</i>مكتب</div>
@@ -111,7 +135,7 @@
     </nav>
 
 <script>
-    // تهيئة Firebase كما هي
+    // نفس كود Firebase والسكربت السابق لضمان استمرار عمل اللعبة
     const firebaseConfig = {
         apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
         authDomain: "jolt-coin.firebaseapp.com",
@@ -126,16 +150,11 @@
     let score = 0, energy = 1000, maxEnergy = 1000;
     let tapLevel = 1, autoIncome = 0, minerLevel = 0;
 
-    // وظيفة تبديل الصفحات
     function showPage(pageId, element) {
-        // إخفاء كل الصفحات
         document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        // إظهار الصفحة المطلوبة
         document.getElementById(pageId + '-page').classList.add('active');
-        // تغيير حالة الأزرار
         document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
         element.classList.add('active');
-        
         if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.selectionChanged();
     }
 
@@ -143,15 +162,12 @@
         database.ref('users/' + user_id).once('value', (snapshot) => {
             const data = snapshot.val();
             if(data) {
-                score = data.score || 0;
-                energy = data.energy || 1000;
-                tapLevel = data.tapLevel || 1;
-                autoIncome = data.autoIncome || 0;
+                score = data.score || 0; energy = data.energy || 1000;
+                tapLevel = data.tapLevel || 1; autoIncome = data.autoIncome || 0;
                 minerLevel = data.minerLevel || 0;
             }
             syncUI();
         });
-
         setInterval(() => { if(energy < maxEnergy) { energy = Math.min(maxEnergy, energy + 1.5); syncUI(); } }, 1000);
         setInterval(() => { if(autoIncome > 0) { score += autoIncome; syncUI(); } }, 1000);
         setInterval(() => saveData(), 5000);
@@ -178,16 +194,9 @@
 
     function buyMiner() {
         let cost = (minerLevel + 1) * 500;
-        if(score >= cost) {
-            score -= cost;
-            minerLevel++;
-            autoIncome += 2; // كل روبوت يعطي 2 عملة في الثانية
-            syncUI();
-            saveData();
-        }
+        if(score >= cost) { score -= cost; minerLevel++; autoIncome += 2; syncUI(); saveData(); }
     }
 
-    // نظام النقر
     document.getElementById('main-tap').addEventListener('touchstart', (e) => {
         e.preventDefault();
         for (let i = 0; i < e.changedTouches.length; i++) {
@@ -212,4 +221,5 @@
     }
 </script>
 </body>
-</html>
+        </html>
+                                                                                   
