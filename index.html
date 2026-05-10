@@ -186,7 +186,7 @@
     const user_id = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "user_test";
     const bot_username = "JimiCoinBot";
 
-    let score = 0, energy = 1000, maxEnergy = 1000, tapLevel = 1, autoIncome = 0, minerLevel = 0, lastCheckIn = 0;
+    let score = 0userCards = {}, energy = 1000, maxEnergy = 1000, tapLevel = 1, autoIncome = 0, minerLevel = 0, lastCheckIn = 0;
 
     function showPage(pageId, element) {
         if (pageId === 'mining') renderCards();
