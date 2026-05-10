@@ -207,6 +207,8 @@
         setInterval(() => { if(energy < maxEnergy) { energy = Math.min(maxEnergy, energy + 1.5); syncUI(); } }, 1000);
         setInterval(() => { if(autoIncome > 0) { score += autoIncome; syncUI(); } }, 1000);
         setInterval(() => saveData(), 5000);
+        renderCards();
+        
     }
 
     function syncUI() {
@@ -306,6 +308,52 @@
         let cost = (minerLevel + 1) * 500;
         if(score >= cost) { score -= cost; minerLevel++; autoIncome += 2; syncUI(); saveData(); }
     }
+    // قائمة بيانات الكروت - يمكنك إضافة المزيد هنا لاحقاً ليصل لـ 200
+const miningCardsData = [
+    { id: 1, name: "مطرقة حديدية", icon: "🔨", cost: 500, profit: 10 },
+    { id: 2, name: "خوذة العمل", icon: "🦺", cost: 1200, profit: 25 },
+    { id: 3, name: "كابل طاقة", icon: "🔌", cost: 2000, profit: 45 },
+    { id: 4, name: "بطارية ليثيوم", icon: "🔋", cost: 5000, profit: 110 },
+    { id: 5, name: "روبوت عامل", icon: "🤖", cost: 10000, profit: 250 },
+    { id: 6, name: "لوح شمسي", icon: "☀️", cost: 25000, profit: 600 },
+    { id: 7, name: "جهاز لاسلكي", icon: "📻", cost: 40000, profit: 1000 },
+    { id: 8, name: "معالج بيانات", icon: "🖥️", cost: 75000, profit: 2000 }
+];
+
+// دالة عرض الكروت داخل الصفحة
+function renderCards() {
+    const container = document.getElementById('cards-container');
+    if (!container) return; // للتأكد من وجود الحاوية
+    
+    container.innerHTML = ""; // مسح نص "جاري التحميل"
+    
+    miningCardsData.forEach(card => {
+        const cardHtml = `
+            <div class="mining-card" onclick="buyMiningCard(${card.id}, ${card.cost}, ${card.profit})">
+                <span class="card-icon">${card.icon}</span>
+                <span class="card-title">${card.name}</span>
+                <span class="card-profit">الربح: +${card.profit}/ساعة</span>
+                <div class="card-cost">💰 ${card.cost.toLocaleString()}</div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', cardHtml);
+    });
+}
+
+// دالة شراء الكارت
+function buyMiningCard(id, cost, profit) {
+    if (score >= cost) {
+        score -= cost;
+        autoIncome += Math.floor(profit / 3600 * 10) / 10; // تحويل الربح من ساعة إلى ثانية تقريباً
+        syncUI();
+        saveData();
+        if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        window.Telegram.WebApp.showAlert("تم شراء " + miningCardsData.find(c => c.id === id).name);
+    } else {
+        window.Telegram.WebApp.showAlert("رصيدك غير كافٍ!");
+    }
+            }
+    
 </script>
 </body>
 </html>
