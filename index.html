@@ -353,7 +353,6 @@ function buyMiningCard(id, cost, profit) {
         score -= cost;
         // استخدم Math.floor أو toFixed(2) لجعل الرقم جميلاً
 document.getElementById('income-text').innerText = (autoIncome * 1).toFixed(2) + "/ثانية";
-        
         syncUI();
         saveData();
         if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
