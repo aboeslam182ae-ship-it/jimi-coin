@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Dual Podium</title>
+    <title>Jimi Coin - Pro Version</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
@@ -17,81 +17,67 @@
             display: flex; flex-direction: column;
         }
 
-        .header { text-align: center; padding: 40px 0 10px; }
-        #balance { font-size: 50px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .header { text-align: center; padding: 30px 0 10px; }
+        #balance { font-size: 45px; font-weight: 900; text-shadow: 0 5px 15px rgba(0,0,0,0.5); color: #ffd700; }
+        .auto-income { font-size: 14px; color: #00f2fe; margin-top: 5px; }
 
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
 
         .character-wrapper {
             position: relative; display: flex; flex-direction: column; align-items: center;
-            transition: transform 0.1s ease;
+            transition: transform 0.05s ease; touch-action: none;
         }
-        .character-wrapper:active { transform: scale(0.95); }
+        .character-wrapper:active { transform: scale(0.92); }
 
-        /* طبقة الشخصية الشفافة */
         .jolt-character {
-            width: 320px; height: 420px;
-            /* رابط صورتك الشفافة */
+            width: 280px; height: 380px;
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png?v=30') center bottom/contain no-repeat;
             z-index: 10;
-            margin-bottom: -115px; /* سحب الشخصية للأسفل لتلمس الطبقة العليا */
+            margin-bottom: -100px;
             filter: drop-shadow(0 15px 25px rgba(0,0,0,0.6));
         }
 
-        /* حاوية القاعدة المكونة من طبقتين */
-        .dual-podium {
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 5;
-        }
-
-        /* الطبقة العليا (التي تقف عليها الشخصية) */
+        .dual-podium { position: relative; display: flex; flex-direction: column; align-items: center; z-index: 5; }
         .platform-top {
-            width: 240px; height: 35px;
+            width: 220px; height: 30px;
             background: radial-gradient(circle, #00f2fe 5%, #00a8cc 90%);
-            border-radius: 50%;
-            border: 2px solid #fff;
-            box-shadow: inset 0 0 15px rgba(255,255,255,0.5), 0 5px 15px rgba(0,0,0,0.3);
-            transform: perspective(600px) rotateX(55deg);
-            position: relative;
-            margin-bottom: -18px; /* دمج خفيف مع الطبقة السفلية */
+            border-radius: 50%; border: 2px solid #fff;
+            transform: perspective(600px) rotateX(55deg); margin-bottom: -15px;
         }
-
-        /* الطبقة السفلية (الأكبر والداعمة) */
         .platform-bottom {
-            width: 280px; height: 50px;
+            width: 260px; height: 45px;
             background: linear-gradient(180deg, #005f73 0%, #002e3b 100%);
-            border-radius: 50%;
-            border: 3px solid #00f2fe;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.8), 0 0 25px rgba(0,242,254,0.4);
+            border-radius: 50%; border: 3px solid #00f2fe;
             transform: perspective(600px) rotateX(60deg);
         }
 
-        /* تأثير إضاءة جانبي للطبقة السفلية لإبراز العمق */
-        .platform-bottom::before {
-            content: ''; position: absolute; top: 10%; left: 5%;
-            width: 90%; height: 80%; background: linear-gradient(180deg, rgba(255,255,255,0.1), rgba(0,0,0,0.2));
-            border-radius: 50%;
+        /* قسم التطوير السريع */
+        .upgrade-mini-card {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 20px; border-radius: 15px;
+            margin: 10px auto; border: 1px solid rgba(0, 242, 254, 0.3);
+            display: flex; align-items: center; gap: 15px;
         }
 
-        .energy-bar-area { width: 100%; padding-bottom: 100px; text-align: center; }
-        .bar-container { width: 80%; height: 18px; background: rgba(0,0,0,0.5); border-radius: 20px; margin: 0 auto; overflow: hidden; border: 1px solid #4facfe; }
-        #fill { height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); width: 100%; transition: width 0.3s; }
-        #nrg-text { margin-top: 10px; font-weight: bold; color: #00f2fe; }
+        .energy-bar-area { width: 100%; padding-bottom: 90px; text-align: center; }
+        .bar-container { width: 85%; height: 14px; background: rgba(0,0,0,0.5); border-radius: 20px; margin: 0 auto; overflow: hidden; border: 1px solid #4facfe; }
+        #fill { height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); width: 100%; transition: width 0.2s; }
+        #nrg-text { margin-top: 8px; font-size: 14px; font-weight: bold; color: #00f2fe; }
 
-        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 80px; background: #030816; display: flex; border-top: 1px solid #1a3366; }
-        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 12px; }
+        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 70px; background: #030816; display: flex; border-top: 1px solid #1a3366; z-index: 100; }
+        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; font-size: 11px; }
         .menu-item.active { opacity: 1; color: #ffd700; }
 
-        .tap-effect { position: absolute; font-size: 45px; font-weight: 900; color: #fff; animation: floatUp 0.8s ease-out forwards; pointer-events: none; z-index: 100; text-shadow: 0 0 15px #00f2fe; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-150px); } }
+        .tap-effect { position: absolute; font-size: 32px; font-weight: 900; color: #fff; animation: floatUp 0.6s ease-out forwards; pointer-events: none; z-index: 1000; text-shadow: 0 0 10px #00f2fe; }
+        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
     </style>
 </head>
 <body onload="startApp()">
 
-    <div class="header"><div id="balance">0</div></div>
+    <div class="header">
+        <div id="balance">0</div>
+        <div class="auto-income" id="income-text">الربح التلقائي: +0/ثانية</div>
+    </div>
 
     <div class="game-zone">
         <div class="character-wrapper" id="main-tap">
@@ -103,6 +89,13 @@
         </div>
     </div>
 
+    <center>
+        <div class="upgrade-mini-card" onclick="upgradeTap()">
+            <span>⚡ تطوير النقرة</span>
+            <b id="upgrade-cost">100 💰</b>
+        </div>
+    </center>
+
     <div class="energy-bar-area">
         <div class="bar-container"><div id="fill"></div></div>
         <div id="nrg-text">1000 / 1000</div>
@@ -112,10 +105,10 @@
         <div class="menu-item"><i>🏠</i>مكتب</div>
         <div class="menu-item active"><i>💰</i>نقر</div>
         <div class="menu-item"><i>⛏️</i>تعدين</div>
+        <div class="menu-item"><i>👥</i>أصدقاء</div>
     </nav>
 
 <script>
-    // إعدادات Firebase الخاصة بك
     const firebaseConfig = {
         apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
         authDomain: "jolt-coin.firebaseapp.com",
@@ -125,37 +118,104 @@
     };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
-    const user_id = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "user_1";
-    let score = 0, energy = 1000;
+    
+    const user_id = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "user_test";
+    
+    let score = 0;
+    let energy = 1000;
+    let maxEnergy = 1000;
+    let tapLevel = 1;
+    let autoIncome = 0;
 
     function startApp() {
         database.ref('users/' + user_id).once('value', (snapshot) => {
-            if(snapshot.val()) { score = snapshot.val().score || 0; energy = snapshot.val().energy || 1000; }
+            const data = snapshot.val();
+            if(data) {
+                score = data.score || 0;
+                energy = data.energy || 1000;
+                tapLevel = data.tapLevel || 1;
+                autoIncome = data.autoIncome || 0;
+            }
             syncUI();
         });
-        setInterval(() => { if(energy < 1000) { energy += 1.5; syncUI(); } }, 1000);
-        setInterval(() => database.ref('users/' + user_id).update({ score, energy: Math.floor(energy) }), 5000);
+
+        // استرجاع الطاقة تلقائياً
+        setInterval(() => {
+            if(energy < maxEnergy) {
+                energy = Math.min(maxEnergy, energy + 1.5);
+                syncUI();
+            }
+        }, 1000);
+
+        // الربح التلقائي (تعدين)
+        setInterval(() => {
+            if(autoIncome > 0) {
+                score += autoIncome;
+                syncUI();
+            }
+        }, 1000);
+
+        // حفظ دوري للبيانات
+        setInterval(() => saveData(), 5000);
     }
 
     function syncUI() {
         document.getElementById('balance').innerText = Math.floor(score).toLocaleString();
-        document.getElementById('nrg-text').innerText = `${Math.floor(energy)} / 1000`;
-        document.getElementById('fill').style.width = (energy / 10) + "%";
+        document.getElementById('nrg-text').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
+        document.getElementById('fill').style.width = (energy / maxEnergy * 100) + "%";
+        document.getElementById('upgrade-cost').innerText = (tapLevel * 100) + " 💰";
+        document.getElementById('income-text').innerText = `الربح التلقائي: +${autoIncome}/ثانية`;
     }
 
+    function saveData() {
+        database.ref('users/' + user_id).update({
+            score, energy: Math.floor(energy), tapLevel, autoIncome
+        });
+    }
+
+    function upgradeTap() {
+        let cost = tapLevel * 100;
+        if(score >= cost) {
+            score -= cost;
+            tapLevel++;
+            syncUI();
+            saveData();
+            if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
+        } else {
+            if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('error');
+            alert("رصيدك غير كافٍ!");
+        }
+    }
+
+    // معالجة النقر المتعدد
     document.getElementById('main-tap').addEventListener('touchstart', (e) => {
         e.preventDefault();
-        if(energy >= 1) {
-            score++; energy--; syncUI();
-            const touch = e.touches[0];
-            const effect = document.createElement('div');
-            effect.className = 'tap-effect'; effect.innerText = '+1';
-            effect.style.left = touch.pageX + 'px'; effect.style.top = touch.pageY + 'px';
-            document.body.appendChild(effect);
-            setTimeout(() => effect.remove(), 800);
-            if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+        const touches = e.changedTouches;
+        
+        for (let i = 0; i < touches.length; i++) {
+            if(energy >= tapLevel) {
+                score += tapLevel;
+                energy -= tapLevel;
+                
+                createTapEffect(touches[i].pageX, touches[i].pageY, `+${tapLevel}`);
+                
+                if(window.Telegram.WebApp.HapticFeedback) {
+                    window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
+                }
+            }
         }
+        syncUI();
     });
+
+    function createTapEffect(x, y, text) {
+        const effect = document.createElement('div');
+        effect.className = 'tap-effect';
+        effect.innerText = text;
+        effect.style.left = x + 'px';
+        effect.style.top = y + 'px';
+        document.body.appendChild(effect);
+        setTimeout(() => effect.remove(), 600);
+    }
 </script>
 </body>
 </html>
