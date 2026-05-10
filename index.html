@@ -351,7 +351,8 @@ function renderCards() {
 function buyMiningCard(id, cost, profit) {
     if (score >= cost) {
         score -= cost;
-        autoIncome += Math.floor(profit / 3600 * 10) / 10; // تحويل الربح من ساعة إلى ثانية تقريباً
+        autoIncome += (profit / 3600); // إضافة الربح الحقيقي للثانية الواحدة
+        ; // تحويل الربح من ساعة إلى ثانية تقريباً
         syncUI();
         saveData();
         if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
