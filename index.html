@@ -18,8 +18,15 @@
         .page.active { display: flex; }
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
         .character-wrapper { position: relative; display: flex; flex-direction: center; align-items: center; cursor: pointer; }
-        /* صورة الجاكوار في الرئيسية */
-        .jolt-character { width: 280px; height: 380px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/jaguar_leader.png') center bottom/contain no-repeat; transition: transform 0.1s; }
+        
+        /* التعديل هنا: وضع صورة Jolt_pockets في الصفحة الرئيسية */
+        .jolt-character { 
+            width: 280px; 
+            height: 380px; 
+            background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center bottom/contain no-repeat; 
+            transition: transform 0.1s; 
+        }
+        
         .jolt-character:active { transform: scale(0.95); }
         .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 100px; }
         .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; transition: all 0.3s; position: relative; }
@@ -88,7 +95,6 @@
             const grid = document.getElementById('jaguar-cards-grid');
             grid.innerHTML = "";
             jaguarCards.forEach(card => {
-                // التعديل السحري هنا: إضافة assets/ قبل اسم الصورة
                 const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/${card.img}`;
                 grid.innerHTML += `
                     <div class="mining-card" onclick="buyCard(${card.id}, ${card.cost}, ${card.profit})">
@@ -114,7 +120,8 @@
                 balance -= cost;
                 income += (prof / 3600);
                 updateUI();
-                showToast("مبروك! امتلكت " + jaguarCards.find(c => c.id === id).name);
+                const card = jaguarCards.find(c => c.id === id);
+                showToast("مبروك! امتلكت " + card.name);
                 db.ref('users/' + userId).update({ balance: balance, income: income });
             } else {
                 showToast("تحتاج المزيد من الكوينز!");
