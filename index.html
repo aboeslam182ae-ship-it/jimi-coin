@@ -3,365 +3,168 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jimi Coin - Fixed & Full</title>
+    <title>Jaguar Elite - Jimi Coin</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(circle at center, #1b3d5e 0%, #050b18 100%); color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-
-        /* الهيدر */
-        .header { text-align: center; padding: 30px 0 10px; transition: 0.3s; }
-        .header.hidden { display: none; }
-        #balance { font-size: 45px; font-weight: 900; color: #ffd700; text-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-        .auto-income { font-size: 14px; color: #00f2fe; margin-top: 5px; }
-
-        .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 20px; overflow-y: auto; }
+        body { background: radial-gradient(circle at center, #1b3d5e 0%, #050b18 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        .header { text-align: center; padding: 40px 0 15px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
+        #balance { font-size: 48px; font-weight: 900; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
+        .auto-income { font-size: 14px; color: #00f2fe; margin-top: 5px; font-weight: bold; }
+        .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 15px; overflow-y: auto; scroll-behavior: smooth; }
         .page.active { display: flex; }
-
-        /* صفحة النقر */
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .character-wrapper { position: relative; display: flex; flex-direction: column; align-items: center; transition: transform 0.05s; }
-        .jolt-character { width: 260px; height: 350px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png?v=30') center bottom/contain no-repeat; z-index: 20; margin-bottom: -90px; }
-        .dual-podium { display: flex; flex-direction: column; align-items: center; }
-        .platform-top { width: 200px; height: 25px; background: radial-gradient(circle, #00f2fe, #00a8cc); border-radius: 50%; border: 2px solid #fff; transform: perspective(600px) rotateX(55deg); margin-bottom: -12px; }
-        .platform-bottom { width: 240px; height: 40px; background: linear-gradient(180deg, #005f73, #002e3b); border-radius: 50%; border: 3px solid #00f2fe; transform: perspective(600px) rotateX(60deg); }
-
-        .upgrade-btn { background: rgba(255, 255, 255, 0.1); padding: 12px; border-radius: 15px; margin: 10px auto; width: 90%; border: 1px solid rgba(0, 242, 254, 0.3); display: flex; justify-content: space-between; align-items: center; }
-        .energy-section { width: 100%; padding-bottom: 90px; text-align: center; }
-        .bar-container { width: 85%; height: 12px; background: rgba(0,0,0,0.5); border-radius: 10px; margin: 10px auto; overflow: hidden; border: 1px solid #4facfe; }
-        #fill { height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); width: 100%; }
-
-        /* الأصدقاء والمهام */
-        .card-main { background: linear-gradient(135deg, #0088cc 0%, #004466 100%); border-radius: 25px; padding: 30px; text-align: center; margin-bottom: 20px; }
-        .invite-btn { background: #fff; color: #004466; padding: 15px 40px; border-radius: 50px; font-weight: bold; border: none; margin: 15px 0; font-size: 18px; }
-        .friends-list { background: rgba(255,255,255,0.05); border-radius: 15px; padding: 15px; margin-top: 10px; text-align: right; }
-        
-        .task-card { background: rgba(255, 255, 255, 0.05); border-radius: 15px; padding: 15px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; border: 1px solid rgba(0, 242, 254, 0.1); }
-        .claim-btn { background: #00f2fe; color: #000; border: none; padding: 8px 16px; border-radius: 10px; font-weight: bold; }
-        .claim-btn.disabled { background: #444; color: #888; }
-
-        /* القائمة السفلية */
+        .character-wrapper { position: relative; display: flex; flex-direction: center; align-items: center; cursor: pointer; }
+        .jolt-character { width: 280px; height: 380px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/cards/jaguar_leader.png') center bottom/contain no-repeat; transition: transform 0.1s; }
+        .jolt-character:active { transform: scale(0.95); }
+        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 100px; }
+        .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; transition: all 0.3s; position: relative; }
+        .card-image-container { width: 100%; aspect-ratio: 1; background: #000; border-radius: 12px; margin-bottom: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
+        .card-image-container img { width: 100%; height: 100%; object-fit: contain; }
+        .card-title { font-size: 14px; font-weight: bold; color: #fff; margin-bottom: 5px; display: block; }
+        .card-profit { font-size: 12px; color: #00f2fe; display: block; }
+        .card-cost { margin-top: 10px; font-weight: 900; color: #ffd700; font-size: 14px; }
         .menu-footer { position: fixed; bottom: 0; width: 100%; height: 75px; background: #030816; display: flex; border-top: 1px solid #1a3366; z-index: 1000; }
-        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.4; color: #fff; font-size: 12px; }
-        .menu-item.active { opacity: 1; color: #ffd700; }
-        .menu-item i { font-size: 20px; margin-bottom: 5px; font-style: normal; }
-
-        /* تأثير النقر */
-        .tap-effect { position: absolute; font-size: 32px; font-weight: 900; color: #fff; animation: floatUp 0.6s forwards; pointer-events: none; text-shadow: 0 0 10px #00f2fe; z-index: 100; }
-        @keyframes floatUp { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(-120px); } }
-        /* تنسيق قسم الكروت */
-.cards-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 10px;
-    padding-bottom: 100px; /* مسافة لكي لا تختفي الكروت خلف القائمة السفلية */
-}
-
-/* تنسيق الكارت الواحد */
-.mining-card {
-    background: linear-gradient(145deg, #1e293b, #0f172a);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 16px;
-    padding: 15px;
-    text-align: center;
-    position: relative;
-    transition: transform 0.2s;
-    cursor: pointer;
-}
-
-.mining-card:active { transform: scale(0.95); }
-
-.card-icon { font-size: 35px; margin-bottom: 8px; display: block; }
-
-.card-title { font-size: 13px; font-weight: bold; color: #fff; display: block; }
-
-.card-profit { font-size: 10px; color: #00f2fe; margin-top: 4px; display: block; }
-
-.card-cost {
-    margin-top: 8px;
-    padding-top: 8px;
-    border-top: 1px solid rgba(255, 255, 255, 0.05);
-    font-weight: bold;
-    color: #ffd700;
-    font-size: 12px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 4px;
-}
-        
+        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; cursor: pointer; }
+        .menu-item.active { opacity: 1; color: #ffd700; border-top: 2px solid #ffd700; }
+        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ffd700; color: #000; padding: 10px 20px; border-radius: 10px; font-weight: bold; z-index: 2000; display: none; }
     </style>
-    
 </head>
-<body onload="startApp()">
-
-    <div class="header" id="main-header">
+<body>
+    <div class="toast" id="toast"></div>
+    <div class="header">
         <div id="balance">0</div>
-        <div class="auto-income" id="income-text">الربح التلقائي: +0/ثانية</div>
+        <div class="auto-income" id="income-text">الربح التلقائي: +0/ساعة</div>
     </div>
 
     <div id="tap-page" class="page active">
         <div class="game-zone">
-            <div class="character-wrapper" id="main-tap">
+            <div class="character-wrapper" onclick="handleTap(event)">
                 <div class="jolt-character"></div>
-                <div class="dual-podium">
-                    <div class="platform-top"></div>
-                    <div class="platform-bottom"></div>
-                </div>
-            </div>
-        </div>
-        <div class="upgrade-btn" onclick="upgradeTap()">
-            <span>⚡ تطوير النقرة</span>
-            <b id="upgrade-cost">100 💰</b>
-        </div>
-        <div class="energy-section">
-            <div class="bar-container"><div id="fill"></div></div>
-            <div id="nrg-text">1000 / 1000</div>
-        </div>
-    </div>
-
-    <div id="office-page" class="page">
-        <h2 style="text-align: center; margin-bottom: 20px;">📋 المهام اليومية</h2>
-        <div class="task-card">
-            <div style="text-align: right;"><h4>المكافأة اليومية</h4><p id="daily-reward-text">+1,000 عملة</p></div>
-            <button id="daily-claim-btn" class="claim-btn" onclick="claimDailyReward()">استلام</button>
-        </div>
-        <div class="task-card">
-            <div style="text-align: right;"><h4>تابع قناتنا</h4><p>+5,000 عملة</p></div>
-            <button class="claim-btn" onclick="doSocialTask('https://t.me/YourChannel', 5000, this)">انطلق</button>
-        </div>
-    </div>
-
-    <div id="friends-page" class="page">
-        <h2 style="text-align: center; margin-bottom: 20px;">ادعُ الأصدقاء! 👥</h2>
-        <div class="card-main">
-            <h3>هدية الدعوة 🎁</h3>
-            <p style="margin: 10px 0; opacity: 0.8;">احصل على +5,000 عملة لكل صديق</p>
-            <button class="invite-btn" onclick="shareWithFriends()">دعوة صديق</button>
-            <p style="text-decoration: underline; font-size: 13px; cursor: pointer;" onclick="copyMyLink()">نسخ الرابط</p>
-        </div>
-        <div class="friends-list">
-            <h4>قائمة الأصدقاء (<span id="friend-count">0</span>)</h4>
-            <hr style="opacity: 0.1; margin: 10px 0;">
-            <div id="friends-container-list">
-                <p style="text-align: center; opacity: 0.5; font-size: 12px;">لم تقم بدعوة أحد بعد..</p>
             </div>
         </div>
     </div>
-<div id="mining-page" class="page">
-    <h2 style="text-align: center; margin-bottom: 20px;">⛏️ سوق التعدين</h2>
-    
-    <div id="cards-container" class="cards-grid"></div>
 
-    <div class="upgrade-btn" onclick="buyMiner()" style="margin-top: 30px;">
-        <span>🤖 تطوير الروبوت الآلي (Lvl <span id="miner-lvl">0</span>)</span>
-        <b id="miner-cost">500 💰</b>
-    </div>
-</div>
-            
-</div>
+    <div id="cards-page" class="page">
+        <div class="cards-grid" id="jaguar-cards-grid"></div>
     </div>
 
     <nav class="menu-footer">
-        <div class="menu-item" onclick="showPage('office', this)"><i>📋</i>مهام</div>
-        <div class="menu-item active" onclick="showPage('tap', this)"><i>💰</i>نقر</div>
-        <div class="menu-item" onclick="showPage('mining', this)"><i>⛏️</i>تعدين</div>
-        <div class="menu-item" onclick="showPage('friends', this)"><i>👥</i>أصدقاء</div>
+        <div class="menu-item active" onclick="showPage('tap-page', this)"><i>🏠</i><span>الرئيسية</span></div>
+        <div class="menu-item" onclick="showPage('cards-page', this)"><i>🐆</i><span>الجاكوار</span></div>
+        <div class="menu-item"><i>👥</i><span>الأصدقاء</span></div>
+        <div class="menu-item"><i>💰</i><span>سحب</span></div>
     </nav>
 
-<script>
-    const firebaseConfig = {
-        apiKey: "AIzaSyDAf1rFiwTwZmEkWv6ykgr2msEmIaOELs",
-        authDomain: "jolt-coin.firebaseapp.com",
-        databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
-        projectId: "jolt-coin",
-        appId: "1:523210485636:web:30a3f782afdbddfb4037d1"
-    };
-    firebase.initializeApp(firebaseConfig);
-    const database = firebase.database();
-    const user_id = window.Telegram.WebApp.initDataUnsafe.user ? window.Telegram.WebApp.initDataUnsafe.user.id : "user_test";
-    const bot_username = "JimiCoinBot";
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDAf1rFiwTwZmEkWv6yzkgr2msEmIaOELs",
+            databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
+            projectId: "jolt-coin"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.database();
 
-    let score = 0, energy = 500, maxEnergy = 1000, tapLevel = 1, autoIncome = 0, minerLevel = 0, lastCheckIn = 0;
+        let balance = 0;
+        let income = 0;
+        let userId = "7145751375"; 
 
-    function showPage(pageId, element) {
-        if (pageId === 'mining') renderCards();
-        
-        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId + '-page').classList.add('active');
-        document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-        element.classList.add('active');
-        const header = document.getElementById('main-header');
-        if (pageId === 'tap') header.classList.remove('hidden'); else header.classList.add('hidden');
-    }
+        const jaguarCards = [
+            {id: 0, name: "الجاكوار القائد", profit: 500, cost: 10000, img: "jaguar_leader.png"},
+            {id: 1, name: "الجاكوار الحكيم", profit: 800, cost: 15000, img: "jaguar_wise.png"},
+            {id: 2, name: "الجاكوار الطيار", profit: 1200, cost: 25000, img: "jaguar_pilot.png"},
+            {id: 3, name: "الجاكوار المدير", profit: 2500, cost: 50000, img: "jaguar_manager.png"},
+            {id: 4, name: "الجاكوار رائد فضاء", profit: 5000, cost: 100000, img: "jaguar_space.png"},
+            {id: 5, name: "الجاكوار المحارب", profit: 8000, cost: 200000, img: "jaguar_warrior.png"},
+            {id: 6, name: "الجاكوار الموسيقي", profit: 12000, cost: 400000, img: "jaguar_musician.png"},
+            {id: 7, name: "الجاكوار العالم", profit: 20000, cost: 750000, img: "jaguar_scientist.png"},
+            {id: 8, name: "الجاكوار التكتيكي", profit: 35000, cost: 1200000, img: "jaguar_tactical.png"},
+            {id: 9, name: "الجاكوار الفاخر", profit: 50000, cost: 2000000, img: "jaguar_luxury.png"},
+            {id: 10, name: "الجاكوار الأرستقراطي", profit: 75000, cost: 3500000, img: "jaguar_aristocrat.png"},
+            {id: 11, name: "الجاكوار القرصان", profit: 100000, cost: 5000000, img: "jaguar_pirate.png"}
+        ];
 
-    function startApp() {
-        database.ref('users/' + user_id).once('value', (snapshot) => {
-            const data = snapshot.val();
-            if(data) {
-                score = data.score || 0; energy = data.energy || 1000;
-                tapLevel = data.tapLevel || 1; autoIncome = data.autoIncome || 0;
-                minerLevel = data.minerLevel || 0; lastCheckIn = data.lastCheckIn || 0;
-                loadFriends();
-            }
-            syncUI();
-            checkDailyStatus();
-        });
-        setInterval(() => { if(energy < maxEnergy) { energy = Math.min(maxEnergy, energy + 1.5); syncUI(); } }, 1000);
-        setInterval(() => { if(autoIncome > 0) { score += autoIncome; syncUI(); } }, 1000);
-        setInterval(() => saveData(), 5000);
-        renderCards();
-        
-    }
+        function startApp() {
+            renderCards();
+            loadUserData();
+            setInterval(autoMine, 1000);
+        }
 
-    function syncUI() {
-        document.getElementById('balance').innerText = Math.floor(score).toLocaleString();
-        document.getElementById('nrg-text').innerText = `${Math.floor(energy)} / ${maxEnergy}`;
-        document.getElementById('fill').style.width = (energy / maxEnergy * 100) + "%";
-        document.getElementById('upgrade-cost').innerText = (tapLevel * 100) + " 💰";
-        document.getElementById('miner-lvl').innerText = minerLevel;
-        document.getElementById('miner-cost').innerText = ((minerLevel + 1) * 500) + " 💰";
-        document.getElementById('income-text').innerText = `الربح التلقائي: +${autoIncome}/ثانية`;
-    }
+        function renderCards() {
+            const grid = document.getElementById('jaguar-cards-grid');
+            grid.innerHTML = "";
+            jaguarCards.forEach(card => {
+                const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/cards/${card.img}`;
+                grid.innerHTML += `
+                    <div class="mining-card" onclick="buyCard(${card.id}, ${card.cost}, ${card.profit})">
+                        <div class="card-image-container">
+                            <img src="${imgPath}" onerror="this.src='https://via.placeholder.com/150/1e293b/ffd700?text=Jaguar'">
+                        </div>
+                        <span class="card-title">${card.name}</span>
+                        <span class="card-profit">الربح: +${card.profit}/س</span>
+                        <div class="card-cost">🪙 ${card.cost.toLocaleString()}</div>
+                    </div>
+                `;
+            });
+        }
 
-    function saveData() {
-        database.ref('users/' + user_id).update({ score, energy: Math.floor(energy), tapLevel, autoIncome, minerLevel, lastCheckIn });
-    }
+        function handleTap(e) {
+            balance += 1;
+            updateUI();
+            db.ref('users/' + userId).update({ balance: balance });
+        }
 
-    // تأثير النقر والاهتزاز المصلح
-    document.getElementById('main-tap').addEventListener('touchstart', (e) => {
-        e.preventDefault();
-        for (let i = 0; i < e.changedTouches.length; i++) {
-            if(energy >= tapLevel) {
-                score += tapLevel; energy -= tapLevel;
-                const t = e.changedTouches[i];
-                const eff = document.createElement('div');
-                eff.className = 'tap-effect';
-                eff.innerText = `+${tapLevel}`;
-                eff.style.left = t.pageX + 'px';
-                eff.style.top = t.pageY + 'px';
-                document.body.appendChild(eff);
-                setTimeout(() => eff.remove(), 600);
+        function buyCard(id, cost, prof) {
+            if (balance >= cost) {
+                balance -= cost;
+                income += (prof / 3600);
+                updateUI();
+                showToast("مبروك! امتلكت " + jaguarCards[id].name);
+                db.ref('users/' + userId).update({ balance: balance, income: income });
+            } else {
+                showToast("تحتاج المزيد من الكوينز!");
             }
         }
-        syncUI();
-        if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.impactOccurred('medium');
-    });
 
-    function loadFriends() {
-        database.ref('users').orderByChild('referredBy').equalTo(user_id.toString()).once('value', (snap) => {
-            const friends = snap.val();
-            const container = document.getElementById('friends-container-list');
-            if(friends) {
-                container.innerHTML = "";
-                let count = 0;
-                for(let id in friends) {
-                    count++;
-                    let div = document.createElement('div');
-                    div.style = "padding:10px 0; border-bottom:1px solid rgba(255,255,255,0.05); font-size:14px;";
-                    div.innerText = `👤 صديق ${count} (ID: ${id.substring(0,6)}...)`;
-                    container.appendChild(div);
+        function autoMine() {
+            if (income > 0) {
+                balance += income;
+                updateUI();
+            }
+        }
+
+        function updateUI() {
+            document.getElementById('balance').innerText = Math.floor(balance).toLocaleString();
+            document.getElementById('income-text').innerText = "الربح التلقائي: +" + (income * 3600).toFixed(0) + "/ساعة";
+        }
+
+        function showPage(pageId, element) {
+            document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+            document.getElementById(pageId).classList.add('active');
+            document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
+            element.classList.add('active');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.innerText = msg;
+            t.style.display = 'block';
+            setTimeout(() => t.style.display = 'none', 2000);
+        }
+
+        function loadUserData() {
+            db.ref('users/' + userId).on('value', (snap) => {
+                if(snap.exists()) {
+                    balance = snap.val().balance || 0;
+                    income = snap.val().income || 0;
+                    updateUI();
                 }
-                document.getElementById('friend-count').innerText = count;
-            }
-        });
-    }
-
-    function claimDailyReward() {
-        const now = new Date().getTime();
-        if (now - lastCheckIn >= 86400000) {
-            score += 1000; lastCheckIn = now;
-            syncUI(); saveData(); checkDailyStatus();
-            window.Telegram.WebApp.showAlert("تم استلام 1,000 عملة!");
+            });
         }
-    }
-
-    function checkDailyStatus() {
-        const now = new Date().getTime();
-        const btn = document.getElementById('daily-claim-btn');
-        if (now - lastCheckIn < 86400000) {
-            btn.innerText = "تم الاستلام"; btn.classList.add('disabled'); btn.onclick = null;
-        }
-    }
-
-    function doSocialTask(url, reward, btn) {
-        window.Telegram.WebApp.openLink(url);
-        setTimeout(() => {
-            score += reward; btn.innerText = "تم ✅"; btn.classList.add('disabled'); btn.onclick = null;
-            syncUI(); saveData();
-        }, 3000);
-    }
-
-    function shareWithFriends() {
-        const url = `https://t.me/share/url?url=https://t.me/${bot_username}?start=${user_id}&text=العب واجمع Jimi Coin!`;
-        window.Telegram.WebApp.openTelegramLink(url);
-    }
-
-    function copyMyLink() {
-        navigator.clipboard.writeText(`https://t.me/${bot_username}?start=${user_id}`);
-        window.Telegram.WebApp.showAlert("تم نسخ الرابط!");
-    }
-
-    function upgradeTap() {
-        let cost = tapLevel * 100;
-        if(score >= cost) { score -= cost; tapLevel++; syncUI(); saveData(); }
-    }
-
-    function buyMiner() {
-        let cost = (minerLevel + 1) * 500;
-        if(score >= cost) { score -= cost; minerLevel++; autoIncome += 2; syncUI(); saveData(); }
-    }
-    // قائمة بيانات الكروت - يمكنك إضافة المزيد هنا لاحقاً ليصل لـ 200
-const miningCardsData = [
-    { id: 1, name: "مطرقة حديدية", icon: "🔨", cost: 500, profit: 10 },
-    { id: 2, name: "خوذة العمل", icon: "🦺", cost: 1200, profit: 25 },
-    { id: 3, name: "كابل طاقة", icon: "🔌", cost: 2000, profit: 45 },
-    { id: 4, name: "بطارية ليثيوم", icon: "🔋", cost: 5000, profit: 110 },
-    { id: 5, name: "روبوت عامل", icon: "🤖", cost: 10000, profit: 250 },
-    { id: 6, name: "لوح شمسي", icon: "☀️", cost: 25000, profit: 600 },
-    { id: 7, name: "جهاز لاسلكي", icon: "📻", cost: 40000, profit: 1000 },
-    { id: 8, name: "معالج بيانات", icon: "🖥️", cost: 75000, profit: 2000 }
-];
-
-// دالة عرض الكروت داخل الصفحة
-function renderCards() {
-    const container = document.getElementById('cards-container');
-    if (!container) return; // للتأكد من وجود الحاوية
-    
-    container.innerHTML = ""; // مسح نص "جاري التحميل"
-    
-    miningCardsData.forEach(card => {
-        const cardHtml = `
-            <div class="mining-card" onclick="buyMiningCard(${card.id}, ${card.cost}, ${card.profit})">
-                <span class="card-icon">${card.icon}</span>
-                <span class="card-title">${card.name}</span>
-                <span class="card-profit">الربح: +${card.profit}/ساعة</span>
-                <div class="card-cost">💰 ${card.cost.toLocaleString()}</div>
-            </div>
-        `;
-        container.insertAdjacentHTML('beforeend', cardHtml);
-    });
-}
-
-// دالة شراء الكارت
-function buyMiningCard(id, cost, profit) {
-    if (score >= cost) {
-        score -= cost;
-        // استخدم Math.floor أو toFixed(2) لجعل الرقم جميلاً
-document.getElementById('income-text').innerText = (autoIncome * 1).toFixed(2) + "/ثانية";
-        syncUI();
-        saveData();
-        if(window.Telegram.WebApp.HapticFeedback) window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
-        window.Telegram.WebApp.showAlert("تم شراء " + miningCardsData.find(c => c.id === id).name);
-    } else {
-        window.Telegram.WebApp.showAlert("رصيدك غير كافٍ!");
-    }
-            }
-    
-</script>
+        window.onload = startApp;
+    </script>
 </body>
 </html>
