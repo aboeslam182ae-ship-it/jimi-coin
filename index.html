@@ -73,7 +73,11 @@
     <div id="tap-page" class="page active">
         <div class="game-zone">
             <div class="character-wrapper" onclick="handleTap(event)">
-                <div class="jolt-character"></div>
+                <div class="jolt-character"></div><div class="energy-container">
+    <div id="energy-fill" class="energy-fill"></div>
+</div>
+<div id="energy-status" class="energy-text">⚡ 1000 / 1000</div>
+                
             </div>
         </div>
     </div>
@@ -136,7 +140,9 @@
             updateUI();
             db.ref('users/' + userId).update({ balance: balance });
         }
-
+let energy = 1000;
+const maxEnergy = 1000;
+        
         function buyCard(id, cost, prof) {
             if (balance >= cost) {
                 balance -= cost;
