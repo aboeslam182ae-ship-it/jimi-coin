@@ -9,14 +9,33 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(circle at center, #1b3d5e 0%, #050b18 100%); color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+        body {
+    /* تدرج لوني يحاكي خلفية الهامستر الزرقاء */
+    background: radial-gradient(circle at center, #1e4a9e 0%, #0b1d3d 100%);
+    background-attachment: fixed;
+    color: #fff;
+    font-family: sans-serif;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* إزالة الخط تماماً وجعل الهيدر شفافاً ليندمج مع الخلفية */
+.header {
+    text-align: center;
+    padding: 30px 0 10px;
+    background: transparent; 
+    border-bottom: none; 
+}
         
-        .header { text-align: center; padding: 30px 0 10px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
+        /* إزالة الخط العلوي */
+        .header { text-align: center; padding: 30px 0 10px; background: rgba(0,0,0,0.3); border-bottom: none; } 
         #balance { font-size: 48px; font-weight: 900; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
         .auto-income { font-size: 14px; color: #00f2fe; margin-top: 5px; font-weight: bold; }
 
-        .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 15px; overflow-y: auto; }
+        .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 15px; overflow-y: auto; padding-bottom: 100px; }
         .page.active { display: flex; }
 
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; padding-top: 20px; }
@@ -27,20 +46,21 @@
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center bottom/contain no-repeat; 
             transition: transform 0.1s; 
         }
-        .jolt-character:active { transform: scale(0.95); }
 
         .energy-container { width: 280px; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(0, 242, 254, 0.3); overflow: hidden; }
         .energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.2s; }
         .energy-text { font-size: 18px; margin-top: 8px; color: #ffd700; font-weight: bold; }
 
-        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 100px; }
+        .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
         .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; }
         .card-img-box { width: 100%; aspect-ratio: 1; background: #000; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
         .card-img-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 70px; background: #030816; display: flex; border-top: 1px solid #1a3366; }
-        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; }
-        .menu-item.active { opacity: 1; color: #ffd700; border-top: 2px solid #ffd700; }
+        /* إصلاح القائمة السفلية */
+        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 80px; background: #030816; display: flex; border-top: 1px solid #1a3366; z-index: 9999; }
+        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; text-decoration: none; font-size: 12px; }
+        .menu-item.active { opacity: 1; color: #ffd700; border-top: 3px solid #ffd700; }
+        .menu-item i { font-style: normal; font-size: 24px; margin-bottom: 4px; }
 
         @keyframes flyUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-120px); opacity: 0; } }
     </style>
@@ -54,7 +74,7 @@
 
     <div id="tap-page" class="page active">
         <div class="game-zone">
-            <div class="character-wrapper" onclick="handleTap(event)">
+            <div class="character-wrapper" ontouchstart="handleMultiTap(event)">
                 <div class="jolt-character"></div>
                 <div class="energy-container"><div id="energy-fill" class="energy-fill"></div></div>
                 <div id="energy-status" class="energy-text">⚡ 1000 / 1000</div>
@@ -67,8 +87,10 @@
     </div>
 
     <nav class="menu-footer">
-        <div class="menu-item active" onclick="showPage('tap-page', this)"><span>الرئيسية</span></div>
-        <div class="menu-item" onclick="showPage('cards-page', this)"><span>الجاكوار</span></div>
+        <div class="menu-item active" onclick="showPage('tap-page', this)"><i>🏠</i><span>الرئيسية</span></div>
+        <div class="menu-item" onclick="showPage('cards-page', this)"><i>🐆</i><span>الجاكوار</span></div>
+        <div class="menu-item"><i>👥</i><span>الأصدقاء</span></div>
+        <div class="menu-item"><i>💰</i><span>سحب</span></div>
     </nav>
 
     <script>
@@ -86,7 +108,11 @@
         function startApp() {
             renderCards();
             loadUserData();
-            setInterval(() => { balance += (income/3600); if(energy < maxEnergy) energy++; updateUI(); }, 1000);
+            setInterval(() => { 
+                if(income > 0) balance += (income/3600); 
+                if(energy < maxEnergy) energy = Math.min(maxEnergy, energy + 1); 
+                updateUI(); 
+            }, 1000);
         }
 
         function renderCards() {
@@ -100,24 +126,30 @@
             `).join('');
         }
 
-        function handleTap(e) {
-            if (energy >= 1) {
-                balance++; energy--; updateUI();
-                createFlyingText(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
-                db.ref('users/' + userId).update({ balance: Math.floor(balance) });
+        // تفعيل النقر المتعدد (Multi-touch)
+        function handleMultiTap(e) {
+            e.preventDefault();
+            const touches = e.changedTouches;
+            for (let i = 0; i < touches.length; i++) {
+                if (energy >= 1) {
+                    balance++; energy--;
+                    createFlyingText(touches[i].clientX, touches[i].clientY);
+                }
             }
+            updateUI();
+            db.ref('users/' + userId).update({ balance: Math.floor(balance) });
         }
 
         function createFlyingText(x, y) {
             const t = document.createElement('div');
-            t.innerText = "+1"; t.style.cssText = `position:fixed; left:${x}px; top:${y}px; color:#ffd700; font-size:28px; font-weight:bold; pointer-events:none; animation:flyUp 0.8s forwards;`;
+            t.innerText = "+1"; t.style.cssText = `position:fixed; left:${x}px; top:${y}px; color:#ffd700; font-size:28px; font-weight:bold; pointer-events:none; z-index:10000; animation:flyUp 0.8s forwards;`;
             document.body.appendChild(t); setTimeout(() => t.remove(), 800);
         }
 
         function updateUI() {
             document.getElementById('balance').innerText = Math.floor(balance).toLocaleString();
             document.getElementById('energy-fill').style.width = (energy/maxEnergy*100) + "%";
-            document.getElementById('energy-status').innerText = `⚡ ${energy} / ${maxEnergy}`;
+            document.getElementById('energy-status').innerText = `⚡ ${Math.floor(energy)} / ${maxEnergy}`;
             document.getElementById('income-text').innerText = `الربح التلقائي: +${Math.floor(income)}/ساعة`;
         }
 
@@ -135,3 +167,4 @@
     </script>
 </body>
 </html>
+
