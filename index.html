@@ -18,7 +18,8 @@
         .page.active { display: flex; }
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
         .character-wrapper { position: relative; display: flex; flex-direction: center; align-items: center; cursor: pointer; }
-        .jolt-character { width: 280px; height: 380px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/Cards/jaguar_leader.png') center bottom/contain no-repeat; transition: transform 0.1s; }
+        /* صورة الجاكوار الرئيسية في صفحة التاب */
+        .jolt-character { width: 280px; height: 380px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/jaguar_leader.png') center bottom/contain no-repeat; transition: transform 0.1s; }
         .jolt-character:active { transform: scale(0.95); }
         .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 100px; }
         .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; transition: all 0.3s; position: relative; }
@@ -72,19 +73,11 @@
         let income = 0;
         let userId = "7145751375"; 
 
+        // تأكد أن أسماء الصور هنا تطابق أسماء الملفات التي رفعتها على GitHub
         const jaguarCards = [
             {id: 0, name: "الجاكوار القائد", profit: 500, cost: 10000, img: "jaguar_leader.png"},
-            {id: 1, name: "الجاكوار الحكيم", profit: 800, cost: 15000, img: "jaguar_wise.png"},
-            {id: 2, name: "الجاكوار الطيار", profit: 1200, cost: 25000, img: "jaguar_pilot.png"},
-            {id: 3, name: "الجاكوار المدير", profit: 2500, cost: 50000, img: "jaguar_manager.png"},
-            {id: 4, name: "الجاكوار رائد فضاء", profit: 5000, cost: 100000, img: "jaguar_space.png"},
-            {id: 5, name: "الجاكوار المحارب", profit: 8000, cost: 200000, img: "jaguar_warrior.png"},
-            {id: 6, name: "الجاكوار الموسيقي", profit: 12000, cost: 400000, img: "jaguar_musician.png"},
-            {id: 7, name: "الجاكوار العالم", profit: 20000, cost: 750000, img: "jaguar_scientist.png"},
-            {id: 8, name: "الجاكوار التكتيكي", profit: 35000, cost: 1200000, img: "jaguar_tactical.png"},
             {id: 9, name: "الجاكوار الفاخر", profit: 50000, cost: 2000000, img: "jaguar_luxury.png"},
-            {id: 10, name: "الجاكوار الأرستقراطي", profit: 75000, cost: 3500000, img: "jaguar_aristocrat.png"},
-            {id: 11, name: "الجاكوار القرصان", profit: 100000, cost: 5000000, img: "jaguar_pirate.png"}
+            // أضف بقية الكروت هنا بنفس الطريقة
         ];
 
         function startApp() {
@@ -97,8 +90,8 @@
             const grid = document.getElementById('jaguar-cards-grid');
             grid.innerHTML = "";
             jaguarCards.forEach(card => {
-                // ملاحظة: تم تعديل المسار هنا ليحتوي على حرف C كبير
-                const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/Cards/${card.img}`;
+                // تم تعديل المسار ليقرأ مباشرة من المستودع (بجانب الـ index.html)
+                const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/${card.img}`;
                 grid.innerHTML += `
                     <div class="mining-card" onclick="buyCard(${card.id}, ${card.cost}, ${card.profit})">
                         <div class="card-image-container">
@@ -123,7 +116,7 @@
                 balance -= cost;
                 income += (prof / 3600);
                 updateUI();
-                showToast("مبروك! امتلكت " + jaguarCards[id].name);
+                showToast("مبروك! امتلكت " + jaguarCards.find(c => c.id === id).name);
                 db.ref('users/' + userId).update({ balance: balance, income: income });
             } else {
                 showToast("تحتاج المزيد من الكوينز!");
