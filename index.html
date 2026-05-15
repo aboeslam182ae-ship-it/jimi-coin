@@ -49,6 +49,13 @@
     border: 1px solid rgba(0, 242, 254, 0.3);
     overflow: hidden;
 }
+.game-zone {
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start; /* لرفع الجاكوار للأعلى */
+    padding-top: 10px; 
+}
 .energy-fill {
     width: 100%;
     height: 100%;
@@ -56,31 +63,25 @@
     transition: width 0.2s;
 }
 .energy-text {
-    font-size: 18px; /* كبرنا الخط قليلاً */
-    margin-top: 10px;
-    color: #ffd700; /* غيرناه للذهبي ليناسب الرصيد */
+    font-size: 20px; 
+    margin-top: 5px;
+    color: #ffd700; 
     font-weight: bold;
     text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
 }
-        
-    </style>
-</head>
-<body>
-    <div class="toast" id="toast"></div>
-    <div class="header">
-        <div id="balance">0</div>
-        <div class="auto-income" id="income-text">الربح التلقائي: +0/ساعة</div>
+@keyframes flyUp {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-120px); opacity: 0; }
+}
+        <div class="character-wrapper" onclick="handleTap(event)" style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
+    <div class="jolt-character"></div>
+    <div class="energy-container">
+        <div id="energy-fill" class="energy-fill"></div>
     </div>
-
-    <div id="tap-page" class="page active">
-        <div class="game-zone">
-            <div class="character-wrapper" style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-                <div class="jolt-character"></div><div class="energy-container">
-    <div id="energy-fill" class="energy-fill"></div>
+    <div id="energy-status" class="energy-text">⚡ 1000 / 1000</div>
 </div>
-<div id="energy-status" class="energy-text">⚡ 1000 / 1000</div>
                 
-            </div>
+        </div>
         </div>
     </div>
 
@@ -138,6 +139,21 @@
         }
 
         function handleTap(e) {
+            function createFlyingText(x, y) {
+    const text = document.createElement('div');
+    text.innerText = "+1";
+    text.style.position = 'fixed';
+    text.style.left = x + 'px';
+    text.style.top = y + 'px';
+    text.style.color = '#ffd700';
+    text.style.fontSize = '28px';
+    text.style.fontWeight = 'bold';
+    text.style.pointerEvents = 'none';
+    text.style.zIndex = '9999';
+    text.style.animation = 'flyUp 0.8s ease-out forwards';
+    document.body.appendChild(text);
+    setTimeout(() => text.remove(), 800);
+                }
             balance += 1;
             updateUI();
             db.ref('users/' + userId).update({ balance: balance });
