@@ -3,85 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>Jaguar Elite - Jimi Coin</title>
+    <title>Jimi Coin</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
 
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; -webkit-tap-highlight-color: transparent; }
-        body { background: radial-gradient(circle at center, #1b3d5e 0%, #050b18 100%); color: #fff; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
-        .header { text-align: center; padding: 40px 0 15px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
+        body { background: radial-gradient(circle at center, #1b3d5e 0%, #050b18 100%); color: #fff; font-family: sans-serif; overflow: hidden; height: 100vh; display: flex; flex-direction: column; }
+        
+        .header { text-align: center; padding: 30px 0 10px; background: rgba(0,0,0,0.3); border-bottom: 1px solid rgba(255, 215, 0, 0.2); }
         #balance { font-size: 48px; font-weight: 900; color: #ffd700; text-shadow: 0 0 20px rgba(255, 215, 0, 0.4); }
         .auto-income { font-size: 14px; color: #00f2fe; margin-top: 5px; font-weight: bold; }
-        .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 15px; overflow-y: auto; scroll-behavior: smooth; }
+
+        .page { display: none; flex-direction: column; height: 100%; flex-grow: 1; padding: 15px; overflow-y: auto; }
         .page.active { display: flex; }
-        .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
-        .character-wrapper { position: relative; display: flex; flex-direction: center; align-items: center; cursor: pointer; }
+
+        .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: flex-start; padding-top: 20px; }
+        .character-wrapper { display: flex; flex-direction: column; align-items: center; cursor: pointer; }
         
-        /* التعديل هنا: وضع صورة Jolt_pockets في الصفحة الرئيسية */
         .jolt-character { 
-            width: 280px; 
-            height: 380px; 
+            width: 250px; height: 350px; 
             background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/Jolt_pockets.png') center bottom/contain no-repeat; 
             transition: transform 0.1s; 
         }
-        
         .jolt-character:active { transform: scale(0.95); }
+
+        .energy-container { width: 280px; height: 12px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; margin-top: 15px; border: 1px solid rgba(0, 242, 254, 0.3); overflow: hidden; }
+        .energy-fill { width: 100%; height: 100%; background: linear-gradient(90deg, #00f2fe, #4facfe); transition: width 0.2s; }
+        .energy-text { font-size: 18px; margin-top: 8px; color: #ffd700; font-weight: bold; }
+
         .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 100px; }
-        .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; transition: all 0.3s; position: relative; }
-        .card-image-container { width: 100%; aspect-ratio: 1; background: #000; border-radius: 12px; margin-bottom: 10px; overflow: hidden; display: flex; justify-content: center; align-items: center; }
-        .card-image-container img { width: 100%; height: 100%; object-fit: contain; }
-        .card-title { font-size: 14px; font-weight: bold; color: #fff; margin-bottom: 5px; display: block; }
-        .card-profit { font-size: 12px; color: #00f2fe; display: block; }
-        .card-cost { margin-top: 10px; font-weight: 900; color: #ffd700; font-size: 14px; }
-        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 75px; background: #030816; display: flex; border-top: 1px solid #1a3366; z-index: 1000; }
-        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; cursor: pointer; }
+        .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; }
+        .card-img-box { width: 100%; aspect-ratio: 1; background: #000; border-radius: 12px; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; overflow: hidden; }
+        .card-img-box img { width: 100%; height: 100%; object-fit: contain; }
+
+        .menu-footer { position: fixed; bottom: 0; width: 100%; height: 70px; background: #030816; display: flex; border-top: 1px solid #1a3366; }
+        .menu-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0.5; color: #fff; }
         .menu-item.active { opacity: 1; color: #ffd700; border-top: 2px solid #ffd700; }
-        .toast { position: fixed; top: 20px; left: 50%; transform: translateX(-50%); background: #ffd700; color: #000; padding: 10px 20px; border-radius: 10px; font-weight: bold; z-index: 2000; display: none; }
-  .energy-container {
-    width: 80%;
-    max-width: 300px;
-    height: 15px;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    margin-top: 20px;
-    border: 1px solid rgba(0, 242, 254, 0.3);
-    overflow: hidden;
-}
-.game-zone {
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start; /* لرفع الجاكوار للأعلى */
-    padding-top: 10px; 
-}
-.energy-fill {
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, #00f2fe, #4facfe);
-    transition: width 0.2s;
-}
-.energy-text {
-    font-size: 20px; 
-    margin-top: 5px;
-    color: #ffd700; 
-    font-weight: bold;
-    text-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
-}
-@keyframes flyUp {
-    0% { transform: translateY(0); opacity: 1; }
-    100% { transform: translateY(-120px); opacity: 0; }
-}
-        <div class="character-wrapper" onclick="handleTap(event)" style="display: flex; flex-direction: column; align-items: center; cursor: pointer;">
-    <div class="jolt-character"></div>
-    <div class="energy-container">
-        <div id="energy-fill" class="energy-fill"></div>
+
+        @keyframes flyUp { 0% { transform: translateY(0); opacity: 1; } 100% { transform: translateY(-120px); opacity: 0; } }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div id="balance">0</div>
+        <div id="income-text" class="auto-income">الربح التلقائي: +0/ساعة</div>
     </div>
-    <div id="energy-status" class="energy-text">⚡ 1000 / 1000</div>
-</div>
-                
-        </div>
+
+    <div id="tap-page" class="page active">
+        <div class="game-zone">
+            <div class="character-wrapper" onclick="handleTap(event)">
+                <div class="jolt-character"></div>
+                <div class="energy-container"><div id="energy-fill" class="energy-fill"></div></div>
+                <div id="energy-status" class="energy-text">⚡ 1000 / 1000</div>
+            </div>
         </div>
     </div>
 
@@ -90,24 +67,16 @@
     </div>
 
     <nav class="menu-footer">
-        <div class="menu-item active" onclick="showPage('tap-page', this)"><i>🏠</i><span>الرئيسية</span></div>
-        <div class="menu-item" onclick="showPage('cards-page', this)"><i>🐆</i><span>الجاكوار</span></div>
-        <div class="menu-item"><i>👥</i><span>الأصدقاء</span></div>
-        <div class="menu-item"><i>💰</i><span>سحب</span></div>
+        <div class="menu-item active" onclick="showPage('tap-page', this)"><span>الرئيسية</span></div>
+        <div class="menu-item" onclick="showPage('cards-page', this)"><span>الجاكوار</span></div>
     </nav>
 
     <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDAf1rFiwTwZmEkWv6yzkgr2msEmIaOELs",
-            databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com",
-            projectId: "jolt-coin"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyDAf1rFiwTwZmEkWv6yzkgr2msEmIaOELs", databaseURL: "https://jolt-coin-default-rtdb.firebaseio.com", projectId: "jolt-coin" };
         firebase.initializeApp(firebaseConfig);
         const db = firebase.database();
 
-        let balance = 0;
-        let income = 0;
-        let userId = "7145751375"; 
+        let balance = 0, income = 0, energy = 1000, maxEnergy = 1000, userId = "7145751375";
 
         const jaguarCards = [
             {id: 0, name: "الجاكوار القائد", profit: 500, cost: 10000, img: "jaguar_leader.png"},
@@ -117,98 +86,50 @@
         function startApp() {
             renderCards();
             loadUserData();
-            setInterval(autoMine, 1000);
+            setInterval(() => { balance += (income/3600); if(energy < maxEnergy) energy++; updateUI(); }, 1000);
         }
 
         function renderCards() {
             const grid = document.getElementById('jaguar-cards-grid');
-            grid.innerHTML = "";
-            jaguarCards.forEach(card => {
-                const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/${card.img}`;
-                grid.innerHTML += `
-                    <div class="mining-card" onclick="buyCard(${card.id}, ${card.cost}, ${card.profit})">
-                        <div class="card-image-container">
-                            <img src="${imgPath}" onerror="this.src='https://via.placeholder.com/150/1e293b/ffd700?text=${card.name}'">
-                        </div>
-                        <span class="card-title">${card.name}</span>
-                        <span class="card-profit">الربح: +${card.profit}/س</span>
-                        <div class="card-cost">🪙 ${card.cost.toLocaleString()}</div>
-                    </div>
-                `;
-            });
+            grid.innerHTML = jaguarCards.map(card => `
+                <div class="mining-card" onclick="buyCard(${card.cost}, ${card.profit})">
+                    <div class="card-img-box"><img src="https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/${card.img}"></div>
+                    <b>${card.name}</b><br><small>الربح: +${card.profit}/س</small>
+                    <div style="color:#ffd700; margin-top:5px;">🪙 ${card.cost.toLocaleString()}</div>
+                </div>
+            `).join('');
         }
 
-                                                   
         function handleTap(e) {
-            function createFlyingText(x, y) {
-    const text = document.createElement('div');
-    text.innerText = "+1";
-    text.style.position = 'fixed';
-    text.style.left = x + 'px';
-    text.style.top = y + 'px';
-    text.style.color = '#ffd700';
-    text.style.fontSize = '28px';
-    text.style.fontWeight = 'bold';
-    text.style.pointerEvents = 'none';
-    text.style.zIndex = '9999';
-    text.style.animation = 'flyUp 0.8s ease-out forwards';
-    document.body.appendChild(text);
-    setTimeout(() => text.remove(), 800);
-                }
-            balance += 1;
-            updateUI();
-            db.ref('users/' + userId).update({ balance: balance });
-        }
-let energy = 1000;
-const maxEnergy = 1000;
-        
-        function buyCard(id, cost, prof) {
-            if (balance >= cost) {
-                balance -= cost;
-                income += (prof / 3600);
-                updateUI();
-                const card = jaguarCards.find(c => c.id === id);
-                showToast("مبروك! امتلكت " + card.name);
-                db.ref('users/' + userId).update({ balance: balance, income: income });
-            } else {
-                showToast("تحتاج المزيد من الكوينز!");
+            if (energy >= 1) {
+                balance++; energy--; updateUI();
+                createFlyingText(e.clientX || e.touches[0].clientX, e.clientY || e.touches[0].clientY);
+                db.ref('users/' + userId).update({ balance: Math.floor(balance) });
             }
         }
 
-        function autoMine() {
-            if (income > 0) {
-                balance += income;
-                updateUI();
-            }
+        function createFlyingText(x, y) {
+            const t = document.createElement('div');
+            t.innerText = "+1"; t.style.cssText = `position:fixed; left:${x}px; top:${y}px; color:#ffd700; font-size:28px; font-weight:bold; pointer-events:none; animation:flyUp 0.8s forwards;`;
+            document.body.appendChild(t); setTimeout(() => t.remove(), 800);
         }
 
         function updateUI() {
             document.getElementById('balance').innerText = Math.floor(balance).toLocaleString();
-            document.getElementById('income-text').innerText = "الربح التلقائي: +" + (income * 3600).toFixed(0) + "/ساعة";
+            document.getElementById('energy-fill').style.width = (energy/maxEnergy*100) + "%";
+            document.getElementById('energy-status').innerText = `⚡ ${energy} / ${maxEnergy}`;
+            document.getElementById('income-text').innerText = `الربح التلقائي: +${Math.floor(income)}/ساعة`;
         }
 
-        function showPage(pageId, element) {
+        function showPage(id, el) {
             document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
+            document.getElementById(id).classList.add('active');
             document.querySelectorAll('.menu-item').forEach(m => m.classList.remove('active'));
-            element.classList.add('active');
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            t.innerText = msg;
-            t.style.display = 'block';
-            setTimeout(() => t.style.display = 'none', 2000);
+            el.classList.add('active');
         }
 
         function loadUserData() {
-            db.ref('users/' + userId).on('value', (snap) => {
-                if(snap.exists()) {
-                    balance = snap.val().balance || 0;
-                    income = snap.val().income || 0;
-                    updateUI();
-                }
-            });
+            db.ref('users/' + userId).on('value', s => { if(s.exists()){ balance = s.val().balance || 0; income = s.val().income || 0; updateUI(); }});
         }
         window.onload = startApp;
     </script>
