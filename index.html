@@ -18,7 +18,7 @@
         .page.active { display: flex; }
         .game-zone { flex-grow: 1; display: flex; justify-content: center; align-items: center; position: relative; }
         .character-wrapper { position: relative; display: flex; flex-direction: center; align-items: center; cursor: pointer; }
-        .jolt-character { width: 280px; height: 380px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/cards/jaguar_leader.png') center bottom/contain no-repeat; transition: transform 0.1s; }
+        .jolt-character { width: 280px; height: 380px; background: url('https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/Cards/jaguar_leader.png') center bottom/contain no-repeat; transition: transform 0.1s; }
         .jolt-character:active { transform: scale(0.95); }
         .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; padding-bottom: 100px; }
         .mining-card { background: linear-gradient(145deg, #1e293b, #0a0f1a); border: 1px solid rgba(255, 215, 0, 0.3); border-radius: 20px; padding: 12px; text-align: center; transition: all 0.3s; position: relative; }
@@ -97,11 +97,12 @@
             const grid = document.getElementById('jaguar-cards-grid');
             grid.innerHTML = "";
             jaguarCards.forEach(card => {
-                const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/cards/${card.img}`;
+                // ملاحظة: تم تعديل المسار هنا ليحتوي على حرف C كبير
+                const imgPath = `https://raw.githubusercontent.com/aboeslam182ae-ship-it/jimi-coin/main/assets/Cards/${card.img}`;
                 grid.innerHTML += `
                     <div class="mining-card" onclick="buyCard(${card.id}, ${card.cost}, ${card.profit})">
                         <div class="card-image-container">
-                            <img src="${imgPath}" onerror="this.src='https://via.placeholder.com/150/1e293b/ffd700?text=Jaguar'">
+                            <img src="${imgPath}" onerror="this.src='https://via.placeholder.com/150/1e293b/ffd700?text=${card.name}'">
                         </div>
                         <span class="card-title">${card.name}</span>
                         <span class="card-profit">الربح: +${card.profit}/س</span>
